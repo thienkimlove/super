@@ -27,19 +27,6 @@
                     <a href="{{url('admin')}}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>
 
-                <li>
-                    <a><i class="fa fa-files-o fa-fw"></i>Categories<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-
-                        <li>
-                            <a href="{{url('admin/categories')}}">List</a>
-                        </li>
-                        <li>
-                            <a href="{{url('admin/categories/create')}}">Add</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
 
                 <li>
                     <a><i class="fa fa-files-o fa-fw"></i>Offers<span class="fa arrow"></span></a>
