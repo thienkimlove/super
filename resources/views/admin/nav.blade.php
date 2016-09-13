@@ -42,15 +42,12 @@
                 </li>
 
                 <li>
-                    <a><i class="fa fa-files-o fa-fw"></i>Posts<span class="fa arrow"></span></a>
+                    <a><i class="fa fa-files-o fa-fw"></i>Offers<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
 
                         <li>
-                            <a href="{{url('admin/posts')}}">List</a>
+                            <a href="{{url('admin/offers')}}">List</a>
                         </li>
-                        <li>
-                            <a href="{{url('admin/posts/create')}}">Add</a>
-                        <li>
                     </ul>
                 </li>
 

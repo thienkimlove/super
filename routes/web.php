@@ -18,6 +18,9 @@ Route::get('admin/callback', 'Backend\AuthController@handleGoogleCallback');
 
 
 Route::get('admin', 'Backend\HomeController@index');
+
+Route::get('admin/offers', 'Backend\HomeController@listOffers');
+
 Route::resource('admin/posts', 'Backend\PostsController');
 Route::resource('admin/categories', 'Backend\CategoriesController');
 

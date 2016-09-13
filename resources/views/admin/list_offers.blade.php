@@ -2,7 +2,7 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Posts</h1>
+            <h1 class="page-header">Offers</h1>
         </div>
 
     </div>
@@ -11,15 +11,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="input-group custom-search-form">
-                        {!! Form::open(['method' => 'GET', 'route' =>  ['posts.index'] ]) !!}
+                        {!! Form::open(['method' => 'GET', 'url' => url('admin/offers') ]) !!}
                         <span class="input-group-btn">
-                            <input type="text" value="{{$searchPost}}" name="q" class="form-control" placeholder="Search post..">
+                            <input type="text" value="{{$searchOffer}}" name="q" class="form-control" placeholder="Search offer..">
 
                             <button class="btn btn-default" type="submit">
                                 <i class="fa fa-search"></i>
                             </button>
                         </span>
-                        <input type="hidden" name="cat" value="{{$categoryId}}" />
 
                         {!! Form::close() !!}
                     </div>
@@ -30,47 +29,32 @@
                         <table class="table table-striped table-bordered table-hover">
                             <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Title</th>
-                                <th>Category</th>
-                                <th>Desc</th>
-                                <th>Image</th>
+                                <th>Id</th>
+                                <th>Offer Name</th>
+                                <th>Cap</th>
+                                <th>Link</th>
+                                <th>Price</th>
+                                <th>Geo</th>
+                                <th>OS</th>
                                 <th>Status</th>
-                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($posts as $post)
+                            @foreach($offers as $offer)
                                 <tr>
-                                    <td>{{$post->id}}</td>
-                                    <td>{{$post->title}}</td>
-                                    <td>{{$post->category->name}}</td>
-                                    <td>{!! str_limit($post->desc, 200) !!}</td>
-                                    <td><img src="{{url('img/cache/small/' . $post->image)}}" /></td>
-                                    <td>{{ ($post->status) ? 'Yes' : 'No'  }}</td>
-                                    <td>
-                                        <button id-attr="{{$post->id}}" class="btn btn-primary btn-sm edit-post" type="button">Edit</button>&nbsp;
-                                        {!! Form::open(['method' => 'DELETE', 'route' => ['posts.destroy', $post->id]]) !!}
-                                        <button type="submit" class="btn btn-danger btn-mini">Delete</button>
-                                        {!! Form::close() !!}
-                                    </td>
+                                    <td>{{$offer['offer_id']}}</td>
+                                    <td>{{$offer['offer_name']}}</td>
+                                    <td>?</td>
+                                    <td>{{$offer['preview_link']}}</td>
+                                    <td>{{$offer['offer_commission']}}</td>
+                                    <td>{{$offer['offer_countries']}}</td>
+                                    <td>{{$offer['offer_targeting']}}</td>
+                                    <td>{{$offer['offer_status']}}</td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
-
                     </div>
-                    <div class="row">
-
-                        <div class="col-sm-6">{!!$posts->render()!!}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button class="btn btn-primary add-post" type="button">Add</button>
-                        </div>
-                    </div>
-
-
                 </div>
                 <!-- /.panel-body -->
             </div>
@@ -82,11 +66,8 @@
 @section('footer')
     <script>
         $(function(){
-            $('.add-post').click(function(){
-                window.location.href = window.baseUrl + '/admin/posts/create';
-            });
             $('.edit-post').click(function(){
-                window.location.href = window.baseUrl + '/admin/posts/' + $(this).attr('id-attr') + '/edit';
+                window.location.href = window.baseUrl + '/admin/offers/' + $(this).attr('id-attr');
             });
         });
     </script>
