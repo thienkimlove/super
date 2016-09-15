@@ -9,9 +9,10 @@ use App\Offer;
 use App\User;
 use Carbon\Carbon;
 use DB;
+use GeoIp2\Database\Reader;
+use GeoIp2\Exception\AddressNotFoundException;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Agent;
-use Torann\GeoIP\GeoIPFacade;
 
 class MainController extends Controller
 {
@@ -19,25 +20,32 @@ class MainController extends Controller
     //return array ip and isoCode if have.
     //https://github.com/Torann/laravel-geoip
 
-    private function checkIpAndLocation($offer)
+    private function checkIpAndLocation($offer, $request)
     {
         $offer_locations = trim(strtoupper($offer->geo_locations));
         if (!$offer_locations || ($offer_locations == 'ALL')) {
             return true;
         }
 
-        $location = GeoIPFacade::getLocation();
-        //not default ip.
-        if ($location['ip'] != '127.0.0.1') {
-            $locationIds = explode(',', $offer_locations);
+        $isoCode = null;
 
-            if (in_array($location['isoCode'], $locationIds)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+        try {
+            $reader = new Reader(storage_path('app/geoip.mmdb'));
+            $ipLocation = $request->ip();
+            $isoCode = $reader->country($ipLocation)->country->isoCode;
+
+        } catch (AddressNotFoundException $e) {
+            return false;
+        }  catch (\Exception $e) {
+            return false;
+        }
+
+        $locationIds = explode(',', $offer_locations);
+
+        if (in_array($isoCode, $locationIds)) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -103,7 +111,7 @@ class MainController extends Controller
 
                     $checkDevices = $this->checkDeviceOffer($offer);
                     if ($checkDevices) {
-                        $checkLocation = $this->checkIpAndLocation($offer);
+                        $checkLocation = $this->checkIpAndLocation($offer, $request);
 
                         if ($checkLocation) {
                             //check if this ip click is existed in database or not.
