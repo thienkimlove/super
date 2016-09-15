@@ -39,7 +39,7 @@ class MainController extends Controller
             return false;
         }
 
-        if (strpos($isoCode, $offer_locations) !== false) {
+        if (strpos($offer_locations, $isoCode) !== false) {
             return true;
         } else {
             return false;
