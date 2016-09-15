@@ -18,12 +18,10 @@ Route::get('admin/callback', 'Backend\AuthController@handleGoogleCallback');
 
 
 Route::get('admin', 'Backend\HomeController@index');
-
-Route::get('admin/offers', 'Backend\HomeController@listOffers');
-
-Route::resource('admin/posts', 'Backend\PostsController');
-Route::resource('admin/categories', 'Backend\CategoriesController');
+Route::resource('admin/users', 'Backend\UsersController');
+Route::resource('admin/offers', 'Backend\OffersController');
 
 #Frontend Routes
 Route::get('/', 'Frontend\MainController@index');
+Route::get('camp', 'Frontend\MainController@camp');
 

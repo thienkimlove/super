@@ -1,7 +1,7 @@
 <!-- Navigation -->
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
-        <a class="navbar-brand">Admin GPL 2016 Betting</a>
+        <a class="navbar-brand">Admin</a>
     </div>
     <!-- /.navbar-header -->
 
@@ -28,12 +28,32 @@
                 </li>
 
 
+                @if (auth('backend')->user()->permission_id == 1)
+
+                    <li>
+                        <a><i class="fa fa-files-o fa-fw"></i>Users<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+
+                            <li>
+                                <a href="{{url('admin/users')}}">List</a>
+                            </li>
+                            <li>
+                                <a href="{{url('admin/users/create')}}">Add</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                @endif
+
                 <li>
                     <a><i class="fa fa-files-o fa-fw"></i>Offers<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
 
                         <li>
                             <a href="{{url('admin/offers')}}">List</a>
+                        </li>
+                        <li>
+                            <a href="{{url('admin/offers/create')}}">Add</a>
                         </li>
                     </ul>
                 </li>

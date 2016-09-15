@@ -173,6 +173,8 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
+        Torann\GeoIP\GeoIPServiceProvider::class,
         //
 
         /*
@@ -235,6 +237,8 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
+        'GeoIP' => Torann\GeoIP\GeoIPFacade::class,
     ],
 
 ];

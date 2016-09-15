@@ -2,11 +2,25 @@
 
 return [
     1 => [
-        'label' => 'Manager',
+        'label' => 'Admin',
         'permission' => [
             'HomeController@index',
-            'HomeController@listOffers',
-            'HomeController@viewOffer',
+
+            //only admin can access to edit users.
+
+            'UsersController@index',
+            'UsersController@edit',
+            'UsersController@store',
+            'UsersController@update',
+            'UsersController@create',
+            'UsersController@destroy',
+
+            'OffersController@index',
+            'OffersController@edit',
+            'OffersController@store',
+            'OffersController@update',
+            'OffersController@create',
+            'OffersController@destroy',
         ]
     ],
 
@@ -14,20 +28,13 @@ return [
         'label' => 'Editor',
         'permission' => [
             'HomeController@index',
+        ]
+    ],
 
-            'CategoriesController@index',
-            'CategoriesController@create',
-            'CategoriesController@edit',
-            'CategoriesController@destroy',
-            'CategoriesController@update',
-            'CategoriesController@store',
-
-            'PostsController@index',
-            'PostsController@create',
-            'PostsController@edit',
-            'PostsController@destroy',
-            'PostsController@update',
-            'PostsController@store',
+    3 => [
+        'label' => 'User',
+        'permission' => [
+            'HomeController@index',
         ]
     ]
 ];

@@ -43,7 +43,8 @@ class AddAdmin extends Command
             $this->line('Create Admin with email='.$email);
             User::create([
                 'email' => $email,
-                'permission_id' => 1
+                'permission_id' => 1,
+                'username' => 'Admin'
             ]);
             $this->line('Done');
         }
