@@ -28,13 +28,14 @@ class MainController extends Controller
         }
 
         $isoCode = null;
+        $ipLocation = $request->ip();
+
 
         try {
             $reader = new Reader(storage_path('app/geoip.mmdb'));
-            $ipLocation = $request->ip();
             $isoCode = $reader->country($ipLocation)->country->isoCode;
         } catch (AddressNotFoundException $e) {
-            return false;
+            return  ($ipLocation == '10.0.2.2');
         }  catch (\Exception $e) {
             return false;
         }

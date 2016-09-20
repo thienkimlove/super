@@ -33,6 +33,11 @@ class UsersController extends AdminController
             $users = $users->where('username', 'LIKE', '%'. $searchUser. '%');
         }
 
+
+        if ($request->input('filter')) {
+            $users = $users->where('status', false);
+        }
+
         $users = $users->paginate(10);
 
         return view('admin.user.index', compact('users', 'searchUser'));

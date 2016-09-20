@@ -5,6 +5,7 @@ return [
         'label' => 'Admin',
         'permission' => [
             'HomeController@index',
+            'HomeController@control',
 
             //only admin can access to edit users.
 

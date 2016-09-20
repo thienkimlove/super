@@ -31,15 +31,33 @@
                 @if (auth('backend')->user()->permission_id == 1)
 
                     <li>
-                        <a><i class="fa fa-files-o fa-fw"></i>Users<span class="fa arrow"></span></a>
+                        <a><i class="fa fa-files-o fa-fw"></i>Admin<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
 
                             <li>
-                                <a href="{{url('admin/users')}}">List</a>
+                                <a href="{{url('admin/control')}}">Bảng điều khiển admin</a>
                             </li>
+
                             <li>
-                                <a href="{{url('admin/users/create')}}">Add</a>
+                                <a href="{{url('admin/users')}}">Danh sách thành viên</a>
                             </li>
+
+                            <li>
+                                <a href="{{url('admin/users?filter=1')}}">Thành viên bị cấm</a>
+                            </li>
+
+                            <li>
+                                <a href="{{url('admin/users/create')}}">Thêm thành viên</a>
+                            </li>
+
+                            <li>
+                                <a href="{{url('admin/offers/create')}}">Thêm offer</a>
+                            </li>
+
+                            <li>
+                                <a href="{{url('admin/offers')}}">Danh sách offer</a>
+                            </li>
+
                         </ul>
                     </li>
 
