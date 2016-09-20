@@ -6,6 +6,7 @@ return [
         'permission' => [
             'HomeController@index',
             'HomeController@control',
+            'HomeController@clearlead',
 
             //only admin can access to edit users.
 

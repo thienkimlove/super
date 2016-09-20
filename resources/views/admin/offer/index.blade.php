@@ -63,6 +63,8 @@
                                         $offer->id]]) !!}
                                         <button type="submit" class="btn btn-danger btn-mini">Delete</button>
                                         {!! Form::close() !!}
+
+                                        <button lead-attr="{{$offer->id}}" class="btn btn-primary btn-sm lead-content" type="button">Xóa IP đã Lead</button>&nbsp;
                                     </td>
                                 </tr>
                             @endforeach
@@ -96,6 +98,10 @@
             });
             $('.edit-content').click(function(){
                 window.location.href = window.baseUrl + '/admin/offers/' + $(this).attr('id-attr') + '/edit';
+            });
+
+            $('.lead-content').click(function(){
+                window.location.href = window.baseUrl + '/admin/clearlead/?offer_id=' + $(this).attr('lead-attr') ;
             });
         });
     </script>

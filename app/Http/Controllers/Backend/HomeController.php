@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Click;
 use App\Offer;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Http\Request;
 
 class HomeController extends AdminController
 {
@@ -34,6 +36,20 @@ class HomeController extends AdminController
 
 
         return view('admin.general.control', compact('content', 'offers', 'recentOffers'));
+    }
+
+    public function clearlead(Request $request)
+    {
+        $offer_id = $request->input('offer_id');
+
+        if ($offer = Offer::find($offer_id)) {
+            Click::where('offer_id', $offer_id)->update(['click_ip' => '10.0.2.2']);
+            flash('Clear IP Lead success!');
+            return redirect('admin/offers');
+        } else {
+            flash('No offer found!');
+            return redirect('admin/offers');
+        }
     }
 
 }
