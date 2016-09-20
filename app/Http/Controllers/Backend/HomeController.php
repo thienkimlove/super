@@ -21,6 +21,7 @@ class HomeController extends AdminController
         $content['total_users'] = DB::table('users')->count();
         $content['active_users'] = DB::table('users')->where('status', true)->count();
         $content['total_clicks'] = DB::table('clicks')->count();
+        $content['total_offers'] = DB::table('offers')->count();
 
         $today =  Carbon::now()->toDateString();
         $offers =  Offer::whereHas('clicks', function($query) use ($today) {
