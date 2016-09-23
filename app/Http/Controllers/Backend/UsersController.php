@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Backend;
 
+use App\Group;
 use App\Http\Requests\UserRequest;
 use App\User;
 use Illuminate\Http\Request;
@@ -8,6 +9,7 @@ use Illuminate\Http\Request;
 class UsersController extends AdminController
 {
     public $permissions;
+    public $groups;
 
     public function __construct()
     {
@@ -20,6 +22,7 @@ class UsersController extends AdminController
         foreach (config('permissions') as $key =>  $permission) {
             $this->permissions[$key] = $permission['label'];
         }
+        $this->groups = ['' => 'Choose group'] + Group::pluck('name', 'id')->all();
     }
 
     public function index(Request $request)
@@ -46,7 +49,7 @@ class UsersController extends AdminController
     public function create()
     {
         $permissions = $this->permissions;
-        return view('admin.user.form', compact('permissions'));
+        return view('admin.user.form', compact('permissions'))->with(['groups' => $this->groups]);
     }
 
     public function store(UserRequest $request)
@@ -59,6 +62,7 @@ class UsersController extends AdminController
                 'username' => $request->input('username'),
                 'contact' => $request->input('contact'),
                 'permission_id' => $request->input('permission_id'),
+                'group_id' => $request->input('group_id'),
                 'status' => ($request->input('status') == 'on') ? true : false
             ]);
 
@@ -77,7 +81,7 @@ class UsersController extends AdminController
     {
         $permissions = $this->permissions;
         $user = User::find($id);
-        return view('admin.user.form', compact('permissions', 'user'));
+        return view('admin.user.form', compact('permissions', 'user'))->with(['groups' => $this->groups]);
     }
 
 
@@ -90,6 +94,7 @@ class UsersController extends AdminController
             'email' => $request->input('email'),
             'username' => $request->input('username'),
             'contact' => $request->input('contact'),
+            'group_id' => $request->input('group_id'),
             'permission_id' => $request->input('permission_id'),
             'status' => ($request->input('status') == 'on') ? true : false
         ];

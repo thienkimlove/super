@@ -15,8 +15,7 @@
                         {!! Form::open(['method' => 'GET', 'route' =>  ['offers.index'] ]) !!}
                         <span class="input-group-btn">
                             <input type="text" value="{{$searchOffer}}" name="q" class="form-control"
-                                   placeholder="Search
-                             offer..">
+                                   placeholder="Search offer..">
 
                             <button class="btn btn-default" type="submit">
                                 <i class="fa fa-search"></i>
@@ -36,12 +35,14 @@
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Price Per Click</th>
-                                <th>True Link</th>
                                 <th>Geo Locations</th>
                                 <th>Allow Devices</th>
                                 <th>Link To Lead</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                @if (auth('backend')->user()->permission_id == 1)
+                                    <th>True Link</th>
+                                    <th>Action</th>
+                                @endif
                             </tr>
                             </thead>
                             <tbody>
@@ -50,22 +51,22 @@
                                     <td>{{$offer->id}}</td>
                                     <td>{{$offer->name}}</td>
                                     <td>{{$offer->click_rate}}</td>
-                                    <td>{{$offer->redirect_link}}</td>
                                     <td>{{$offer->geo_locations}}</td>
                                     <td>{{config('devices')[$offer->allow_devices]}}</td>
-                                    <td>{{url('camp?offer_id='.$offer->id.'&user_id='.auth('backend')->user()->id)
-                                    }}</td>
+                                    <td>{{url('camp?offer_id='.$offer->id.'&user_id='.auth('backend')->user()->id)}}</td>
                                     <td>{{($offer->status) ? 'Active' : "Inactive"}}</td>
+                                    @if (auth('backend')->user()->permission_id == 1)
+                                        <td>{{$offer->redirect_link}}</td>
+                                        <td>
+                                            <button id-attr="{{$offer->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;
+                                            {!! Form::open(['method' => 'DELETE', 'route' => ['offers.destroy',
+                                            $offer->id]]) !!}
+                                            <button type="submit" class="btn btn-danger btn-mini">Delete</button>
+                                            {!! Form::close() !!}
 
-                                    <td>
-                                        <button id-attr="{{$offer->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;
-                                        {!! Form::open(['method' => 'DELETE', 'route' => ['offers.destroy',
-                                        $offer->id]]) !!}
-                                        <button type="submit" class="btn btn-danger btn-mini">Delete</button>
-                                        {!! Form::close() !!}
-
-                                        <button lead-attr="{{$offer->id}}" class="btn btn-primary btn-sm lead-content" type="button">Xóa IP đã Lead</button>&nbsp;
-                                    </td>
+                                            <button lead-attr="{{$offer->id}}" class="btn btn-primary btn-sm lead-content" type="button">Xóa IP đã Lead</button>&nbsp;
+                                        </td>
+                                     @endif
                                 </tr>
                             @endforeach
                             </tbody>
@@ -75,12 +76,13 @@
                     <div class="row">
                         <div class="col-sm-6">{!!$offers->render()!!}</div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button class="btn btn-primary add-content" type="button">Add</button>
+                    @if (auth('backend')->user()->permission_id == 1)
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button class="btn btn-primary add-content" type="button">Add</button>
+                            </div>
                         </div>
-                    </div>
-
+                    @endif
 
                 </div>
                 <!-- /.panel-body -->

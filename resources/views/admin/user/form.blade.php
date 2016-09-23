@@ -38,6 +38,11 @@
             </div>
 
             <div class="form-group">
+                {!! Form::label('group_id', 'Group') !!}
+                {!! Form::select('group_id', $groups, null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="form-group">
                 {!! Form::label('status', 'Active') !!}
                 {!! Form::checkbox('status', null, null) !!}
             </div>

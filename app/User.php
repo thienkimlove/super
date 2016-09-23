@@ -16,7 +16,7 @@ class User extends Model implements AuthenticatableContract
      * @var array
      */
     protected $fillable = [
-        'email', 'permission_id', 'remember_token', 'contact', 'status', 'username'
+        'email', 'permission_id', 'remember_token', 'contact', 'status', 'username', 'group_id'
     ];
 
     /**
@@ -29,5 +29,10 @@ class User extends Model implements AuthenticatableContract
     public function missingPermission($action)
     {
         return ($this->permission_id && in_array($action, config('permissions')[$this->permission_id]['permission']));
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
     }
 }

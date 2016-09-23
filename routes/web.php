@@ -20,8 +20,10 @@ Route::get('admin/callback', 'Backend\AuthController@handleGoogleCallback');
 Route::get('admin', 'Backend\HomeController@index');
 Route::get('admin/control', 'Backend\HomeController@control');
 Route::get('admin/clearlead', 'Backend\HomeController@clearlead');
+Route::get('admin/statistic/{content}', 'Backend\HomeController@statistic');
 Route::resource('admin/users', 'Backend\UsersController');
 Route::resource('admin/offers', 'Backend\OffersController');
+Route::resource('admin/groups', 'Backend\GroupsController');
 
 #Frontend Routes
 Route::get('/', 'Frontend\MainController@index');

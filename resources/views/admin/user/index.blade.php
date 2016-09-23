@@ -35,6 +35,7 @@
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>Contact</th>
+                                <th>Group</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -46,6 +47,7 @@
                                     <td>{{$user->username}}</td>
                                     <td>{{$user->email}}</td>
                                     <td>{{$user->contact}}</td>
+                                    <td>{{ ($user->group_id) ? $user->group->name : 'None'  }}</td>
                                     <td>
                                         @if ($user->status)
                                             Active

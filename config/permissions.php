@@ -7,6 +7,7 @@ return [
             'HomeController@index',
             'HomeController@control',
             'HomeController@clearlead',
+            'HomeController@statistic',
 
             //only admin can access to edit users.
 
@@ -23,6 +24,13 @@ return [
             'OffersController@update',
             'OffersController@create',
             'OffersController@destroy',
+
+            'GroupsController@index',
+            'GroupsController@edit',
+            'GroupsController@store',
+            'GroupsController@update',
+            'GroupsController@create',
+            'GroupsController@destroy',
         ]
     ],
 
@@ -37,6 +45,8 @@ return [
         'label' => 'User',
         'permission' => [
             'HomeController@index',
+
+            'OffersController@index',
         ]
     ]
 ];

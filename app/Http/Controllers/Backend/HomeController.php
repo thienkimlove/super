@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Click;
 use App\Offer;
+use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -50,6 +51,59 @@ class HomeController extends AdminController
             flash('No offer found!');
             return redirect('admin/offers');
         }
+    }
+
+    public function statistic($content, Request $request)
+    {
+        $clicks = null;
+
+        $start = ($request->input('start')) ? $request->input('start') : '2016-01-01';
+        $end = ($request->input('end')) ? $request->input('end') : '2016-12-31';
+
+        switch ($content) {
+            case "group" :
+
+                $userIds = User::where('group_id', $request->input('content_id'))->pluck('id')->all();
+                $clicks = DB::table('clicks')->whereIn('user_id', $userIds)
+                    ->whereBetween(DB::raw("DATE_FORMAT(click_time, '%Y-%m-%d')"), [$start, $end]);
+
+                break;
+            case "user" :
+                $userId = User::where('username', $request->input('content_id'))->first()->id;
+                $clicks = DB::table('clicks')->where('user_id', $userId)
+                    ->whereBetween(DB::raw("DATE_FORMAT(click_time, '%Y-%m-%d')"), [$start, $end]);
+
+                break;
+            case "offer" :
+                $clicks = ($request->input('content_id')) ? DB::table('clicks')->where('offer_id', $request->input('content_id')) : DB::table('clicks');
+                $clicks = $clicks->whereBetween(DB::raw("DATE_FORMAT(click_time, '%Y-%m-%d')"), [$start, $end]);
+                break;
+        }
+
+        $totalClicks = $clicks->count();
+        $query = clone $clicks;
+        $records = $query->groupBy('offer_id')
+            ->select(DB::raw('count(*) as total'), 'offer_id')
+            ->get();
+
+        $totalMoney = 0;
+
+        if ($records->count() > 0) {
+           foreach ($records as $record) {
+               $offer = Offer::find($record->offer_id);
+               $totalMoney += $record->total * $offer->click_rate;
+           }
+        }
+
+        $clicks = $clicks
+            ->join('offers', 'clicks.offer_id', '=', 'offers.id')
+            ->join('users', 'clicks.user_id', '=', 'users.id')
+            ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
+            ->paginate(10);
+
+        $title = 'Thống kê theo '.strtoupper($content).' từ ngày '.$start .' đến ngày '.$end;
+
+        return view('admin.result', compact('clicks', 'totalMoney', 'totalClicks', 'title'));
     }
 
 }

@@ -58,6 +58,18 @@
                                 <a href="{{url('admin/offers')}}">Danh sách offer</a>
                             </li>
 
+                            <li>
+                                <a href="{{url('admin/groups')}}">Danh sách Group</a>
+                            </li>
+
+                            <li>
+                                <a href="{{url('admin/groups/create')}}">Thêm Group</a>
+                            </li>
+
+                            <li>
+                                <a href="{{url('admin/statistic')}}">Thống kê</a>
+                            </li>
+
                         </ul>
                     </li>
 
