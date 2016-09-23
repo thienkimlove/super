@@ -14,7 +14,56 @@ class HomeController extends AdminController
 
     public function index()
     {
-       return view('admin.index');
+        $currentUser = auth('backend')->user();
+        $content = [];
+        $clicks = DB::table('clicks')->where('user_id', $currentUser->id);
+
+        $query1 = clone $clicks;
+
+        $records = $query1->groupBy('offer_id')
+            ->select(DB::raw('count(*) as total'), 'offer_id')
+            ->get();
+
+        $totalMoney = 0;
+
+        if ($records->count() > 0) {
+            foreach ($records as $record) {
+                $offer = Offer::find($record->offer_id);
+                $totalMoney += $record->total * $offer->click_rate;
+            }
+        }
+
+        $query2 = clone $clicks;
+
+        $recordMonths = $query2->where('click_time', '>=', Carbon::now()->startOfMonth())
+            ->groupBy('offer_id')
+            ->select(DB::raw('count(*) as total'), 'offer_id')
+            ->get();
+
+        $totalMonth = 0;
+
+        if ($recordMonths->count() > 0) {
+            foreach ($recordMonths as $record) {
+                $offer = Offer::find($record->offer_id);
+                $totalMonth += $record->total * $offer->click_rate;
+            }
+        }
+
+        $content['total_money'] = $totalMoney;
+        $content['total_month'] = $totalMonth;
+
+        $today =  Carbon::now()->toDateString();
+        $offers =  Offer::whereHas('clicks', function($query) use ($today, $currentUser) {
+            $query->whereBetween('updated_at', [$today.' 00:00:00', $today.' 23:59:59'])
+                ->where('user_id', $currentUser->id);
+        })->get();
+
+        $recentOffers = Offer::whereHas('clicks', function($query) use ($currentUser) {
+            $query->orderBy('updated_at', 'desc')
+                ->where('user_id', $currentUser->id);
+        })->limit(5)->get();
+
+       return view('admin.index', compact('content', 'offers', 'recentOffers'));
     }
 
     public function control()
