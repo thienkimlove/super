@@ -31,6 +31,14 @@ return [
             'GroupsController@update',
             'GroupsController@create',
             'GroupsController@destroy',
+
+
+            'NetworksController@index',
+            'NetworksController@edit',
+            'NetworksController@store',
+            'NetworksController@update',
+            'NetworksController@create',
+            'NetworksController@destroy',
         ]
     ],
 

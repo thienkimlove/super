@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Backend;
 
 use App\Http\Requests\OfferRequest;
+use App\Network;
 use App\Offer;
 use Illuminate\Http\Request;
 
@@ -8,18 +9,23 @@ use Illuminate\Http\Request;
 class OffersController extends AdminController
 {
     public $devices;
+    public $networks;
 
     public function __construct()
     {
         parent::__construct();
 
         $this->devices = [
-            '' => 'Choose offer allow devices'
-        ];
+        '' => 'Choose offer allow devices'
+    ];
 
         foreach (config('devices') as $key =>  $device) {
             $this->devices[$key] = $device;
         }
+
+        $this->networks = [
+            '' => 'Choose network'
+        ] + Network::pluck('name', 'id')->all();
     }
 
     public function index(Request $request)
@@ -51,7 +57,8 @@ class OffersController extends AdminController
     public function create()
     {
         $devices = $this->devices;
-        return view('admin.offer.form', compact('devices'));
+        $networks = $this->networks;
+        return view('admin.offer.form', compact('devices', 'networks'));
     }
 
     public function store(OfferRequest $request)
@@ -65,6 +72,7 @@ class OffersController extends AdminController
                 'click_rate' => $request->input('click_rate'),
                 'geo_locations' => $request->input('geo_locations'),
                 'allow_devices' => $request->input('allow_devices'),
+                'network_id' => $request->input('network_id'),
                 'status' => ($request->input('status') == 'on') ? true : false
             ]);
 
@@ -82,8 +90,9 @@ class OffersController extends AdminController
     public function edit($id)
     {
         $devices = $this->devices;
+        $networks = $this->networks;
         $offer = Offer::find($id);
-        return view('admin.offer.form', compact('devices', 'offer'));
+        return view('admin.offer.form', compact('devices', 'offer', 'networks'));
     }
 
 
@@ -98,6 +107,7 @@ class OffersController extends AdminController
             'click_rate' => $request->input('click_rate'),
             'geo_locations' => $request->input('geo_locations'),
             'allow_devices' => $request->input('allow_devices'),
+            'network_id' => $request->input('network_id'),
             'status' => ($request->input('status') == 'on') ? true : false
         ];
 

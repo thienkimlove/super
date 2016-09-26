@@ -24,8 +24,10 @@ Route::get('admin/statistic/{content}', 'Backend\HomeController@statistic');
 Route::resource('admin/users', 'Backend\UsersController');
 Route::resource('admin/offers', 'Backend\OffersController');
 Route::resource('admin/groups', 'Backend\GroupsController');
+Route::resource('admin/networks', 'Backend\NetworksController');
 
 #Frontend Routes
 Route::get('/', 'Frontend\MainController@index');
 Route::get('camp', 'Frontend\MainController@camp');
+Route::get('postback', 'Frontend\MainController@postback');
 

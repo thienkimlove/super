@@ -12,11 +12,17 @@ class Offer extends Model
         'click_rate',
         'geo_locations',
         'allow_devices',
+        'network_id',
         'status'
     ];
 
     public function clicks()
     {
         return $this->hasMany(Click::class);
+    }
+
+    public function network()
+    {
+        return $this->belongsTo(Network::class);
     }
 }

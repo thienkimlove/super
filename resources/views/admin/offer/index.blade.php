@@ -41,6 +41,7 @@
                                 <th>Status</th>
                                 @if (auth('backend')->user()->permission_id == 1)
                                     <th>True Link</th>
+                                    <th>Network</th>
                                     <th>Action</th>
                                 @endif
                             </tr>
@@ -57,6 +58,7 @@
                                     <td>{{($offer->status) ? 'Active' : "Inactive"}}</td>
                                     @if (auth('backend')->user()->permission_id == 1)
                                         <td>{{$offer->redirect_link}}</td>
+                                        <td>{{($offer->network) ? $offer->network->name : 'None'}}</td>
                                         <td>
                                             <button id-attr="{{$offer->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;
                                             {!! Form::open(['method' => 'DELETE', 'route' => ['offers.destroy',

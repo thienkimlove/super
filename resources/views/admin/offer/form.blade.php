@@ -43,6 +43,11 @@
                 {!! Form::select('allow_devices', $devices, null, ['class' => 'form-control']) !!}
             </div>
 
+                <div class="form-group">
+                    {!! Form::label('network_id', 'Choose network') !!}
+                    {!! Form::select('network_id', $networks, null, ['class' => 'form-control']) !!}
+                </div>
+
             <div class="form-group">
                 {!! Form::label('status', 'Active') !!}
                 {!! Form::checkbox('status', null, null) !!}

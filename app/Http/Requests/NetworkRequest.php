@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class OfferRequest extends Request
+class NetworkRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,7 @@ class OfferRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required',
-            'click_rate' => 'required',
-            'redirect_link' => 'required',
-            'geo_locations' => 'required',
-            'allow_devices' => 'required',
-            'network_id' => 'required',
+            'name' => 'required'
         ];
     }
 }

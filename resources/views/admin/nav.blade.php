@@ -70,6 +70,14 @@
                                 <a href="{{url('admin/statistic')}}">Thống kê</a>
                             </li>
 
+                            <li>
+                                <a href="{{url('admin/networks')}}">Danh sách network</a>
+                            </li>
+
+                            <li>
+                                <a href="{{url('admin/networks/create')}}">Thêm network</a>
+                            </li>
+
                         </ul>
                     </li>
 

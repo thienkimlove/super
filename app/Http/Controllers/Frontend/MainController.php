@@ -157,4 +157,13 @@ class MainController extends Controller
         }
     }
 
+    public function postback(Request $request)
+    {
+        $data = $request->all();
+
+        file_put_contents(storage_path('logs/post_data_example.log'), json_encode($data, true), FILE_APPEND);
+
+        //http://bt.io/click?aid=65350&linkid=B159235&s1=&s2=&s3=&s4=&s5= CPAway
+    }
+
 }
