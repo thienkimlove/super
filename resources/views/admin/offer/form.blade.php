@@ -23,6 +23,11 @@
                 {!! Form::text('name', null, ['class' => 'form-control']) !!}
             </div>
 
+                <div class="form-group">
+                    {!! Form::label('net_offer_id', 'Network Offer Id') !!}
+                    {!! Form::text('net_offer_id', null, ['class' => 'form-control']) !!}
+                </div>
+
             <div class="form-group">
                 {!! Form::label('redirect_link', 'Redirect Link with "#subId" at end of Link') !!}
                 {!! Form::text('redirect_link', null, ['class' => 'form-control']) !!}

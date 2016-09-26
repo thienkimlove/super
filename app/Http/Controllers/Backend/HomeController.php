@@ -80,7 +80,30 @@ class HomeController extends AdminController
             $query->whereBetween('updated_at', [$today.' 00:00:00', $today.' 23:59:59']);
         })->get();
 
-        $recentOffers = Offer::whereHas('clicks', function($query) {
+        foreach ($offers as $offer) {
+            $offer->net_click = null;
+            $offer->net_lead = null;
+            $offer->net_cr = null;
+            $offer->site_click = $offer->clicks->count();
+
+            if ($offer->network_id == 1) {
+                //cpway.
+                $stats = unserialize(file_get_contents('http://bt
+                .io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary'));
+
+                if ($stats) {
+                    foreach ($stats as $stat) {
+                        if ($stat['id'] == $offer->net_offer_id) {
+                            $offer->net_click = intval($stat['clicks']);
+                            $offer->net_lead = intval($stat['leads']);
+                            $offer->net_cr = $stat['conversions'].'%';
+                        }
+                    }
+                }
+            }
+        }
+
+        $recentOffers = Click::whereHas('clicks', function($query) {
             $query->orderBy('updated_at', 'desc');
         })->limit(5)->get();
 

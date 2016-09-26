@@ -30,6 +30,7 @@ class OfferRequest extends Request
             'geo_locations' => 'required',
             'allow_devices' => 'required',
             'network_id' => 'required',
+            'net_offer_id' => 'required',
         ];
     }
 }

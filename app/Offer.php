@@ -13,6 +13,7 @@ class Offer extends Model
         'geo_locations',
         'allow_devices',
         'network_id',
+        'net_offer_id',
         'status'
     ];
 
@@ -24,5 +25,10 @@ class Offer extends Model
     public function network()
     {
         return $this->belongsTo(Network::class);
+    }
+
+    public function getCountBackAttribute()
+    {
+        return NetworkClick::where('net_offer_id', $this->net_offer_id)->count();
     }
 }

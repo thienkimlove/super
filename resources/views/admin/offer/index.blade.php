@@ -42,6 +42,7 @@
                                 @if (auth('backend')->user()->permission_id == 1)
                                     <th>True Link</th>
                                     <th>Network</th>
+                                    <th>Network OfferID</th>
                                     <th>Action</th>
                                 @endif
                             </tr>
@@ -59,6 +60,7 @@
                                     @if (auth('backend')->user()->permission_id == 1)
                                         <td>{{$offer->redirect_link}}</td>
                                         <td>{{($offer->network) ? $offer->network->name : 'None'}}</td>
+                                        <td>{{$offer->net_offer_id}}</td>
                                         <td>
                                             <button id-attr="{{$offer->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;
                                             {!! Form::open(['method' => 'DELETE', 'route' => ['offers.destroy',

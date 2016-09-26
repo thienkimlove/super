@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Click;
 use App\Http\Controllers\Controller;
+use App\NetworkClick;
 use App\Offer;
 use App\User;
 use Carbon\Carbon;
@@ -159,11 +160,26 @@ class MainController extends Controller
 
     public function postback(Request $request)
     {
-        $data = $request->all();
-
-        file_put_contents(storage_path('logs/post_data_example.log'), json_encode($data, true), FILE_APPEND);
 
         //http://bt.io/click?aid=65350&linkid=B159235&s1=&s2=&s3=&s4=&s5= CPAway
+        //GET /postback?network_id=1&offer_id=198477&subid=9c5e22e270773205658d098b4e19b7d5&amount=0.44800000&status=1&ip=176.47.3.203&country=SA&tid=c74c18c82231ddd250d254fa0c35549c
+
+        $network_id = $request->input('network_id');
+        $offer_id = $request->input('offer_id');
+        $sub_id = $request->input('subid');
+
+        if ($network_id && $offer_id && $sub_id) {
+
+            NetworkClick::create([
+                'network_id' => $network_id,
+                'net_offer_id' => $offer_id,
+                'sub_id' => $sub_id,
+                'amount' => $request->input('amount'),
+                'ip' => $request->input('ip')
+            ]);
+
+        }
+
     }
 
 }

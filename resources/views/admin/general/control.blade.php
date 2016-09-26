@@ -114,13 +114,21 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Clicks</th>
+                                            <th>Lead</th>
+                                            <th>CR</th>
+                                            <th>Real Clicks</th>
+                                            <th>Real CR</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     @foreach ($offers as $offer)
                                         <tr>
                                             <td>{{$offer->name}}</td>
-                                            <td>{{$offer->clicks->count()}}</td>
+                                            <td>{{$offer->site_click }}</td>
+                                            <td>{{$offer->net_lead}}</td>
+                                            <td>{{ ($offer->net_lead/$offer->site_click)*100  }} %</td>
+                                            <td>{{$offer->net_click}}</td>
+                                            <td>{{$offer->net_cr}}</td>
                                         </tr>
                                      @endforeach
                                     </tbody>
