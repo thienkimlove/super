@@ -90,6 +90,8 @@ class HomeController extends AdminController
                 //cpway.
                 $stats = json_decode(file_get_contents('http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary'));
 
+                dd($stats);
+
                 if ($stats) {
                     foreach ($stats as $stat) {
                         if ($stat['id'] == $offer->net_offer_id) {
@@ -102,7 +104,7 @@ class HomeController extends AdminController
             }
         }
 
-        $recentOffers = Click::whereHas('clicks', function($query) {
+        $recentOffers = Offer::whereHas('clicks', function($query) {
             $query->orderBy('updated_at', 'desc');
         })->limit(5)->get();
 
