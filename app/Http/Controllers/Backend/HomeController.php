@@ -88,7 +88,7 @@ class HomeController extends AdminController
 
             if ($offer->network_id == 1) {
                 //cpway.
-                $stats = unserialize(file_get_contents('http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary'));
+                $stats = json_decode(file_get_contents('http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary'));
 
                 if ($stats) {
                     foreach ($stats as $stat) {
