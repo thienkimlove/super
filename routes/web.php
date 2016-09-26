@@ -29,5 +29,6 @@ Route::resource('admin/networks', 'Backend\NetworksController');
 #Frontend Routes
 Route::get('/', 'Frontend\MainController@index');
 Route::get('camp', 'Frontend\MainController@camp');
-Route::get('postback', 'Frontend\MainController@postback');
+//Route::get('postback', 'Frontend\MainController@postback');
+Route::post('postback', 'Frontend\MainController@postback');
 
