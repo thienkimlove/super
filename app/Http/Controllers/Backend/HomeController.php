@@ -95,7 +95,7 @@ class HomeController extends AdminController
                         if ($stat['id'] == $offer->net_offer_id) {
                             $offer->net_click = intval($stat['clicks']);
                             $offer->net_lead = intval($stat['leads']);
-                            $offer->net_cr = $stat['conversions'].'%';
+                            $offer->net_cr = (float) $stat['conversions'].' %';
                         }
                     }
                 }

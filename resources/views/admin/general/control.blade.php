@@ -107,7 +107,7 @@
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-lg-4">
+                        <div class="col-lg-8">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover table-striped">
                                     <thead>
@@ -126,7 +126,7 @@
                                             <td>{{$offer->name}}</td>
                                             <td>{{$offer->site_click }}</td>
                                             <td>{{$offer->net_lead}}</td>
-                                            <td>{{ ($offer->net_lead/$offer->site_click)*100  }} %</td>
+                                            <td>{{ round( ($offer->net_lead/$offer->site_click)*100, 2)  }} %</td>
                                             <td>{{$offer->net_click}}</td>
                                             <td>{{$offer->net_cr}}</td>
                                         </tr>
