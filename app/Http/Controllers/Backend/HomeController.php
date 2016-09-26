@@ -81,26 +81,29 @@ class HomeController extends AdminController
         })->get();
 
         foreach ($offers as $offer) {
-            $offer->net_click = null;
-            $offer->net_lead = null;
+            $offer->net_click = 0;
+            $offer->net_lead = 0;
             $offer->net_cr = null;
+            $offer->site_cr = null;
             $offer->site_click = $offer->clicks->count();
 
-            if ($offer->network_id == 1) {
+            if ($offer->network_id == 1 && $offer->net_offer_id && $offer->site_click > 0) {
                 //cpway.
                 $stats = json_decode(file_get_contents('http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary'), true);
 
                 if (isset($stats['stats_summary'])) {
                     foreach ($stats['stats_summary'] as $stat) {
-                        if ($stat['id'] == $offer->net_offer_id) {
-                            $offer->net_click = intval($stat['clicks']);
-                            $offer->net_lead = intval($stat['leads']);
-                            $offer->net_cr = (float) $stat['conversions'].' %';
+                        if (intval($stat['id']) == $offer->net_offer_id) {
+                            $offer->net_click = $stat['clicks'];
+                            $offer->net_lead = $stat['leads'];
+                            $offer->site_cr = round((intval($offer->net_lead)/$offer->site_click)*100, 2) .'%';
+                            $offer->net_cr = intval($stat['conversions']).'%';
                         }
                     }
                 }
             }
         }
+
 
         $recentOffers = Offer::whereHas('clicks', function($query) {
             $query->orderBy('updated_at', 'desc');
