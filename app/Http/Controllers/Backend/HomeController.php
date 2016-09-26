@@ -88,14 +88,14 @@ class HomeController extends AdminController
 
             if ($offer->network_id == 1) {
                 //cpway.
-                $stats = json_decode(file_get_contents('http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary'));
+                $stats = json_decode(file_get_contents('http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary'), true);
 
                 if (count($stats) > 0) {
                     foreach ($stats as $stat) {
-                        if ($stat->id == $offer->net_offer_id) {
-                            $offer->net_click = intval($stat->clicks);
-                            $offer->net_lead = intval($stat->leads);
-                            $offer->net_cr = $stat->conversions.'%';
+                        if ($stat['id'] == $offer->net_offer_id) {
+                            $offer->net_click = intval($stat['clicks']);
+                            $offer->net_lead = intval($stat['leads']);
+                            $offer->net_cr = $stat['conversions'].'%';
                         }
                     }
                 }
