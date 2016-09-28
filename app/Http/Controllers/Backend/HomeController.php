@@ -76,9 +76,11 @@ class HomeController extends AdminController
         $content['total_offers'] = DB::table('offers')->count();
 
         $today =  Carbon::now()->toDateString();
-        $offers =  Offer::whereHas('clicks', function($query) use ($today) {
+        /*$offers =  Offer::whereHas('clicks', function($query) use ($today) {
             $query->whereBetween('updated_at', [$today.' 00:00:00', $today.' 23:59:59']);
-        })->get();
+        })->get();*/
+
+        $offers = Offer::latest('updated_at')->get();
 
         foreach ($offers as $offer) {
             $offer->net_click = null;
