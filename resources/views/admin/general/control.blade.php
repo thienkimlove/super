@@ -126,9 +126,9 @@
                                             <td>{{$offer->name}}</td>
                                             <td>{{$offer->site_click }}</td>
                                             <td>{{$offer->net_lead}}</td>
-                                            <td>{{ round( ($offer->net_lead/$offer->site_click)*100, 2)  }} %</td>
+                                            <td>{{ $offer->site_cr  }}</td>
                                             <td>{{$offer->net_click}}</td>
-                                            <td>{{$offer->net_cr}}</td>
+                                            <td>{{ $offer->net_cr  }}</td>
                                         </tr>
                                      @endforeach
                                     </tbody>
