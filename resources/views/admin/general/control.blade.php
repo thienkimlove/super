@@ -97,7 +97,7 @@
 
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-6">
             <!-- /.panel -->
             <div class="panel panel-default">
 
@@ -148,7 +148,7 @@
             <!-- /.panel -->
         </div>
         <!-- /.col-lg-8 -->
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-bell fa-fw"></i> Recent Lead
@@ -156,11 +156,11 @@
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="list-group">
-                        @foreach ($recentOffers as $offer)
+                        @foreach ($userRecent as $ip => $offer)
                             <a class="list-group-item" href="#">
-                                <i class="fa fa-comment fa-fw"></i> {{$offer->name}}
+                                <b>{{$offer['username']}} </b> lead offer <b>{{$offer['offer_name']}}</b> with IP <b>{{$ip}}</b>
                                 <span class="pull-right text-muted small">
-                                    <em>{{$offer->updated_at->toDayDateTimeString()}}</em>
+                                    <em>{{$offer['time']}}</em>
                                 </span>
                             </a>
                         @endforeach

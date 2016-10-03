@@ -63,7 +63,7 @@ class HomeController extends AdminController
                 ->where('user_id', $currentUser->id);
         })->limit(5)->get();
 
-       return view('admin.index', compact('content', 'offers', 'recentOffers'));
+        return view('admin.index', compact('content', 'offers', 'recentOffers'));
     }
 
     public function control()
@@ -76,11 +76,12 @@ class HomeController extends AdminController
         $content['total_offers'] = DB::table('offers')->count();
 
         $today =  Carbon::now()->toDateString();
-        /*$offers =  Offer::whereHas('clicks', function($query) use ($today) {
+        $offers =  Offer::whereHas('clicks', function($query) use ($today) {
             $query->whereBetween('updated_at', [$today.' 00:00:00', $today.' 23:59:59']);
-        })->get();*/
+        })->get();
 
-        $offers = Offer::latest('updated_at')->get();
+
+        $currentDate = Carbon::now();
 
         foreach ($offers as $offer) {
             $offer->net_click = 0;
@@ -91,7 +92,14 @@ class HomeController extends AdminController
 
             if ($offer->network_id == 1 && $offer->net_offer_id && $offer->site_click > 0) {
                 //cpway.
-                $stats = json_decode(file_get_contents('http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary'), true);
+
+                $api_url = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='
+                    .$offer->created_at->day . '&sm='.$offer->created_at->month . '&sy='.$offer->created_at->year
+                    .'&ed='.$currentDate->day .'&em='.$currentDate->month.'&ey='.$currentDate->year;
+
+
+
+                $stats = json_decode(file_get_contents($api_url), true);
 
                 if (isset($stats['stats_summary'])) {
                     foreach ($stats['stats_summary'] as $stat) {
@@ -107,12 +115,30 @@ class HomeController extends AdminController
         }
 
 
-        $recentOffers = Offer::whereHas('clicks', function($query) {
-            $query->orderBy('updated_at', 'desc');
-        })->limit(5)->get();
+        $recentOffers = Click::latest('updated_at')->get();
+
+        $userRecent = [];
+
+        $i = 0;
+
+        foreach ($recentOffers as $offer) {
+
+            if ($i < 6 && !isset($userRecent[$offer->click_ip])) {
+                $i ++;
+                $userRecent[$offer->click_ip] = [
+                    'username' => $offer->user->username,
+                    'offer_name' => $offer->offer->name,
+                    'time' => $offer->click_time
+                ];
+            } else {
+                if (isset($userRecent[$offer->click_ip]) && $userRecent[$offer->click_ip]['time'] < $offer->click_time) {
+                    $userRecent[$offer->click_ip]['time'] = $offer->click_time;
+                }
+            }
+        }
 
 
-        return view('admin.general.control', compact('content', 'offers', 'recentOffers'));
+        return view('admin.general.control', compact('content', 'offers', 'userRecent'));
     }
 
     public function clearlead(Request $request)
@@ -165,10 +191,10 @@ class HomeController extends AdminController
         $totalMoney = 0;
 
         if ($records->count() > 0) {
-           foreach ($records as $record) {
-               $offer = Offer::find($record->offer_id);
-               $totalMoney += $record->total * $offer->click_rate;
-           }
+            foreach ($records as $record) {
+                $offer = Offer::find($record->offer_id);
+                $totalMoney += $record->total * $offer->click_rate;
+            }
         }
 
         $clicks = $clicks
