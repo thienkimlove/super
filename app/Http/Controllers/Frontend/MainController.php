@@ -172,7 +172,7 @@ class MainController extends Controller
 
             NetworkClick::create([
                 'network_id' => $network_id,
-                'net_offer_id' => $offer_id,
+                'network_offer_id' => $offer_id,
                 'sub_id' => $sub_id,
                 'amount' => $request->input('amount'),
                 'ip' => $request->input('ip')
