@@ -8,6 +8,7 @@ return [
             'HomeController@control',
             'HomeController@clearlead',
             'HomeController@statistic',
+            'HomeController@thongke',
 
             //only admin can access to edit users.
 

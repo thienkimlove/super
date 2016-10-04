@@ -39,6 +39,10 @@
                             </li>
 
                             <li>
+                                <a href="{{url('admin/thongke')}}">Thống kê</a>
+                            </li>
+
+                            <li>
                                 <a href="{{url('admin/users')}}">Danh sách thành viên</a>
                             </li>
 
@@ -64,10 +68,6 @@
 
                             <li>
                                 <a href="{{url('admin/groups/create')}}">Thêm Group</a>
-                            </li>
-
-                            <li>
-                                <a href="{{url('admin/statistic')}}">Thống kê</a>
                             </li>
 
                             <li>

@@ -19,6 +19,7 @@ Route::get('admin/callback', 'Backend\AuthController@handleGoogleCallback');
 
 Route::get('admin', 'Backend\HomeController@index');
 Route::get('admin/control', 'Backend\HomeController@control');
+Route::get('admin/thongke', 'Backend\HomeController@thongke');
 Route::get('admin/clearlead', 'Backend\HomeController@clearlead');
 Route::get('admin/statistic/{content}', 'Backend\HomeController@statistic');
 Route::resource('admin/users', 'Backend\UsersController');

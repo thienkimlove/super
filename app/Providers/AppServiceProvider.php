@@ -16,11 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        view()->composer('admin', function ($view) {
-            $view->with('globalGroups', ['' => 'Choose Group'] + Group::pluck('name', 'id')->all());
-            $view->with('globalOffers', ['' => 'All Offer'] + Offer::pluck('name', 'id')->all());
-            $view->with('globalUsers', User::pluck('username')->all());
-        });
+
     }
 
     /**

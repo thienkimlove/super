@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Click;
+use App\Group;
 use App\Offer;
 use App\User;
 use Carbon\Carbon;
@@ -155,6 +156,15 @@ class HomeController extends AdminController
         }
     }
 
+    public function thongke()
+    {
+
+        $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
+        $globalOffers = ['' => 'All Offer'] + Offer::pluck('name', 'id')->all();
+        $globalUsers = User::pluck('username')->all();
+        return view('admin.result', compact('globalGroups', 'globalOffers', 'globalUsers'));
+    }
+
     public function statistic($content, Request $request)
     {
         $clicks = null;
@@ -205,7 +215,11 @@ class HomeController extends AdminController
 
         $title = 'Thống kê theo '.strtoupper($content).' từ ngày '.$start .' đến ngày '.$end;
 
-        return view('admin.result', compact('clicks', 'totalMoney', 'totalClicks', 'title'));
+        $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
+        $globalOffers = ['' => 'All Offer'] + Offer::pluck('name', 'id')->all();
+        $globalUsers = User::pluck('username')->all();
+
+        return view('admin.result', compact('clicks', 'totalMoney', 'totalClicks', 'title', 'globalGroups', 'globalOffers', 'globalUsers'));
     }
 
 }
