@@ -13,9 +13,8 @@ use Illuminate\Http\Request;
 class HomeController extends AdminController
 {
 
-    protected function getApiData($start, $end, $offer)
+    protected function getApiData($offer, $apiData)
     {
-        $api_url = null;
 
         $data = [
             'offer_name' => $offer->name,
@@ -26,29 +25,20 @@ class HomeController extends AdminController
             'site_click' => $offer->clicks->count(),
         ];
 
-        if ($offer->network_id == 1) {
-
-            $api_url = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='
-                .$start->day . '&sm='.$start->month . '&sy='.$start->year
-                .'&ed='.$end->day .'&em='.$end->month.'&ey='.$end->year;
-
-            $stats = json_decode(file_get_contents($api_url), true);
-
-            if (isset($stats['stats_summary'])) {
-                foreach ($stats['stats_summary'] as $stat) {
-                    if (intval($stat['id']) == $offer->net_offer_id) {
-                        $data['net_click'] = $stat['clicks'];
-                        $data['net_lead'] = $stat['leads'];
-                        $data['site_cr'] = ($data['site_click'] > 0) ? round((intval($data['net_lead'])/$data['site_click'])*100, 2) .'%' : 'Not Available';
-                        $data['net_cr'] = intval($stat['conversions']).'%';
-                    }
+        if (isset($apiData[$offer->network_id]) &&  $apiData[$offer->network_id]) {
+            foreach ($apiData[$offer->network_id] as $stat) {
+                if (intval($stat['id']) == $offer->net_offer_id) {
+                    $data['net_click'] = $stat['clicks'];
+                    $data['net_lead'] = $stat['leads'];
+                    $data['site_cr'] = ($data['site_click'] > 0) ? round((intval($data['net_lead'])/$data['site_click'])*100, 2) .'%' : 'Not Available';
+                    $data['net_cr'] = intval($stat['conversions']).'%';
                 }
             }
         }
         return $data;
     }
 
-    protected function getOffers($time, $currentUserId = null)
+    protected function getOffers($time, $apiData, $currentUserId = null)
     {
 
         $start = null;
@@ -79,7 +69,7 @@ class HomeController extends AdminController
         $data = [];
 
         foreach ($offers as $offer) {
-          $data[$offer->id] = $this->getApiData($start, $end, $offer);
+            $data[$offer->id] = $this->getApiData($offer, $apiData);
         }
         return $data;
 
@@ -125,10 +115,12 @@ class HomeController extends AdminController
         $content['total_money'] = $totalMoney;
         $content['total_month'] = $totalMonth;
 
-        $todayOffers =  $this->getOffers('today', $currentUser->id);
+        $apiData = [];
 
-        $yesterdayOffers =  $this->getOffers('yesterday', $currentUser->id);
-        $weekOffers =  $this->getOffers('week', $currentUser->id);
+        $todayOffers =  $this->getOffers('today', $apiData, $currentUser->id);
+
+        $yesterdayOffers =  $this->getOffers('yesterday', $apiData, $currentUser->id);
+        $weekOffers =  $this->getOffers('week', $apiData, $currentUser->id);
 
         $recentOffers = Offer::whereHas('clicks', function($query) use ($currentUser) {
             $query->orderBy('updated_at', 'desc')
@@ -147,9 +139,20 @@ class HomeController extends AdminController
         $content['total_clicks'] = DB::table('clicks')->count();
         $content['total_offers'] = DB::table('offers')->count();
 
-        $todayOffers =  $this->getOffers('today');
-        $yesterdayOffers =  $this->getOffers('yesterday');
-        $weekOffers =  $this->getOffers('week');
+        $apiData = [];
+
+        $now = Carbon::now();
+
+        $api_url = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=01&sm=01&sy=2016&ed='.
+            $now->day .'&em='.$now->month.'&ey='.$now->year;
+
+        $stats = json_decode(file_get_contents($api_url), true);
+        $apiData[1] = isset($stats['stats_summary']) ? $stats['stats_summary'] : [];
+
+
+        $todayOffers =  $this->getOffers('today', $apiData);
+        $yesterdayOffers =  $this->getOffers('yesterday', $apiData);
+        $weekOffers =  $this->getOffers('week', $apiData);
 
 
         $recentOffers = Click::latest('updated_at')->get();
