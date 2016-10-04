@@ -95,22 +95,77 @@
         </div>
     </div>
 
+    @if ($todayOffers)
+       <div class="row">
+           <div class="col-lg-12">
+               <!-- /.panel -->
+               <div class="panel panel-default">
 
-    <div class="row">
-        <div class="col-lg-6">
-            <!-- /.panel -->
-            <div class="panel panel-default">
+                   <div class="panel-heading">
+                       <i class="fa fa-bar-chart-o fa-fw"></i> Danh sách offer chạy ngày hôm nay
+                   </div>
+                   <!-- /.panel-heading -->
+                   <div class="panel-body">
+                       <div class="row">
+                           <div class="col-lg-12">
+                               <div class="table-responsive">
+                                   <table class="table table-bordered table-hover table-striped">
+                                       <thead>
+                                       <tr>
+                                           <th>Name</th>
+                                           <th>Clicks</th>
+                                           <th>Lead</th>
+                                           <th>CR</th>
+                                           <th>Real Clicks</th>
+                                           <th>Real CR</th>
+                                       </tr>
+                                       </thead>
+                                       <tbody>
+                                       @foreach ($todayOffers as $offer)
+                                           <tr>
+                                               <td>{{$offer['offer_name']}}</td>
+                                               <td>{{$offer['site_click'] }}</td>
+                                               <td>{{$offer['net_lead']}}</td>
+                                               <td>{{ $offer['site_cr'] }}</td>
+                                               <td>{{$offer['net_click']}}</td>
+                                               <td>{{ $offer['net_cr'] }}</td>
+                                           </tr>
+                                       @endforeach
+                                       </tbody>
+                                   </table>
+                               </div>
+                               <!-- /.table-responsive -->
+                           </div>
+                           <!-- /.col-lg-4 (nested) -->
 
-                <div class="panel-heading">
-                    <i class="fa fa-bar-chart-o fa-fw"></i> Danh sách offer chạy ngày hôm nay
-                </div>
-                <!-- /.panel-heading -->
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover table-striped">
-                                    <thead>
+                           <!-- /.col-lg-8 (nested) -->
+                       </div>
+                       <!-- /.row -->
+                   </div>
+                   <!-- /.panel-body -->
+               </div>            <!-- /.panel -->
+
+               <!-- /.panel -->
+           </div>
+       </div>
+    @endif
+
+    @if ($yesterdayOffers)
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- /.panel -->
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Danh sách offer chạy ngày hôm qua
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <thead>
                                         <tr>
                                             <th>Name</th>
                                             <th>Clicks</th>
@@ -119,36 +174,96 @@
                                             <th>Real Clicks</th>
                                             <th>Real CR</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($offers as $offer)
-                                        <tr>
-                                            <td>{{$offer->name}}</td>
-                                            <td>{{$offer->site_click }}</td>
-                                            <td>{{$offer->net_lead}}</td>
-                                            <td>{{ $offer->site_cr  }}</td>
-                                            <td>{{$offer->net_click}}</td>
-                                            <td>{{ $offer->net_cr  }}</td>
-                                        </tr>
-                                     @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($yesterdayOffers as $offer)
+                                            <tr>
+                                                <td>{{$offer['offer_name']}}</td>
+                                                <td>{{$offer['site_click'] }}</td>
+                                                <td>{{$offer['net_lead']}}</td>
+                                                <td>{{ $offer['site_cr'] }}</td>
+                                                <td>{{$offer['net_click']}}</td>
+                                                <td>{{ $offer['net_cr'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.table-responsive -->
                             </div>
-                            <!-- /.table-responsive -->
+                            <!-- /.col-lg-4 (nested) -->
+
+                            <!-- /.col-lg-8 (nested) -->
                         </div>
-                        <!-- /.col-lg-4 (nested) -->
-
-                        <!-- /.col-lg-8 (nested) -->
+                        <!-- /.row -->
                     </div>
-                    <!-- /.row -->
-                </div>
-                <!-- /.panel-body -->
-            </div>            <!-- /.panel -->
+                    <!-- /.panel-body -->
+                </div>            <!-- /.panel -->
 
-            <!-- /.panel -->
+                <!-- /.panel -->
+            </div>
         </div>
+    @endif
+
+    @if ($weekOffers)
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- /.panel -->
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Danh sách offer chạy tuần này
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Clicks</th>
+                                            <th>Lead</th>
+                                            <th>CR</th>
+                                            <th>Real Clicks</th>
+                                            <th>Real CR</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($weekOffers as $offer)
+                                            <tr>
+                                                <td>{{$offer['offer_name']}}</td>
+                                                <td>{{$offer['site_click'] }}</td>
+                                                <td>{{$offer['net_lead']}}</td>
+                                                <td>{{ $offer['site_cr'] }}</td>
+                                                <td>{{$offer['net_click']}}</td>
+                                                <td>{{ $offer['net_cr'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.table-responsive -->
+                            </div>
+                            <!-- /.col-lg-4 (nested) -->
+
+                            <!-- /.col-lg-8 (nested) -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>            <!-- /.panel -->
+
+                <!-- /.panel -->
+            </div>
+        </div>
+    @endif
+
+
+    <div class="row">
         <!-- /.col-lg-8 -->
-        <div class="col-lg-6">
+        <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-bell fa-fw"></i> Recent Lead

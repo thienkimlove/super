@@ -59,9 +59,9 @@
         </div>
     </div>
 
-
+    @if ($todayOffers)
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <!-- /.panel -->
             <div class="panel panel-default">
 
@@ -71,7 +71,7 @@
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-lg-4">
+                        <div class="col-lg-12">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover table-striped">
                                     <thead>
@@ -81,10 +81,10 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($offers as $offer)
+                                    @foreach ($todayOffers as $offer)
                                         <tr>
-                                            <td>{{$offer->name}}</td>
-                                            <td>{{$offer->clicks->count()}}</td>
+                                            <td>{{$offer['offer_name']}}</td>
+                                            <td>{{$offer['site_click']}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -103,8 +103,105 @@
 
             <!-- /.panel -->
         </div>
-        <!-- /.col-lg-8 -->
-        <div class="col-lg-4">
+    </div>
+    @endif
+
+    @if ($yesterdayOffers)
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- /.panel -->
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Danh sách offer chạy ngày hôm qua
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Clicks</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($yesterdayOffers as $offer)
+                                            <tr>
+                                                <td>{{$offer['offer_name']}}</td>
+                                                <td>{{$offer['site_click']}}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.table-responsive -->
+                            </div>
+                            <!-- /.col-lg-4 (nested) -->
+
+                            <!-- /.col-lg-8 (nested) -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>            <!-- /.panel -->
+
+                <!-- /.panel -->
+            </div>
+        </div>
+    @endif
+
+    @if ($weekOffers)
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- /.panel -->
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Danh sách offer chạy tuần này
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Clicks</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($weekOffers as $offer)
+                                            <tr>
+                                                <td>{{$offer['offer_name']}}</td>
+                                                <td>{{$offer['site_click']}}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.table-responsive -->
+                            </div>
+                            <!-- /.col-lg-4 (nested) -->
+
+                            <!-- /.col-lg-8 (nested) -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>            <!-- /.panel -->
+
+                <!-- /.panel -->
+            </div>
+        </div>
+    @endif
+
+    <div class="row">
+        <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <i class="fa fa-bell fa-fw"></i> Recent Lead
@@ -128,6 +225,5 @@
             </div>
             <!-- /.panel -->
         </div>
-        <!-- /.col-lg-4 -->
     </div>
 @endsection

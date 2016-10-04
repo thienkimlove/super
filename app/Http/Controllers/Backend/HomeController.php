@@ -13,6 +13,78 @@ use Illuminate\Http\Request;
 class HomeController extends AdminController
 {
 
+    protected function getApiData($start, $end, $offer)
+    {
+        $api_url = null;
+
+        $data = [
+            'offer_name' => $offer->name,
+            'net_click' => 0,
+            'net_lead' => 0,
+            'net_cr' => null,
+            'site_cr' => null,
+            'site_click' => $offer->clicks->count(),
+        ];
+
+        if ($offer->network_id == 1) {
+
+            $api_url = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='
+                .$start->day . '&sm='.$start->month . '&sy='.$start->year
+                .'&ed='.$end->day .'&em='.$end->month.'&ey='.$end->year;
+
+            $stats = json_decode(file_get_contents($api_url), true);
+
+            if (isset($stats['stats_summary'])) {
+                foreach ($stats['stats_summary'] as $stat) {
+                    if (intval($stat['id']) == $offer->net_offer_id) {
+                        $data['net_click'] = $stat['clicks'];
+                        $data['net_lead'] = $stat['leads'];
+                        $data['site_cr'] = ($data['site_click'] > 0) ? round((intval($data['net_lead'])/$data['site_click'])*100, 2) .'%' : 'Not Available';
+                        $data['net_cr'] = intval($stat['conversions']).'%';
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
+    protected function getOffers($time, $currentUserId = null)
+    {
+
+        $start = null;
+        $end = null;
+        $apiUrl = null;
+
+        if ($time == 'today') {
+            $start = Carbon::now()->startOfDay();
+            $end = Carbon::now()->endOfDay();
+        } else if ($time == 'yesterday') {
+            $start = Carbon::now()->yesterday()->startOfDay();
+            $end = Carbon::now()->yesterday()->endOfDay();
+        } else {
+            $start = Carbon::now()->startOfWeek();
+            $end = Carbon::now()->endOfWeek();
+        }
+
+        $offers = Offer::whereHas('clicks', function($query) use ($currentUserId, $start, $end) {
+            if ($currentUserId) {
+                $query->whereBetween('updated_at', [$start, $end])
+                    ->where('user_id', $currentUserId);
+            } else {
+                $query->whereBetween('updated_at', [$start, $end]);
+            }
+
+        })->get();
+
+        $data = [];
+
+        foreach ($offers as $offer) {
+          $data[$offer->id] = $this->getApiData($start, $end, $offer);
+        }
+        return $data;
+
+    }
+
     public function index()
     {
         $currentUser = auth('backend')->user();
@@ -53,18 +125,17 @@ class HomeController extends AdminController
         $content['total_money'] = $totalMoney;
         $content['total_month'] = $totalMonth;
 
-        $today =  Carbon::now()->toDateString();
-        $offers =  Offer::whereHas('clicks', function($query) use ($today, $currentUser) {
-            $query->whereBetween('updated_at', [$today.' 00:00:00', $today.' 23:59:59'])
-                ->where('user_id', $currentUser->id);
-        })->get();
+        $todayOffers =  $this->getOffers('today', $currentUser->id);
+
+        $yesterdayOffers =  $this->getOffers('yesterday', $currentUser->id);
+        $weekOffers =  $this->getOffers('week', $currentUser->id);
 
         $recentOffers = Offer::whereHas('clicks', function($query) use ($currentUser) {
             $query->orderBy('updated_at', 'desc')
                 ->where('user_id', $currentUser->id);
         })->limit(5)->get();
 
-        return view('admin.index', compact('content', 'offers', 'recentOffers'));
+        return view('admin.index', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'recentOffers'));
     }
 
     public function control()
@@ -76,44 +147,9 @@ class HomeController extends AdminController
         $content['total_clicks'] = DB::table('clicks')->count();
         $content['total_offers'] = DB::table('offers')->count();
 
-        $today =  Carbon::now()->toDateString();
-        $offers =  Offer::whereHas('clicks', function($query) use ($today) {
-            $query->whereBetween('updated_at', [$today.' 00:00:00', $today.' 23:59:59']);
-        })->get();
-
-
-        $currentDate = Carbon::now();
-
-        foreach ($offers as $offer) {
-            $offer->net_click = 0;
-            $offer->net_lead = 0;
-            $offer->net_cr = null;
-            $offer->site_cr = null;
-            $offer->site_click = $offer->clicks->count();
-
-            if ($offer->network_id == 1 && $offer->net_offer_id && $offer->site_click > 0) {
-                //cpway.
-
-                $api_url = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='
-                    .$offer->created_at->day . '&sm='.$offer->created_at->month . '&sy='.$offer->created_at->year
-                    .'&ed='.$currentDate->day .'&em='.$currentDate->month.'&ey='.$currentDate->year;
-
-
-
-                $stats = json_decode(file_get_contents($api_url), true);
-
-                if (isset($stats['stats_summary'])) {
-                    foreach ($stats['stats_summary'] as $stat) {
-                        if (intval($stat['id']) == $offer->net_offer_id) {
-                            $offer->net_click = $stat['clicks'];
-                            $offer->net_lead = $stat['leads'];
-                            $offer->site_cr = round((intval($offer->net_lead)/$offer->site_click)*100, 2) .'%';
-                            $offer->net_cr = intval($stat['conversions']).'%';
-                        }
-                    }
-                }
-            }
-        }
+        $todayOffers =  $this->getOffers('today');
+        $yesterdayOffers =  $this->getOffers('yesterday');
+        $weekOffers =  $this->getOffers('week');
 
 
         $recentOffers = Click::latest('updated_at')->get();
@@ -139,7 +175,7 @@ class HomeController extends AdminController
         }
 
 
-        return view('admin.general.control', compact('content', 'offers', 'userRecent'));
+        return view('admin.general.control', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent'));
     }
 
     public function clearlead(Request $request)
