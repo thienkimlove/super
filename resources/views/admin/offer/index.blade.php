@@ -34,6 +34,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
+                                <th>Image</th>
                                 <th>Price Per Click</th>
                                 <th>Geo Locations</th>
                                 <th>Allow Devices</th>
@@ -52,6 +53,11 @@
                                 <tr>
                                     <td>{{$offer->id}}</td>
                                     <td>{{$offer->name}}</td>
+                                    <td>
+                                        @if ($offer->image)
+                                            <img src="{{url('img/cache/small', $offer->image)}}" />
+                                        @endif
+                                    </td>
                                     <td>{{$offer->click_rate}}</td>
                                     <td>{{$offer->geo_locations}}</td>
                                     <td>{{config('devices')[$offer->allow_devices]}}</td>

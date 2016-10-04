@@ -14,6 +14,7 @@ class Offer extends Model
         'allow_devices',
         'network_id',
         'net_offer_id',
+        'image',
         'status'
     ];
 

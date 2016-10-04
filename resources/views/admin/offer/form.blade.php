@@ -48,10 +48,19 @@
                 {!! Form::select('allow_devices', $devices, null, ['class' => 'form-control']) !!}
             </div>
 
-                <div class="form-group">
-                    {!! Form::label('network_id', 'Choose network') !!}
-                    {!! Form::select('network_id', $networks, null, ['class' => 'form-control']) !!}
-                </div>
+            <div class="form-group">
+                {!! Form::label('network_id', 'Choose network') !!}
+                {!! Form::select('network_id', $networks, null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="form-group">
+                {!! Form::label('image', 'Image') !!}
+                @if ($offer->image)
+                    <img src="{{url('img/cache/small/' . $offer->image)}}" />
+                    <hr>
+                @endif
+                {!! Form::file('image', null, ['class' => 'form-control']) !!}
+            </div>
 
             <div class="form-group">
                 {!! Form::label('status', 'Active') !!}

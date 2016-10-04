@@ -74,7 +74,8 @@ class OffersController extends AdminController
                 'allow_devices' => $request->input('allow_devices'),
                 'network_id' => $request->input('network_id'),
                 'net_offer_id' => $request->input('net_offer_id'),
-                'status' => ($request->input('status') == 'on') ? true : false
+                'status' => ($request->input('status') == 'on') ? true : false,
+                'image' => ($request->file('image') && $request->file('image')->isValid()) ? $this->saveImage($request->file('image')) : ''
             ]);
 
         } catch (\Exception $e) {
@@ -112,6 +113,12 @@ class OffersController extends AdminController
             'net_offer_id' => $request->input('net_offer_id'),
             'status' => ($request->input('status') == 'on') ? true : false
         ];
+
+        if ($request->file('image') && $request->file('image')->isValid()) {
+            $data['image'] = $this->saveImage($request->file('image'));
+        } else {
+            unset($data['image']);
+        }
 
         try {
             $offer->update($data);
