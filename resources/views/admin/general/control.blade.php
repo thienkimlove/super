@@ -11,18 +11,11 @@
                             <i class="fa fa-comments fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">{{$content['total_users']}}</div>
-                            <div>Total Users</div>
+                            <div class="huge">{{$content['today']}}</div>
+                            <div>Money Today</div>
                         </div>
                     </div>
                 </div>
-                <a href="{{url('admin/users/index')}}">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
-                </a>
             </div>
         </div>
         <div class="col-lg-3 col-md-6">
@@ -33,18 +26,11 @@
                             <i class="fa fa-tasks fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">{{$content['active_users']}}</div>
-                            <div>Total Active Users!</div>
+                            <div class="huge">{{$content['month']}}</div>
+                            <div>Money This Month</div>
                         </div>
                     </div>
                 </div>
-                <a href="#">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
-                </a>
             </div>
         </div>
         <div class="col-lg-3 col-md-6">
@@ -55,44 +41,14 @@
                             <i class="fa fa-shopping-cart fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">{{$content['total_clicks']}}</div>
-                            <div>Total Clicks!</div>
+                            <div class="huge">{{$content['total']}}</div>
+                            <div>Total</div>
                         </div>
                     </div>
                 </div>
-                <a href="#">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
-                </a>
             </div>
         </div>
 
-
-        <div class="col-lg-3 col-md-6">
-            <div class="panel panel-red">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <i class="fa fa-support fa-5x"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <div class="huge">{{$content['total_offers']}}</div>
-                            <div>Total Offers!</div>
-                        </div>
-                    </div>
-                </div>
-                <a href="#">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
-                </a>
-            </div>
-        </div>
     </div>
 
     @if ($todayOffers)
@@ -271,11 +227,11 @@
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="list-group">
-                        @foreach ($userRecent as $ip => $offer)
+                        @foreach ($userRecent as $recent)
                             <a class="list-group-item" href="#">
-                                <b>{{$offer['username']}} </b> lead offer <b>{{$offer['offer_name']}}</b> with IP <b>{{$ip}}</b>
+                                <b>{{$recent->username}} </b> lead offer <b>{{$recent->name}}</b> with IP <b>{{$recent->ip}}</b>
                                 <span class="pull-right text-muted small">
-                                    <em>{{$offer['time']}}</em>
+                                    <em>{{$recent->created_at}}</em>
                                 </span>
                             </a>
                         @endforeach

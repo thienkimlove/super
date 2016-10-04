@@ -75,69 +75,85 @@ class HomeController extends AdminController
 
     }
 
+    protected function getMoney($time = null, $currentUserId = null)
+    {
+        $start = null;
+        $end = null;
+        $money = 0;
+
+        if ($time == 'today') {
+            $start = Carbon::now()->startOfDay();
+            $end = Carbon::now()->endOfDay();
+        } else if ($time == 'month') {
+            $start = Carbon::now()->startOfWeek();
+            $end = Carbon::now()->endOfWeek();
+        }
+
+        $query = DB::table('network_clicks')
+            ->select(DB::raw("SUM(offers.click_rate) as total"))
+            ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+            ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+            ->leftJoin('users', 'clicks.user_id', '=', 'users.id');
+
+
+
+        if ($start && $end) {
+            $query = $query->whereBetween('network_clicks.created_at', [$start, $end]);
+        }
+
+        if ($currentUserId) {
+            $query = $query->where('users.id', $currentUserId);
+        }
+
+        $query = $query->get();
+
+
+        if ($query->count() > 0) {
+            $money = $query->first()->total;
+        }
+
+        return $money;
+    }
+
+
     public function index()
     {
         $currentUser = auth('backend')->user();
-        $content = [];
-        $clicks = DB::table('clicks')->where('user_id', $currentUser->id);
+        $currentUserId = ($currentUser->id == 1) ? 12 : $currentUser->id;
 
-        $query1 = clone $clicks;
-
-        $records = $query1->groupBy('offer_id')
-            ->select(DB::raw('count(*) as total'), 'offer_id')
-            ->get();
-
-        $totalMoney = 0;
-
-        if ($records->count() > 0) {
-            foreach ($records as $record) {
-                $offer = Offer::find($record->offer_id);
-                $totalMoney += $record->total * $offer->click_rate;
-            }
-        }
-
-        $query2 = clone $clicks;
-
-        $recordMonths = $query2->where('click_time', '>=', Carbon::now()->startOfMonth())
-            ->groupBy('offer_id')
-            ->select(DB::raw('count(*) as total'), 'offer_id')
-            ->get();
-
-        $totalMonth = 0;
-
-        if ($recordMonths->count() > 0) {
-            foreach ($recordMonths as $record) {
-                $offer = Offer::find($record->offer_id);
-                $totalMonth += $record->total * $offer->click_rate;
-            }
-        }
-
-        $content['total_money'] = $totalMoney;
-        $content['total_month'] = $totalMonth;
+        $content = [
+            'today' => $this->getMoney('today', $currentUserId),
+            'month' => $this->getMoney('month', $currentUserId),
+            'total' => $this->getMoney(null, $currentUserId),
+        ];
 
         $apiData = [];
 
-        $todayOffers =  $this->getOffers('today', $apiData, $currentUser->id);
+        $todayOffers =  $this->getOffers('today', $apiData, $currentUserId);
+        $yesterdayOffers =  $this->getOffers('yesterday', $apiData, $currentUserId);
+        $weekOffers =  $this->getOffers('week', $apiData, $currentUserId);
 
-        $yesterdayOffers =  $this->getOffers('yesterday', $apiData, $currentUser->id);
-        $weekOffers =  $this->getOffers('week', $apiData, $currentUser->id);
+        $userRecent = DB::table('network_clicks')
+            ->select('offers.name', 'network_clicks.ip', 'network_clicks.created_at', 'users.username')
+            ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+            ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+            ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+            ->where('users.id', $currentUserId)
+            ->orderBy('network_clicks.created_at', 'desc')
+            ->limit(6)
+            ->get();
 
-        $recentOffers = Offer::whereHas('clicks', function($query) use ($currentUser) {
-            $query->orderBy('updated_at', 'desc')
-                ->where('user_id', $currentUser->id);
-        })->limit(5)->get();
-
-        return view('admin.index', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'recentOffers'));
+        return view('admin.index', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent'));
     }
 
     public function control()
     {
-        $content = [];
+        $content = [
+            'today' => $this->getMoney('today'),
+            'month' => $this->getMoney('month'),
+            'total' => $this->getMoney(),
+        ];
 
-        $content['total_users'] = DB::table('users')->count();
-        $content['active_users'] = DB::table('users')->where('status', true)->count();
-        $content['total_clicks'] = DB::table('clicks')->count();
-        $content['total_offers'] = DB::table('offers')->count();
 
         $apiData = [];
 
@@ -155,28 +171,14 @@ class HomeController extends AdminController
         $weekOffers =  $this->getOffers('week', $apiData);
 
 
-        $recentOffers = Click::latest('updated_at')->get();
-
-        $userRecent = [];
-
-        $i = 0;
-
-        foreach ($recentOffers as $offer) {
-
-            if ($i < 6 && !isset($userRecent[$offer->click_ip])) {
-                $i ++;
-                $userRecent[$offer->click_ip] = [
-                    'username' => $offer->user->username,
-                    'offer_name' => $offer->offer->name,
-                    'time' => $offer->click_time
-                ];
-            } else {
-                if (isset($userRecent[$offer->click_ip]) && $userRecent[$offer->click_ip]['time'] < $offer->click_time) {
-                    $userRecent[$offer->click_ip]['time'] = $offer->click_time;
-                }
-            }
-        }
-
+        $userRecent = DB::table('network_clicks')
+            ->select('offers.name', 'network_clicks.ip', 'network_clicks.created_at', 'users.username')
+            ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+            ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+            ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+            ->orderBy('network_clicks.created_at', 'desc')
+            ->limit(6)
+            ->get();
 
         return view('admin.general.control', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent'));
     }
@@ -211,46 +213,83 @@ class HomeController extends AdminController
         $start = ($request->input('start')) ? $request->input('start') : '2016-01-01';
         $end = ($request->input('end')) ? $request->input('end') : '2016-12-31';
 
+        $countTotal = null;
+
         switch ($content) {
             case "group" :
-
                 $userIds = User::where('group_id', $request->input('content_id'))->pluck('id')->all();
-                $clicks = DB::table('clicks')->whereIn('user_id', $userIds)
-                    ->whereBetween(DB::raw("DATE_FORMAT(click_time, '%Y-%m-%d')"), [$start, $end]);
+
+                $clicks = DB::table('network_clicks')
+                    ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
+
+                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->whereIn('users.id', $userIds)
+                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->orderBy('network_clicks.created_at', 'desc')
+                    ->paginate(10);
+
+                $countTotal = DB::table('network_clicks')
+                    ->select(DB::raw("SUM(offers.click_rate) as totalMoney, COUNT(network_clicks.id) as totalClicks"))
+                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->whereIn('users.id', $userIds)
+                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->get();
+
 
                 break;
             case "user" :
                 $userId = User::where('username', $request->input('content_id'))->first()->id;
-                $clicks = DB::table('clicks')->where('user_id', $userId)
-                    ->whereBetween(DB::raw("DATE_FORMAT(click_time, '%Y-%m-%d')"), [$start, $end]);
+
+                $clicks = DB::table('network_clicks')
+                    ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
+
+                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->where('users.id', $userId)
+                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->orderBy('network_clicks.created_at', 'desc')
+                    ->paginate(10);
+
+                $countTotal = DB::table('network_clicks')
+                    ->select(DB::raw("SUM(offers.click_rate) as totalMoney, COUNT(network_clicks.id) as totalClicks"))
+                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->where('users.id', $userId)
+                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->get();
 
                 break;
             case "offer" :
-                $clicks = ($request->input('content_id')) ? DB::table('clicks')->where('offer_id', $request->input('content_id')) : DB::table('clicks');
-                $clicks = $clicks->whereBetween(DB::raw("DATE_FORMAT(click_time, '%Y-%m-%d')"), [$start, $end]);
+                $clicks = DB::table('network_clicks')
+                    ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
+                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->where('offers.id', $request->input('content_id'))
+                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->orderBy('network_clicks.created_at', 'desc')
+                    ->paginate(10);
+
+                $countTotal = DB::table('network_clicks')
+                    ->select(DB::raw("SUM(offers.click_rate) as totalMoney, COUNT(network_clicks.id) as totalClicks"))
+                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->where('offers.id', $request->input('content_id'))
+                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->get();
+
                 break;
         }
 
-        $totalClicks = $clicks->count();
-        $query = clone $clicks;
-        $records = $query->groupBy('offer_id')
-            ->select(DB::raw('count(*) as total'), 'offer_id')
-            ->get();
-
-        $totalMoney = 0;
-
-        if ($records->count() > 0) {
-            foreach ($records as $record) {
-                $offer = Offer::find($record->offer_id);
-                $totalMoney += $record->total * $offer->click_rate;
-            }
-        }
-
-        $clicks = $clicks
-            ->join('offers', 'clicks.offer_id', '=', 'offers.id')
-            ->join('users', 'clicks.user_id', '=', 'users.id')
-            ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
-            ->paginate(10);
+        $totalClicks = $countTotal->first()->totalClicks;
+        $totalMoney = $countTotal->first()->totalMoney;
 
         $title = 'Thống kê theo '.strtoupper($content).' từ ngày '.$start .' đến ngày '.$end;
 

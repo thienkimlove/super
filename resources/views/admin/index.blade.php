@@ -21,18 +21,11 @@
                             <i class="fa fa-comments fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">{{$content['total_money']}}</div>
-                            <div>Total Balance</div>
+                            <div class="huge">{{$content['today']}}</div>
+                            <div>Money Today</div>
                         </div>
                     </div>
                 </div>
-                <a href="{{url('admin/users/index')}}">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
-                </a>
             </div>
         </div>
         <div class="col-lg-3 col-md-6">
@@ -43,18 +36,27 @@
                             <i class="fa fa-tasks fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">{{$content['total_month']}}</div>
-                            <div>Total This Month!</div>
+                            <div class="huge">{{$content['month']}}</div>
+                            <div>Money This Month!</div>
                         </div>
                     </div>
                 </div>
-                <a href="#">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-tasks fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{$content['total']}}</div>
+                            <div>Total Money!</div>
+                        </div>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </div>
@@ -200,20 +202,22 @@
         </div>
     @endif
 
+    @if ($userRecent)
     <div class="row">
+        <!-- /.col-lg-8 -->
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <i class="fa fa-bell fa-fw"></i> Recent Lead
+                    <i class="fa fa-bell fa-fw"></i> Your Recent Lead
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="list-group">
-                        @foreach ($recentOffers as $offer)
+                        @foreach ($userRecent as $recent)
                             <a class="list-group-item" href="#">
-                                <i class="fa fa-comment fa-fw"></i> {{$offer->name}}
+                                <b>You</b> lead offer <b>{{$recent->name}}</b> with IP <b>{{$recent->ip}}</b>
                                 <span class="pull-right text-muted small">
-                                    <em>{{$offer->updated_at->toDayDateTimeString()}}</em>
+                                    <em>{{$recent->created_at}}</em>
                                 </span>
                             </a>
                         @endforeach
@@ -225,5 +229,8 @@
             </div>
             <!-- /.panel -->
         </div>
+        <!-- /.col-lg-4 -->
     </div>
+    @endif
+
 @endsection

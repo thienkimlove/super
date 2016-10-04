@@ -127,7 +127,7 @@
                                     <td>{{$click->username}}</td>
                                     <td>{{$click->click_ip}}</td>
                                     <td>{{$click->hash_tag}}</td>
-                                    <td>{{config('devices')[$click->offer_allow_devices]}}</td>
+                                    <td>{{ ($click->offer_allow_devices) ? config('devices')[$click->offer_allow_devices] : '' }}</td>
                                     <td>{{$click->offer_geo_locations}}</td>
 
                                 </tr>
@@ -140,11 +140,11 @@
                         <div class="col-sm-6">{!!$clicks->render()!!}</div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4">Total : {{$totalClicks}}</div>
+                        <div class="col-sm-4">Total Leads: <b>{{$totalClicks}}</b></div>
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-4">Total Money : {{$totalMoney}}</div>
+                        <div class="col-sm-4">Total Money : <b> {{$totalMoney}}</b></div>
                     </div>
 
 
@@ -179,6 +179,7 @@
                     }
                 },
                 timepicker:false,
+                minDate:'1970-01-02',
                 format:'Y-m-d'
             });
 
