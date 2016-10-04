@@ -12,17 +12,17 @@
 
             <div class="form-group">
                 {!! Form::label('content_id', 'Group') !!}
-                {!! Form::select('content_id', $globalGroups, null, ['class' => 'form-control']) !!}
+                {!! Form::select('content_id', $globalGroups, (isset($content_id) && $content == 'group') ? $content_id : null, ['class' => 'form-control']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('start', 'Ngày bắt đầu') !!}
-                {!! Form::text('start', null, ['class' => 'form-control', 'id' => 'start-group-date']) !!}
+                {!! Form::text('start', (isset($start) && $content == 'group') ? $start : null, ['class' => 'form-control', 'id' => 'start-group-date']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('end', 'Ngày kết thúc') !!}
-                {!! Form::text('end', null, ['class' => 'form-control', 'id' => 'end-group-date']) !!}
+                {!! Form::text('end', (isset($end) && $content == 'group') ? $end : null, ['class' => 'form-control', 'id' => 'end-group-date']) !!}
             </div>
 
             <div class="form-group">
@@ -39,17 +39,17 @@
 
             <div class="form-group">
                 {!! Form::label('content_id', 'Nhập tên user') !!}
-                {!! Form::text('content_id', null, ['class' => 'form-control', 'id' => 'user_suggest']) !!}
+                {!! Form::text('content_id', (isset($content_id) && $content == 'user') ? $content_id : null, ['class' => 'form-control', 'id' => 'user_suggest']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('start', 'Ngày bắt đầu') !!}
-                {!! Form::text('start', null, ['class' => 'form-control', 'id' => 'start-user-date']) !!}
+                {!! Form::text('start', (isset($start) && $content == 'user') ? $start : null, ['class' => 'form-control', 'id' => 'start-user-date']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('end', 'Ngày kết thúc') !!}
-                {!! Form::text('end', null, ['class' => 'form-control', 'id' => 'end-user-date']) !!}
+                {!! Form::text('end', (isset($end) && $content == 'user') ? $end : null, ['class' => 'form-control', 'id' => 'end-user-date']) !!}
             </div>
 
             <div class="form-group">
@@ -66,17 +66,17 @@
 
             <div class="form-group">
                 {!! Form::label('content_id', 'Offer') !!}
-                {!! Form::select('content_id', $globalOffers, null, ['class' => 'form-control']) !!}
+                {!! Form::select('content_id', $globalOffers, (isset($content_id) && $content == 'offer') ? $content_id : null, ['class' => 'form-control']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('start', 'Ngày bắt đầu') !!}
-                {!! Form::text('start', null, ['class' => 'form-control', 'id' => 'start-offer-date']) !!}
+                {!! Form::text('start', (isset($start) && $content == 'offer') ? $start : null, ['class' => 'form-control', 'id' => 'start-offer-date']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('end', 'Ngày kết thúc') !!}
-                {!! Form::text('end', null, ['class' => 'form-control', 'id' => 'end-offer-date']) !!}
+                {!! Form::text('end',  (isset($end) && $content == 'offer') ? $end : null, ['class' => 'form-control', 'id' => 'end-offer-date']) !!}
             </div>
 
             <div class="form-group">

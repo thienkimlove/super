@@ -288,6 +288,14 @@ class HomeController extends AdminController
                 break;
         }
 
+        $customUrl = '/admin/statistic/'. $content.'?start='.$start.'&end='.$end;
+
+        if ($request->input('content_id')) {
+            $customUrl .= '&content_id='.$request->input('content_id');
+        }
+
+        $clicks->setPath($customUrl);
+
         $totalClicks = $countTotal->first()->totalClicks;
         $totalMoney = $countTotal->first()->totalMoney;
 
@@ -297,7 +305,10 @@ class HomeController extends AdminController
         $globalOffers = ['' => 'All Offer'] + Offer::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
 
-        return view('admin.result', compact('clicks', 'totalMoney', 'totalClicks', 'title', 'globalGroups', 'globalOffers', 'globalUsers'));
+        $content_id = $request->input('content_id') ? $request->input('content_id') : '';
+
+
+        return view('admin.result', compact('clicks', 'totalMoney', 'totalClicks', 'title', 'globalGroups', 'globalOffers', 'globalUsers', 'content', 'content_id', 'start', 'end'));
     }
 
 }
