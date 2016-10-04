@@ -213,6 +213,9 @@ class HomeController extends AdminController
         $start = ($request->input('start')) ? $request->input('start') : '2016-01-01';
         $end = ($request->input('end')) ? $request->input('end') : '2016-12-31';
 
+        $queryStart = Carbon::createFromFormat('Y-m-d', $start)->startOfDay();
+        $queryEnd = Carbon::createFromFormat('Y-m-d', $end)->endOfDay();
+
         $countTotal = null;
 
         switch ($content) {
@@ -226,7 +229,7 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->whereIn('users.id', $userIds)
-                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
                     ->orderBy('network_clicks.created_at', 'desc')
                     ->paginate(10);
 
@@ -236,7 +239,7 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->whereIn('users.id', $userIds)
-                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
                     ->get();
 
 
@@ -251,7 +254,7 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->where('users.id', $userId)
-                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
                     ->orderBy('network_clicks.created_at', 'desc')
                     ->paginate(10);
 
@@ -261,7 +264,7 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->where('users.id', $userId)
-                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
                     ->get();
 
                 break;
@@ -272,7 +275,7 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->where('offers.id', $request->input('content_id'))
-                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
                     ->orderBy('network_clicks.created_at', 'desc')
                     ->paginate(10);
 
@@ -282,7 +285,7 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->where('offers.id', $request->input('content_id'))
-                    ->whereBetween('network_clicks.created_at', [$start, $end])
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
                     ->get();
 
                 break;
