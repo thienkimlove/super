@@ -139,6 +139,28 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
 
+                <div class="panel-heading">
+                    <div class="input-group custom-search-form">
+                        {!! Form::open(['method' => 'GET', 'url' => $customUrl ]) !!}
+
+                        <span class="input-group-btn">
+                                 @if ($displaySearchUser)
+                                  <input type="text" value="{{$search_user}}" name="search_user" id="search_user" class="form-control" placeholder="Search user..">
+                                 @endif
+
+                                 @if ($displaySearchOffer)
+                                     <input type="text" value="{{$search_offer}}" name="search_offer" id="search_offer" class="form-control" placeholder="Search offer..">
+                                 @endif
+
+                            <button class="btn btn-default" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="table-responsive">
@@ -220,12 +242,23 @@
                 format:'Y-m-d'
             });
 
-            var availableTags = '{{ implode("##", $globalUsers) }}';
-
-            availableTags = availableTags.split('##');
+            var globalUsers = '{{ implode("##", $globalUsers) }}';
+            globalUsers = globalUsers.split('##');
 
             jQuery( "#user_suggest" ).autocomplete({
-                source: availableTags
+                source: globalUsers
+            });
+
+
+
+            var tagOffers = '{{ implode("##", $tagOffers) }}';
+            tagOffers = tagOffers.split('##');
+            jQuery( "#search_offer" ).autocomplete({
+                source: tagOffers
+            });
+
+            jQuery( "#search_user" ).autocomplete({
+                source: globalUsers
             });
 
         });
