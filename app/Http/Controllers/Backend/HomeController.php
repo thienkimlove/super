@@ -76,11 +76,30 @@ class HomeController extends AdminController
         $apiData = [];
 
         if (!$userId) {
-            $api_url = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=01&sm=01&sy=2016&ed='.
-                Carbon::now()->day .'&em='.Carbon::now()->month.'&ey='.Carbon::now()->year;
+            $api_url_today = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='.
+                Carbon::now()->day.'&sm='.Carbon::now()->month.'&sy='.Carbon::now()->year.
+                '&ed='.Carbon::now()->day .'&em='.Carbon::now()->month.'&ey='.Carbon::now()->year;
 
-            $stats = json_decode(file_get_contents($api_url), true);
-            $apiData[1] = isset($stats['stats_summary']) ? $stats['stats_summary'] : [];
+            $today_stats = json_decode(file_get_contents($api_url_today), true);
+
+            $api_url_yesterday = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='.
+                Carbon::now()->yesterday()->day.'&sm='.Carbon::now()->yesterday()->month.'&sy='.Carbon::now()->yesterday()->year.
+                '&ed='.Carbon::now()->yesterday()->day .'&em='.Carbon::now()->yesterday()->month.'&ey='.Carbon::now()->yesterday()->year;
+
+            $yesterday_stats = json_decode(file_get_contents($api_url_yesterday), true);
+
+            $api_url_week = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='.
+                Carbon::now()->startOfWeek()->day.'&sm='.Carbon::now()->startOfWeek()->month.'&sy='.Carbon::now()->startOfWeek()->year.
+                '&ed='.Carbon::now()->endOfWeek()->day .'&em='.Carbon::now()->endOfWeek()->month.'&ey='.Carbon::now()->endOfWeek()->year;
+
+            $week_stats = json_decode(file_get_contents($api_url_week), true);
+
+
+            $apiData[1] = [
+                'today' => isset($today_stats['stats_summary']) ? $today_stats['stats_summary'] : [],
+                'yesterday' => isset($yesterday_stats['stats_summary']) ? $yesterday_stats['stats_summary'] : [],
+                'week' => isset($week_stats['stats_summary']) ? $week_stats['stats_summary'] : [],
+            ];
         }
 
         $offerQuery = clone $initQuery;
@@ -107,12 +126,12 @@ class HomeController extends AdminController
         foreach ($todayOfferQuery as $offerSection) {
 
             $offer = Offer::find($offerSection->id);
-            $site_click = $offer->clicks->count();
+            $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$todayStart, $todayEnd])->count();
             $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads/$site_click)*100, 2).'%' : 'Not Available';
             $net_click = 0;
 
             if (isset($apiData[$offer->network_id])) {
-                foreach ($apiData[$offer->network_id] as $stat) {
+                foreach ($apiData[$offer->network_id]['today'] as $stat) {
                     if (intval($stat['id']) == $offer->net_offer_id) {
                         $net_click = $stat['clicks'];
                     }
@@ -132,12 +151,12 @@ class HomeController extends AdminController
         foreach ($yesterdayOfferQuery as $offerSection) {
 
             $offer = Offer::find($offerSection->id);
-            $site_click = $offer->clicks->count();
+            $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$yesterdayStart, $yesterdayEnd])->count();
             $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads/$site_click)*100, 2).'%' : 'Not Available';
             $net_click = 0;
 
             if (isset($apiData[$offer->network_id])) {
-                foreach ($apiData[$offer->network_id] as $stat) {
+                foreach ($apiData[$offer->network_id]['yesterday'] as $stat) {
                     if (intval($stat['id']) == $offer->net_offer_id) {
                         $net_click = $stat['clicks'];
                     }
@@ -157,12 +176,12 @@ class HomeController extends AdminController
         foreach ($weekOfferQuery as $offerSection) {
 
             $offer = Offer::find($offerSection->id);
-            $site_click = $offer->clicks->count();
+            $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$startWeek, $endWeek])->count();
             $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads/$site_click)*100, 2).'%' : 'Not Available';
             $net_click = 0;
 
             if (isset($apiData[$offer->network_id])) {
-                foreach ($apiData[$offer->network_id] as $stat) {
+                foreach ($apiData[$offer->network_id]['week'] as $stat) {
                     if (intval($stat['id']) == $offer->net_offer_id) {
                         $net_click = $stat['clicks'];
                     }
