@@ -90,9 +90,11 @@
                         <li>
                             <a href="{{url('admin/offers')}}">List</a>
                         </li>
+                        @if (auth('backend')->user()->permission_id == 1)
                         <li>
                             <a href="{{url('admin/offers/create')}}">Add</a>
                         </li>
+                        @endif
                     </ul>
                 </li>
 

@@ -87,6 +87,14 @@
                         <div class="col-sm-6">{!!$offers->render()!!}</div>
                     </div>
 
+                    @if (auth('backend')->user()->permission_id == 1)
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button class="btn btn-primary add-content" type="button">Add</button>
+                            </div>
+                        </div>
+                    @endif
+
                 </div>
                 <!-- /.panel-body -->
             </div>
