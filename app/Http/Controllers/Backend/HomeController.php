@@ -231,6 +231,27 @@ class HomeController extends AdminController
         }
     }
 
+    public function ajax($content, Request $request)
+    {
+        if ($content == 'user') {
+            $records = User::where('username', 'like', '%' . $request->input('q'). '%')->get();
+            $response = [];
+            foreach ($records as $record) {
+                $response[] = ['id' => $record->id, 'name' => $record->username];
+            }
+            return response()->json($response);
+        }
+
+        if ($content == 'offer') {
+            $records = Offer::where('name', 'like', '%' . $request->input('q'). '%')->get();
+            $response = [];
+            foreach ($records as $record) {
+                $response[] = ['id' => $record->id, 'name' => $record->name];
+            }
+            return response()->json($response);
+        }
+    }
+
     public function thongke()
     {
 
@@ -238,9 +259,8 @@ class HomeController extends AdminController
         $globalOffers = ['' => 'Choose Offer'] + Offer::pluck('name', 'id')->all();
         $globalNetworks = ['' => 'Choose Network'] + Network::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
-        $tagOffers = Offer::pluck('name')->all();
         
-        return view('admin.result', compact('globalGroups', 'globalOffers', 'globalUsers', 'globalNetworks', 'tagOffers'));
+        return view('admin.result', compact('globalGroups', 'globalOffers', 'globalUsers', 'globalNetworks'));
     }
 
     public function statistic($content, Request $request)
@@ -259,15 +279,9 @@ class HomeController extends AdminController
         $search_user = $request->input('search_user');
         $search_offer = $request->input('search_offer');
 
-        $userSearchId = null;
-        $offerSearchId = null;
-        if ($search_user) {
-            $userSearchId = User::where('username', $search_user)->first()->id;
-        }
+        $userSearchId = $request->input('search_user_id');
+        $offerSearchId = $request->input('search_offer_id');
 
-        if ($search_offer) {
-            $offerSearchId = Offer::where('name', $search_offer)->first()->id;
-        }
 
         $displaySearchOffer = false;
         $displaySearchUser = false;
@@ -454,6 +468,14 @@ class HomeController extends AdminController
             $customUrl .= '&network_id='.$request->input('network_id');
         }
 
+        if ($request->input('search_offer_id')) {
+            $customUrl .= '&search_offer_id='.$request->input('search_offer_id');
+        }
+
+        if ($request->input('search_user_id')) {
+            $customUrl .= '&search_user_id='.$request->input('search_user_id');
+        }
+
         if ($request->input('search_offer')) {
             $customUrl .= '&search_offer='.$request->input('search_offer');
         }
@@ -474,7 +496,6 @@ class HomeController extends AdminController
         $globalOffers = ['' => 'Choose Offer'] + Offer::pluck('name', 'id')->all();
         $globalNetworks = ['' => 'Choose Network'] + Network::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
-        $tagOffers = Offer::pluck('name')->all();
 
         $content_id = $request->input('content_id') ? $request->input('content_id') : '';
 
@@ -497,8 +518,8 @@ class HomeController extends AdminController
             'search_offer',
             'displaySearchUser',
             'displaySearchOffer',
-            'customUrl',
-            'tagOffers'
+            'offerSearchId',
+            'userSearchId'
         ));
     }
 

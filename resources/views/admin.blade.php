@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf_token" content="{{ csrf_token() }}">
 
     <title>Admin</title>
 
@@ -43,7 +44,13 @@
 <script src="{{url('/js/admin/select2.min.js')}}"></script>
 <script src="{{url('js/admin/datetimepicker/build/jquery.datetimepicker.full.min.js')}}"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        headers: { 'X-CSRF-Token' : $('meta[name=csrf_token]').attr('content') }
+    });
+    var baseUrl = "{{url('/')}}";
 
+</script>
 @yield('footer')
 </body>
 </html>

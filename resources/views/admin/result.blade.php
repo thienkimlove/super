@@ -145,8 +145,11 @@
 
                         <span class="input-group-btn">
                             @if ($displaySearchUser)
-                                <input type="text" value="{{$search_user}}" name="search_user" id="search_user"
+                                <input type="text" value="{{$search_user}}" name="search_user"  id="search_user"
                                        class="form-control" placeholder="Search user..">
+
+                                <input type="hidden" name="search_user_id" id="search_user_id" value="{{$userSearchId}}">
+
                                 <button class="btn btn-default" type="submit">
                                     <i class="fa fa-search"></i>
                                 </button>
@@ -157,6 +160,7 @@
                             @if ($displaySearchOffer)
                                 <input type="text" value="{{$search_offer}}" name="search_offer" id="search_offer"
                                        class="form-control" placeholder="Search offer..">
+                                <input type="hidden" name="search_offer_id" id="search_offer_id" value="{{$offerSearchId}}">
                                 <button class="btn btn-default" type="submit">
                                      <i class="fa fa-search"></i>
                                 </button>
@@ -252,24 +256,79 @@
                 format:'Y-m-d'
             });
 
-            var globalUsers = '{{ implode("##", $globalUsers) }}';
-            globalUsers = globalUsers.split('##');
-
             jQuery( "#user_suggest" ).autocomplete({
-                source: globalUsers
+                source: function( request, response ) {
+                    $.ajax({
+                        dataType: "json",
+                        type : 'Get',
+                        data: "q=" + request.term,
+                        url: baseUrl + '/admin/ajax/user',
+                        success: function(data) {
+                            response( $.map(data, function(item) {
+                                return {
+                                    label : item.name,
+                                    value : item.name,
+                                    addition : item.id
+                                }
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#user_suggest").val(ui.item.label); // display the selected text
+                }
             });
 
 
-
-            var tagOffers = '{{ implode("##", $tagOffers) }}';
-            tagOffers = tagOffers.split('##');
             jQuery( "#search_offer" ).autocomplete({
-                source: tagOffers
+                source: function( request, response ) {
+                    $.ajax({
+                        dataType: "json",
+                        type : 'Get',
+                        data: "q=" + request.term,
+                        url: baseUrl + '/admin/ajax/offer',
+                        success: function(data) {
+                            response( $.map(data, function(item) {
+                               return {
+                                   label : item.name,
+                                   value : item.name,
+                                   addition : item.id
+                               }
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#search_offer").val(ui.item.label); // display the selected text
+                    $("#search_offer_id").val(ui.item.addition); // save selected id to hidden input
+                }
             });
+
 
             jQuery( "#search_user" ).autocomplete({
-                source: globalUsers
+                source: function( request, response ) {
+                    $.ajax({
+                        dataType: "json",
+                        type : 'Get',
+                        data: "q=" + request.term,
+                        url: baseUrl + '/admin/ajax/user',
+                        success: function(data) {
+                            response( $.map(data, function(item) {
+                                return {
+                                    label : item.name,
+                                    value : item.name,
+                                    addition : item.id
+                                }
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                                        $("#search_user").val(ui.item.label); // display the selected text
+                    $("#search_user_id").val(ui.item.addition); // save selected id to hidden input
+                }
             });
+
 
         });
     </script>

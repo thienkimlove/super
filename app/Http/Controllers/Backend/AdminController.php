@@ -12,7 +12,7 @@ class AdminController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth.backend');
+        $this->middleware('auth.backend',  ['except' => ['ajax']]);
     }
 
     /**
