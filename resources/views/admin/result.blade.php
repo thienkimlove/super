@@ -16,6 +16,11 @@
             </div>
 
             <div class="form-group">
+                {!! Form::label('network_id', 'Network') !!}
+                {!! Form::select('network_id', $globalNetworks, (isset($network_id) && $content == 'group') ? $network_id : null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="form-group">
                 {!! Form::label('start', 'Ngày bắt đầu') !!}
                 {!! Form::text('start', (isset($start) && $content == 'group') ? $start : null, ['class' => 'form-control', 'id' => 'start-group-date']) !!}
             </div>
@@ -40,6 +45,11 @@
             <div class="form-group">
                 {!! Form::label('content_id', 'Nhập tên user') !!}
                 {!! Form::text('content_id', (isset($content_id) && $content == 'user') ? $content_id : null, ['class' => 'form-control', 'id' => 'user_suggest']) !!}
+            </div>
+
+            <div class="form-group">
+                {!! Form::label('network_id', 'Network') !!}
+                {!! Form::select('network_id', $globalNetworks, (isset($network_id) && $content == 'user') ? $network_id : null, ['class' => 'form-control']) !!}
             </div>
 
             <div class="form-group">

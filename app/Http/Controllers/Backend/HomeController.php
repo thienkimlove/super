@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Click;
 use App\Group;
+use App\Network;
 use App\Offer;
 use App\User;
 use Carbon\Carbon;
@@ -215,10 +216,11 @@ class HomeController extends AdminController
     {
 
         $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
-        $globalOffers = ['' => 'All Offer'] + Offer::pluck('name', 'id')->all();
+        $globalOffers = ['' => 'Choose Offer'] + Offer::pluck('name', 'id')->all();
+        $globalNetworks = ['' => 'Choose Network'] + Network::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
         
-        return view('admin.result', compact('globalGroups', 'globalOffers', 'globalUsers'));
+        return view('admin.result', compact('globalGroups', 'globalOffers', 'globalUsers', 'globalNetworks'));
     }
 
     public function statistic($content, Request $request)
@@ -233,6 +235,8 @@ class HomeController extends AdminController
 
         $countTotal = null;
 
+        $network_id = $request->input('network_id');
+
         switch ($content) {
             case "group" :
                 $userIds = User::where('group_id', $request->input('content_id'))->pluck('id')->all();
@@ -244,8 +248,13 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->whereIn('users.id', $userIds)
-                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
-                    ->orderBy('network_clicks.created_at', 'desc')
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
+
+                if ($network_id) {
+                    $clicks = $clicks->where('network_clicks.network_id', $network_id);
+                }
+
+                $clicks = $clicks->orderBy('network_clicks.created_at', 'desc')
                     ->paginate(10);
 
                 $countTotal = DB::table('network_clicks')
@@ -254,8 +263,11 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->whereIn('users.id', $userIds)
-                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
-                    ->get();
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
+                if ($network_id) {
+                    $countTotal = $countTotal->where('network_clicks.network_id', $network_id);
+                }
+                $countTotal = $countTotal->get();
 
 
                 break;
@@ -269,8 +281,12 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->where('users.id', $userId)
-                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
-                    ->orderBy('network_clicks.created_at', 'desc')
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
+                if ($network_id) {
+                    $clicks = $clicks->where('network_clicks.network_id', $network_id);
+                }
+
+                $clicks = $clicks->orderBy('network_clicks.created_at', 'desc')
                     ->paginate(10);
 
                 $countTotal = DB::table('network_clicks')
@@ -279,8 +295,12 @@ class HomeController extends AdminController
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
                     ->where('users.id', $userId)
-                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
-                    ->get();
+                    ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
+
+                if ($network_id) {
+                    $countTotal = $countTotal->where('network_clicks.network_id', $network_id);
+                }
+                $countTotal = $countTotal->get();
 
                 break;
             case "offer" :
@@ -311,6 +331,9 @@ class HomeController extends AdminController
         if ($request->input('content_id')) {
             $customUrl .= '&content_id='.$request->input('content_id');
         }
+        if ($request->input('network_id')) {
+            $customUrl .= '&network_id='.$request->input('network_id');
+        }
 
         $clicks->setPath($customUrl);
 
@@ -320,13 +343,14 @@ class HomeController extends AdminController
         $title = 'Thống kê theo '.strtoupper($content).' từ ngày '.$start .' đến ngày '.$end;
 
         $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
-        $globalOffers = ['' => 'All Offer'] + Offer::pluck('name', 'id')->all();
+        $globalOffers = ['' => 'Choose Offer'] + Offer::pluck('name', 'id')->all();
+        $globalNetworks = ['' => 'Choose Network'] + Network::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
 
         $content_id = $request->input('content_id') ? $request->input('content_id') : '';
 
 
-        return view('admin.result', compact('clicks', 'totalMoney', 'totalClicks', 'title', 'globalGroups', 'globalOffers', 'globalUsers', 'content', 'content_id', 'start', 'end'));
+        return view('admin.result', compact('clicks', 'totalMoney', 'totalClicks', 'title', 'globalGroups', 'globalOffers', 'globalNetworks', 'globalUsers', 'content', 'content_id', 'network_id', 'start', 'end'));
     }
 
 }
