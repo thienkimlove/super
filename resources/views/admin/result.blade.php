@@ -153,7 +153,6 @@
                             @endif
 
                             <hr />
-                            <hr />
 
                             @if ($displaySearchOffer)
                                 <input type="text" value="{{$search_offer}}" name="search_offer" id="search_offer"
