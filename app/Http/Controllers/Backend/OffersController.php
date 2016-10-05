@@ -34,16 +34,6 @@ class OffersController extends AdminController
 
         $offers = Offer::latest('updated_at');
 
-        //if normal user we show only offer user has click on.
-
-        $user = auth('backend')->user();
-
-       /* if ($user->permission_id == 3) {
-            $offers = $offers->whereHas('clicks', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            });
-        }*/
-
         if ($request->input('q')) {
             $searchOffer = urldecode($request->input('q'));
             $offers = $offers->where('name', 'LIKE', '%'. $searchOffer. '%');
@@ -75,7 +65,7 @@ class OffersController extends AdminController
                 'network_id' => $request->input('network_id'),
                 'net_offer_id' => $request->input('net_offer_id'),
                 'status' => ($request->input('status') == 'on') ? true : false,
-                'image' => ($request->file('image') && $request->file('image')->isValid()) ? $this->saveImage($request->file('image')) : ''
+                'image' => $request->input('image')
             ]);
 
         } catch (\Exception $e) {
@@ -102,7 +92,6 @@ class OffersController extends AdminController
     {
         $offer = Offer::find($id);
 
-
         $data = [
             'name' => $request->input('name'),
             'redirect_link' => $request->input('redirect_link'),
@@ -111,14 +100,9 @@ class OffersController extends AdminController
             'allow_devices' => $request->input('allow_devices'),
             'network_id' => $request->input('network_id'),
             'net_offer_id' => $request->input('net_offer_id'),
+            'image' => $request->input('image'),
             'status' => ($request->input('status') == 'on') ? true : false
         ];
-
-        if ($request->file('image') && $request->file('image')->isValid()) {
-            $data['image'] = $this->saveImage($request->file('image'));
-        } else {
-            unset($data['image']);
-        }
 
         try {
             $offer->update($data);

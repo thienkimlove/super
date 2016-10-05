@@ -55,7 +55,7 @@
                                     <td>{{$offer->name}}</td>
                                     <td>
                                         @if ($offer->image)
-                                            <img src="{{url('img/cache/small', $offer->image)}}" />
+                                            <img src="{{$offer->image}}" />
                                         @endif
                                     </td>
                                     <td>{{$offer->click_rate}}</td>
@@ -86,13 +86,6 @@
                     <div class="row">
                         <div class="col-sm-6">{!!$offers->render()!!}</div>
                     </div>
-                    @if (auth('backend')->user()->permission_id == 1)
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <button class="btn btn-primary add-content" type="button">Add</button>
-                            </div>
-                        </div>
-                    @endif
 
                 </div>
                 <!-- /.panel-body -->

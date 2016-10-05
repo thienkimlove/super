@@ -54,12 +54,8 @@
             </div>
 
             <div class="form-group">
-                {!! Form::label('image', 'Image') !!}
-                @if ($offer->image)
-                    <img src="{{url('img/cache/small/' . $offer->image)}}" />
-                    <hr>
-                @endif
-                {!! Form::file('image', null, ['class' => 'form-control']) !!}
+                {!! Form::label('image', 'Image Preview') !!}
+                {!! Form::text('image', null, ['class' => 'form-control']) !!}
             </div>
 
             <div class="form-group">
