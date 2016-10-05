@@ -13,106 +13,173 @@ use Illuminate\Http\Request;
 class HomeController extends AdminController
 {
 
-    protected function getApiData($offer, $apiData)
+    protected function generateDashboard($userId = null)
     {
 
-        $data = [
-            'offer_name' => $offer->name,
-            'net_click' => 0,
-            'net_lead' => 0,
-            'net_cr' => null,
-            'site_cr' => null,
-            'site_click' => $offer->clicks->count(),
-        ];
+        $todayStart = Carbon::now()->startOfDay();
+        $todayEnd = Carbon::now()->endOfDay();
 
-        if (isset($apiData[$offer->network_id]) &&  $apiData[$offer->network_id]) {
-            foreach ($apiData[$offer->network_id] as $stat) {
-                if (intval($stat['id']) == $offer->net_offer_id) {
-                    $data['net_click'] = $stat['clicks'];
-                    $data['net_lead'] = $stat['leads'];
-                    $data['site_cr'] = ($data['site_click'] > 0) ? round((intval($data['net_lead'])/$data['site_click'])*100, 2) .'%' : 'Not Available';
-                    $data['net_cr'] = intval($stat['conversions']).'%';
-                }
-            }
-        }
-        return $data;
-    }
+        $yesterdayStart = Carbon::now()->yesterday()->startOfDay();
+        $yesterdayEnd = Carbon::now()->yesterday()->endOfDay();
 
-    protected function getOffers($time, $apiData, $currentUserId = null)
-    {
+        $startWeek = Carbon::now()->startOfWeek();
+        $endWeek = Carbon::now()->endOfWeek();
 
-        $start = null;
-        $end = null;
-        $apiUrl = null;
+        $startMonth = Carbon::now()->startOfMonth();
+        $endMonth = Carbon::now()->endOfMonth();
 
-        if ($time == 'today') {
-            $start = Carbon::now()->startOfDay();
-            $end = Carbon::now()->endOfDay();
-        } else if ($time == 'yesterday') {
-            $start = Carbon::now()->yesterday()->startOfDay();
-            $end = Carbon::now()->yesterday()->endOfDay();
-        } else {
-            $start = Carbon::now()->startOfWeek();
-            $end = Carbon::now()->endOfWeek();
-        }
 
-        $offers = Offer::whereHas('clicks', function($query) use ($currentUserId, $start, $end) {
-            if ($currentUserId) {
-                $query->whereBetween('updated_at', [$start, $end])
-                    ->where('user_id', $currentUserId);
-            } else {
-                $query->whereBetween('updated_at', [$start, $end]);
-            }
 
-        })->get();
-
-        $data = [];
-
-        foreach ($offers as $offer) {
-            $data[$offer->id] = $this->getApiData($offer, $apiData);
-        }
-        return $data;
-
-    }
-
-    protected function getMoney($time = null, $currentUserId = null)
-    {
-        $start = null;
-        $end = null;
-        $money = 0;
-
-        if ($time == 'today') {
-            $start = Carbon::now()->startOfDay();
-            $end = Carbon::now()->endOfDay();
-        } else if ($time == 'month') {
-            $start = Carbon::now()->startOfWeek();
-            $end = Carbon::now()->endOfWeek();
-        }
-
-        $query = DB::table('network_clicks')
-            ->select(DB::raw("SUM(offers.click_rate) as total"))
+        $initQuery = DB::table('network_clicks')
             ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
             ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
             ->leftJoin('users', 'clicks.user_id', '=', 'users.id');
 
-
-
-        if ($start && $end) {
-            $query = $query->whereBetween('network_clicks.created_at', [$start, $end]);
+        if ($userId) {
+            $initQuery = $initQuery->where('users.id', $userId);
         }
 
-        if ($currentUserId) {
-            $query = $query->where('users.id', $currentUserId);
+        //recent lead.
+
+
+        $userRecent = clone $initQuery;
+
+        $userRecent = $userRecent
+            ->select('offers.name', 'network_clicks.ip', 'network_clicks.created_at', 'users.username')
+            ->orderBy('network_clicks.created_at', 'desc')
+            ->limit(6)
+            ->get();
+
+        //money
+        $moneyQuery = clone $initQuery;
+        $moneyQuery = $moneyQuery->select(DB::raw("SUM(offers.click_rate) as total"));
+
+
+        $todayMoneyQuery = clone $moneyQuery;
+        $monthMoneyQuery = clone $moneyQuery;
+        $totalMoneyQuery = clone $moneyQuery;
+
+        $todayMoneyQuery = $todayMoneyQuery->whereBetween('network_clicks.created_at', [$todayStart, $todayEnd])->get();
+        $monthMoneyQuery = $monthMoneyQuery->whereBetween('network_clicks.created_at', [$startMonth, $endMonth])->get();
+        $totalMoneyQuery = $totalMoneyQuery->get();
+
+        $content = [
+            'today' => ($todayMoneyQuery->count() > 0) ? $todayMoneyQuery->first()->total : 0,
+            'month' => ($monthMoneyQuery->count() > 0) ? $monthMoneyQuery->first()->total : 0,
+            'total' => ($totalMoneyQuery->count() > 0) ? $totalMoneyQuery->first()->total : 0,
+        ];
+
+        //get offers.
+        //api using to get real clicks.
+
+        $apiData = [];
+
+        if (!$userId) {
+            $api_url = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=01&sm=01&sy=2016&ed='.
+                Carbon::now()->day .'&em='.Carbon::now()->month.'&ey='.Carbon::now()->year;
+
+            $stats = json_decode(file_get_contents($api_url), true);
+            $apiData[1] = isset($stats['stats_summary']) ? $stats['stats_summary'] : [];
         }
 
-        $query = $query->get();
+        $offerQuery = clone $initQuery;
+
+        $offerQuery = $offerQuery
+            ->select(DB::raw("COUNT(network_clicks.id) as totalLeads, offers.id"))
+            ->groupBy('offers.id');
 
 
-        if ($query->count() > 0) {
-            $money = $query->first()->total;
+        $todayOfferQuery = clone $offerQuery;
+        $yesterdayOfferQuery = clone $offerQuery;
+        $weekOfferQuery = clone $offerQuery;
+
+        $todayOfferQuery = $todayOfferQuery->whereBetween('network_clicks.created_at', [$todayStart, $todayEnd])->get();
+        $yesterdayOfferQuery = $yesterdayOfferQuery->whereBetween('network_clicks.created_at', [$yesterdayStart, $yesterdayEnd])->get();
+        $weekOfferQuery = $weekOfferQuery->whereBetween('network_clicks.created_at', [$startWeek, $endWeek])->get();
+
+
+
+        $todayOffers = [];
+        $yesterdayOffers = [];
+        $weekOffers = [];
+
+        foreach ($todayOfferQuery as $offerSection) {
+
+            $offer = Offer::find($offerSection->id);
+            $site_click = $offer->clicks->count();
+            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads/$site_click)*100, 2).'%' : 'Not Available';
+            $net_click = 0;
+
+            if (isset($apiData[$offer->network_id])) {
+                foreach ($apiData[$offer->network_id] as $stat) {
+                    if (intval($stat['id']) == $offer->net_offer_id) {
+                        $net_click = $stat['clicks'];
+                    }
+                }
+            }
+
+            $todayOffers[] = [
+                'offer_name' => $offer->name,
+                'net_click' => $net_click,
+                'net_lead' => $offerSection->totalLeads,
+                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads/$net_click)*100, 2).'%' : 'Not Available',
+                'site_cr' => $site_cr,
+                'site_click' => $site_click,
+            ];
         }
 
-        return $money;
+        foreach ($yesterdayOfferQuery as $offerSection) {
+
+            $offer = Offer::find($offerSection->id);
+            $site_click = $offer->clicks->count();
+            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads/$site_click)*100, 2).'%' : 'Not Available';
+            $net_click = 0;
+
+            if (isset($apiData[$offer->network_id])) {
+                foreach ($apiData[$offer->network_id] as $stat) {
+                    if (intval($stat['id']) == $offer->net_offer_id) {
+                        $net_click = $stat['clicks'];
+                    }
+                }
+            }
+
+            $yesterdayOffers[] = [
+                'offer_name' => $offer->name,
+                'net_click' => $net_click,
+                'net_lead' => $offerSection->totalLeads,
+                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads/$net_click)*100, 2).'%' : 'Not Available',
+                'site_cr' => $site_cr,
+                'site_click' => $site_click,
+            ];
+        }
+
+        foreach ($weekOfferQuery as $offerSection) {
+
+            $offer = Offer::find($offerSection->id);
+            $site_click = $offer->clicks->count();
+            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads/$site_click)*100, 2).'%' : 'Not Available';
+            $net_click = 0;
+
+            if (isset($apiData[$offer->network_id])) {
+                foreach ($apiData[$offer->network_id] as $stat) {
+                    if (intval($stat['id']) == $offer->net_offer_id) {
+                        $net_click = $stat['clicks'];
+                    }
+                }
+            }
+
+            $weekOffers[] = [
+                'offer_name' => $offer->name,
+                'net_click' => $net_click,
+                'net_lead' => $offerSection->totalLeads,
+                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads/$net_click)*100, 2).'%' : 'Not Available',
+                'site_cr' => $site_cr,
+                'site_click' => $site_click,
+            ];
+        }
+
+        return [$content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers];
+
     }
 
 
@@ -120,66 +187,13 @@ class HomeController extends AdminController
     {
         $currentUser = auth('backend')->user();
         $currentUserId = ($currentUser->id == 1) ? 12 : $currentUser->id;
-
-        $content = [
-            'today' => $this->getMoney('today', $currentUserId),
-            'month' => $this->getMoney('month', $currentUserId),
-            'total' => $this->getMoney(null, $currentUserId),
-        ];
-
-        $apiData = [];
-
-        $todayOffers =  $this->getOffers('today', $apiData, $currentUserId);
-        $yesterdayOffers =  $this->getOffers('yesterday', $apiData, $currentUserId);
-        $weekOffers =  $this->getOffers('week', $apiData, $currentUserId);
-
-        $userRecent = DB::table('network_clicks')
-            ->select('offers.name', 'network_clicks.ip', 'network_clicks.created_at', 'users.username')
-            ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-            ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-            ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
-            ->where('users.id', $currentUserId)
-            ->orderBy('network_clicks.created_at', 'desc')
-            ->limit(6)
-            ->get();
-
+        list($content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers) = $this->generateDashboard($currentUserId);
         return view('admin.index', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent'));
     }
 
     public function control()
     {
-        $content = [
-            'today' => $this->getMoney('today'),
-            'month' => $this->getMoney('month'),
-            'total' => $this->getMoney(),
-        ];
-
-
-        $apiData = [];
-
-        $now = Carbon::now();
-
-        $api_url = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=01&sm=01&sy=2016&ed='.
-            $now->day .'&em='.$now->month.'&ey='.$now->year;
-
-        $stats = json_decode(file_get_contents($api_url), true);
-        $apiData[1] = isset($stats['stats_summary']) ? $stats['stats_summary'] : [];
-
-
-        $todayOffers =  $this->getOffers('today', $apiData);
-        $yesterdayOffers =  $this->getOffers('yesterday', $apiData);
-        $weekOffers =  $this->getOffers('week', $apiData);
-
-
-        $userRecent = DB::table('network_clicks')
-            ->select('offers.name', 'network_clicks.ip', 'network_clicks.created_at', 'users.username')
-            ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-            ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-            ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
-            ->orderBy('network_clicks.created_at', 'desc')
-            ->limit(6)
-            ->get();
-
+        list($content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers) = $this->generateDashboard();
         return view('admin.general.control', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent'));
     }
 
@@ -203,6 +217,7 @@ class HomeController extends AdminController
         $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
         $globalOffers = ['' => 'All Offer'] + Offer::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
+        
         return view('admin.result', compact('globalGroups', 'globalOffers', 'globalUsers'));
     }
 

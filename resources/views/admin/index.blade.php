@@ -79,14 +79,14 @@
                                     <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Clicks</th>
+                                        <th>Leads</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach ($todayOffers as $offer)
                                         <tr>
                                             <td>{{$offer['offer_name']}}</td>
-                                            <td>{{$offer['site_click']}}</td>
+                                            <td>{{$offer['net_lead']}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -126,14 +126,14 @@
                                         <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Clicks</th>
+                                            <th>Leads</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @foreach ($yesterdayOffers as $offer)
                                             <tr>
                                                 <td>{{$offer['offer_name']}}</td>
-                                                <td>{{$offer['site_click']}}</td>
+                                                <td>{{$offer['net_lead']}}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>
@@ -173,14 +173,14 @@
                                         <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Clicks</th>
+                                            <th>Leads</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @foreach ($weekOffers as $offer)
                                             <tr>
                                                 <td>{{$offer['offer_name']}}</td>
-                                                <td>{{$offer['site_click']}}</td>
+                                                <td>{{$offer['net_lead']}}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>
