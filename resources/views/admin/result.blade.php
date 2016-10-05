@@ -141,7 +141,7 @@
 
                 <div class="panel-heading">
                     <div class="input-group custom-search-form">
-                        {!! Form::open(['method' => 'GET', 'url' => url('statistic', $content) ]) !!}
+                        {!! Form::open(['method' => 'GET', 'url' => url('admin/statistic', $content) ]) !!}
 
                         <span class="input-group-btn">
                             @if ($displaySearchUser)
@@ -152,8 +152,8 @@
                                 </button>
                             @endif
 
-                            <br />
-                            <br />
+                            <hr />
+                            <hr />
 
                             @if ($displaySearchOffer)
                                 <input type="text" value="{{$search_offer}}" name="search_offer" id="search_offer"
