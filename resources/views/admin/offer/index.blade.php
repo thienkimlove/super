@@ -55,7 +55,7 @@
                                     <td>{{$offer->name}}</td>
                                     <td>
                                         @if ($offer->image)
-                                            <img src="{{$offer->image}}" />
+                                            <img src="{{$offer->image}}" height="120" width="120" />
                                         @endif
                                     </td>
                                     <td>{{$offer->click_rate}}</td>
