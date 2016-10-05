@@ -6,7 +6,7 @@
             <h1 class="page-header">Thống kê</h1>
         </div>
 
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <h2>Thống kê theo group</h2>
             {!! Form::open(['method' => 'GET', 'url' => url('admin/statistic/group')]) !!}
 
@@ -38,7 +38,7 @@
 
         </div>
 
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <h2>Thống kê theo User</h2>
             {!! Form::open(['method' => 'GET', 'url' => url('admin/statistic/user')]) !!}
 
@@ -70,7 +70,7 @@
 
         </div>
 
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <h2>Thống kê theo offer</h2>
             {!! Form::open(['method' => 'GET', 'url' => url('admin/statistic/offer')]) !!}
 
@@ -87,6 +87,33 @@
             <div class="form-group">
                 {!! Form::label('end', 'Ngày kết thúc') !!}
                 {!! Form::text('end',  (isset($end) && $content == 'offer') ? $end : null, ['class' => 'form-control', 'id' => 'end-offer-date']) !!}
+            </div>
+
+            <div class="form-group">
+                {!! Form::submit('Thống kê', ['class' => 'btn btn-primary form-control']) !!}
+            </div>
+
+            {!! Form::close() !!}
+
+        </div>
+
+        <div class="col-lg-3">
+            <h2>Thống kê theo network</h2>
+            {!! Form::open(['method' => 'GET', 'url' => url('admin/statistic/network')]) !!}
+
+            <div class="form-group">
+                {!! Form::label('content_id', 'Network') !!}
+                {!! Form::select('content_id', $globalNetworks, (isset($content_id) && $content == 'network') ? $content_id : null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="form-group">
+                {!! Form::label('start', 'Ngày bắt đầu') !!}
+                {!! Form::text('start', (isset($start) && $content == 'offer') ? $start : null, ['class' => 'form-control', 'id' => 'start-network-date']) !!}
+            </div>
+
+            <div class="form-group">
+                {!! Form::label('end', 'Ngày kết thúc') !!}
+                {!! Form::text('end',  (isset($end) && $content == 'offer') ? $end : null, ['class' => 'form-control', 'id' => 'end-network-date']) !!}
             </div>
 
             <div class="form-group">
@@ -174,7 +201,7 @@
         $(document).ready(function(){
             jQuery.datetimepicker.setLocale('vi');
 
-            jQuery('#start-group-date, #end-group-date, #start-user-date, #end-user-date, #start-offer-date, #end-offer-date').datetimepicker({
+            jQuery('#start-group-date, #end-group-date, #start-user-date, #end-user-date, #start-offer-date, #end-offer-date, #start-network-date, #end-network-date').datetimepicker({
                 i18n:{
                     vi:{
                         months:[

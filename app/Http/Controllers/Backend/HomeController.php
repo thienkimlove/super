@@ -304,12 +304,34 @@ class HomeController extends AdminController
 
                 break;
             case "offer" :
+            $clicks = DB::table('network_clicks')
+                ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
+                ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                ->where('offers.id', $request->input('content_id'))
+                ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
+                ->orderBy('network_clicks.created_at', 'desc')
+                ->paginate(10);
+
+            $countTotal = DB::table('network_clicks')
+                ->select(DB::raw("SUM(offers.click_rate) as totalMoney, COUNT(network_clicks.id) as totalClicks"))
+                ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                ->where('offers.id', $request->input('content_id'))
+                ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
+                ->get();
+
+            break;
+
+            case "network" :
                 $clicks = DB::table('network_clicks')
                     ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
                     ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
-                    ->where('offers.id', $request->input('content_id'))
+                    ->where('network_clicks.network_id', $request->input('content_id'))
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
                     ->orderBy('network_clicks.created_at', 'desc')
                     ->paginate(10);
@@ -319,7 +341,7 @@ class HomeController extends AdminController
                     ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
-                    ->where('offers.id', $request->input('content_id'))
+                    ->where('network_clicks.network_id', $request->input('content_id'))
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd])
                     ->get();
 
