@@ -141,20 +141,31 @@
 
                 <div class="panel-heading">
                     <div class="input-group custom-search-form">
-                        {!! Form::open(['method' => 'GET', 'url' => $customUrl ]) !!}
+                        {!! Form::open(['method' => 'GET', 'url' => url('statistic', $content) ]) !!}
 
                         <span class="input-group-btn">
-                                 @if ($displaySearchUser)
-                                  <input type="text" value="{{$search_user}}" name="search_user" id="search_user" class="form-control" placeholder="Search user..">
-                                 @endif
+                            @if ($displaySearchUser)
+                                <input type="text" value="{{$search_user}}" name="search_user" id="search_user"
+                                       class="form-control" placeholder="Search user..">
+                                <button class="btn btn-default" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            @endif
 
-                                 @if ($displaySearchOffer)
-                                     <input type="text" value="{{$search_offer}}" name="search_offer" id="search_offer" class="form-control" placeholder="Search offer..">
-                                 @endif
+                            <br />
+                            <br />
 
-                            <button class="btn btn-default" type="submit">
-                                <i class="fa fa-search"></i>
-                            </button>
+                            @if ($displaySearchOffer)
+                                <input type="text" value="{{$search_offer}}" name="search_offer" id="search_offer"
+                                       class="form-control" placeholder="Search offer..">
+                                <button class="btn btn-default" type="submit">
+                                     <i class="fa fa-search"></i>
+                                </button>
+                            @endif
+                            <input type="hidden" name="start" value="{{$start}}">
+                            <input type="hidden" name="end" value="{{$end}}">
+                            <input type="hidden" name="content_id" value="{{$content_id}}">
+                            <input type="hidden" name="network_id" value="{{$network_id}}">
                         </span>
 
                         {!! Form::close() !!}
