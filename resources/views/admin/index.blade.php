@@ -246,7 +246,7 @@
                         <div class="list-group">
                             @foreach ($recentAll as $recent)
                                 <a class="list-group-item" href="#">
-                                    <b>You</b> lead offer <b>{{$recent->name}}</b> with IP <b>{{$recent->ip}}</b>
+                                    <b>{{$recent->username}}</b> lead offer <b>{{$recent->name}}</b> with IP <b>{{$recent->ip}}</b>
                                     <span class="pull-right text-muted small">
                                     <em>{{$recent->created_at}}</em>
                                 </span>
