@@ -30,7 +30,6 @@ class HomeController extends AdminController
         $endMonth = Carbon::now()->endOfMonth();
 
 
-
         $initQuery = DB::table('network_clicks')
             ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
             ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
@@ -77,21 +76,21 @@ class HomeController extends AdminController
         $apiData = [];
 
         if (!$userId) {
-            $api_url_today = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='.
-                Carbon::now()->day.'&sm='.Carbon::now()->month.'&sy='.Carbon::now()->year.
-                '&ed='.Carbon::now()->day .'&em='.Carbon::now()->month.'&ey='.Carbon::now()->year;
+            $api_url_today = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=' .
+                Carbon::now()->day . '&sm=' . Carbon::now()->month . '&sy=' . Carbon::now()->year .
+                '&ed=' . Carbon::now()->day . '&em=' . Carbon::now()->month . '&ey=' . Carbon::now()->year;
 
             $today_stats = json_decode(file_get_contents($api_url_today), true);
 
-            $api_url_yesterday = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='.
-                Carbon::now()->yesterday()->day.'&sm='.Carbon::now()->yesterday()->month.'&sy='.Carbon::now()->yesterday()->year.
-                '&ed='.Carbon::now()->yesterday()->day .'&em='.Carbon::now()->yesterday()->month.'&ey='.Carbon::now()->yesterday()->year;
+            $api_url_yesterday = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=' .
+                Carbon::now()->yesterday()->day . '&sm=' . Carbon::now()->yesterday()->month . '&sy=' . Carbon::now()->yesterday()->year .
+                '&ed=' . Carbon::now()->yesterday()->day . '&em=' . Carbon::now()->yesterday()->month . '&ey=' . Carbon::now()->yesterday()->year;
 
             $yesterday_stats = json_decode(file_get_contents($api_url_yesterday), true);
 
-            $api_url_week = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd='.
-                Carbon::now()->startOfWeek()->day.'&sm='.Carbon::now()->startOfWeek()->month.'&sy='.Carbon::now()->startOfWeek()->year.
-                '&ed='.Carbon::now()->endOfWeek()->day .'&em='.Carbon::now()->endOfWeek()->month.'&ey='.Carbon::now()->endOfWeek()->year;
+            $api_url_week = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=' .
+                Carbon::now()->startOfWeek()->day . '&sm=' . Carbon::now()->startOfWeek()->month . '&sy=' . Carbon::now()->startOfWeek()->year .
+                '&ed=' . Carbon::now()->endOfWeek()->day . '&em=' . Carbon::now()->endOfWeek()->month . '&ey=' . Carbon::now()->endOfWeek()->year;
 
             $week_stats = json_decode(file_get_contents($api_url_week), true);
 
@@ -119,7 +118,6 @@ class HomeController extends AdminController
         $weekOfferQuery = $weekOfferQuery->whereBetween('network_clicks.created_at', [$startWeek, $endWeek])->get();
 
 
-
         $todayOffers = [];
         $yesterdayOffers = [];
         $weekOffers = [];
@@ -128,7 +126,7 @@ class HomeController extends AdminController
 
             $offer = Offer::find($offerSection->id);
             $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$todayStart, $todayEnd])->count();
-            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads/$site_click)*100, 2).'%' : 'Not Available';
+            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads / $site_click) * 100, 2) . '%' : 'Not Available';
             $net_click = 0;
 
             if (isset($apiData[$offer->network_id])) {
@@ -143,7 +141,7 @@ class HomeController extends AdminController
                 'offer_name' => $offer->name,
                 'net_click' => $net_click,
                 'net_lead' => $offerSection->totalLeads,
-                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads/$net_click)*100, 2).'%' : 'Not Available',
+                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads / $net_click) * 100, 2) . '%' : 'Not Available',
                 'site_cr' => $site_cr,
                 'site_click' => $site_click,
             ];
@@ -153,7 +151,7 @@ class HomeController extends AdminController
 
             $offer = Offer::find($offerSection->id);
             $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$yesterdayStart, $yesterdayEnd])->count();
-            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads/$site_click)*100, 2).'%' : 'Not Available';
+            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads / $site_click) * 100, 2) . '%' : 'Not Available';
             $net_click = 0;
 
             if (isset($apiData[$offer->network_id])) {
@@ -168,7 +166,7 @@ class HomeController extends AdminController
                 'offer_name' => $offer->name,
                 'net_click' => $net_click,
                 'net_lead' => $offerSection->totalLeads,
-                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads/$net_click)*100, 2).'%' : 'Not Available',
+                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads / $net_click) * 100, 2) . '%' : 'Not Available',
                 'site_cr' => $site_cr,
                 'site_click' => $site_click,
             ];
@@ -178,7 +176,7 @@ class HomeController extends AdminController
 
             $offer = Offer::find($offerSection->id);
             $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$startWeek, $endWeek])->count();
-            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads/$site_click)*100, 2).'%' : 'Not Available';
+            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads / $site_click) * 100, 2) . '%' : 'Not Available';
             $net_click = 0;
 
             if (isset($apiData[$offer->network_id])) {
@@ -193,7 +191,7 @@ class HomeController extends AdminController
                 'offer_name' => $offer->name,
                 'net_click' => $net_click,
                 'net_lead' => $offerSection->totalLeads,
-                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads/$net_click)*100, 2).'%' : 'Not Available',
+                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads / $net_click) * 100, 2) . '%' : 'Not Available',
                 'site_cr' => $site_cr,
                 'site_click' => $site_click,
             ];
@@ -209,9 +207,12 @@ class HomeController extends AdminController
         $currentUser = auth('backend')->user();
         $currentUserId = ($currentUser->id == 1) ? 12 : $currentUser->id;
         list($content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers) = $this->generateDashboard($currentUserId);
+        return view('admin.index', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent'));
+    }
 
-
-        $recentAll = DB::table('network_clicks')
+    public function ajaxSiteRecentLead()
+    {
+        $siteRecentLead = DB::table('network_clicks')
             ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
             ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
             ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
@@ -220,7 +221,7 @@ class HomeController extends AdminController
             ->limit(10)
             ->get();
 
-        return view('admin.index', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent', 'recentAll'));
+        return response()->json(['success' => true, 'html' => view('admin.ajax_recent_lead', compact('siteRecentLead'))->render()]);
     }
 
     public function control()

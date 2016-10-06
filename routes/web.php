@@ -23,6 +23,7 @@ Route::get('admin/thongke', 'Backend\HomeController@thongke');
 Route::get('admin/clearlead', 'Backend\HomeController@clearlead');
 Route::get('admin/statistic/{content}', 'Backend\HomeController@statistic');
 Route::get('admin/ajax/{content}', 'Backend\HomeController@ajax');
+Route::get('admin/recent-lead', 'Backend\HomeController@ajaxSiteRecentLead');
 Route::resource('admin/users', 'Backend\UsersController');
 Route::resource('admin/offers', 'Backend\OffersController');
 Route::resource('admin/groups', 'Backend\GroupsController');

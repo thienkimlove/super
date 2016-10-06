@@ -232,36 +232,20 @@
         <!-- /.col-lg-4 -->
     </div>
     @endif
+    <div class="row" id="site-recent-lead">
 
-    @if ($recentAll)
-        <div class="row">
-            <!-- /.col-lg-8 -->
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <i class="fa fa-bell fa-fw"></i> Site Recent Lead
-                    </div>
-                    <!-- /.panel-heading -->
-                    <div class="panel-body">
-                        <div class="list-group">
-                            @foreach ($recentAll as $recent)
-                                <a class="list-group-item" href="#">
-                                    <b>{{$recent->username}}</b> lead offer <b>{{$recent->name}}</b> with IP <b>{{$recent->ip}}</b>
-                                    <span class="pull-right text-muted small">
-                                    <em>{{$recent->created_at}}</em>
-                                </span>
-                                </a>
-                            @endforeach
-                        </div>
-                        <!-- /.list-group -->
-                        <a class="btn btn-default btn-block" href="{{url('admin/offers')}}">View All Offers</a>
-                    </div>
-                    <!-- /.panel-body -->
-                </div>
-                <!-- /.panel -->
-            </div>
-            <!-- /.col-lg-4 -->
-        </div>
-    @endif
+    </div>
 
+@endsection
+
+@section('footer')
+<script>
+    $(document).ready(function(){
+        setInterval(function(){
+            $.getJSON(baseUrl + '/admin/recent-lead', function(response){
+                $('#site-recent-lead').html(response.html);
+            });
+        }, 3000);
+    });
+</script>
 @endsection
