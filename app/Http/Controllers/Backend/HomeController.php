@@ -420,11 +420,14 @@ class HomeController extends AdminController
                     ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
-                    ->where('network_clicks.network_id', $request->input('content_id'))
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
 
                 if ($userSearchId) {
                     $clicks = $clicks->where('users.id', $userSearchId);
+                }
+
+                if ($request->input('content_id')) {
+                    $clicks = $clicks->where('network_clicks.network_id', $request->input('content_id'));
                 }
 
                 if ($offerSearchId) {
@@ -440,11 +443,14 @@ class HomeController extends AdminController
                     ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
                     ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
-                    ->where('network_clicks.network_id', $request->input('content_id'))
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
 
                 if ($userSearchId) {
                     $countTotal = $countTotal->where('users.id', $userSearchId);
+                }
+
+                if ($request->input('content_id')) {
+                    $countTotal = $countTotal->where('network_clicks.network_id', $request->input('content_id'));
                 }
 
                 if ($offerSearchId) {
