@@ -48,8 +48,9 @@ class HomeController extends AdminController
         $userRecent = $userRecent
             ->select('offers.name', 'network_clicks.ip', 'network_clicks.created_at', 'users.username')
             ->orderBy('network_clicks.created_at', 'desc')
-            ->limit(6)
+            ->limit(10)
             ->get();
+
 
         //money
         $moneyQuery = clone $initQuery;
@@ -208,7 +209,18 @@ class HomeController extends AdminController
         $currentUser = auth('backend')->user();
         $currentUserId = ($currentUser->id == 1) ? 12 : $currentUser->id;
         list($content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers) = $this->generateDashboard($currentUserId);
-        return view('admin.index', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent'));
+
+
+        $recentAll = DB::table('network_clicks')
+            ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+            ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+            ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+            ->select('offers.name', 'network_clicks.ip', 'network_clicks.created_at', 'users.username')
+            ->orderBy('network_clicks.created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return view('admin.index', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent', 'recentAll'));
     }
 
     public function control()
