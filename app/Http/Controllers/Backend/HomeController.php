@@ -122,79 +122,86 @@ class HomeController extends AdminController
         $yesterdayOffers = [];
         $weekOffers = [];
 
-        foreach ($todayOfferQuery as $offerSection) {
+        if ($todayOfferQuery->count() > 0) {
+            foreach ($todayOfferQuery as $offerSection) {
 
-            $offer = Offer::find($offerSection->id);
-            $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$todayStart, $todayEnd])->count();
-            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads / $site_click) * 100, 2) . '%' : 'Not Available';
-            $net_click = 0;
+                $offer = Offer::find($offerSection->id);
+                $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$todayStart, $todayEnd])->count();
+                $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads / $site_click) * 100, 2) . '%' : 'Not Available';
+                $net_click = 0;
 
-            if (isset($apiData[$offer->network_id])) {
-                foreach ($apiData[$offer->network_id]['today'] as $stat) {
-                    if (intval($stat['id']) == $offer->net_offer_id) {
-                        $net_click = $stat['clicks'];
+                if (isset($apiData[$offer->network_id])) {
+                    foreach ($apiData[$offer->network_id]['today'] as $stat) {
+                        if (intval($stat['id']) == $offer->net_offer_id) {
+                            $net_click = $stat['clicks'];
+                        }
                     }
                 }
-            }
 
-            $todayOffers[] = [
-                'offer_name' => $offer->name,
-                'net_click' => $net_click,
-                'net_lead' => $offerSection->totalLeads,
-                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads / $net_click) * 100, 2) . '%' : 'Not Available',
-                'site_cr' => $site_cr,
-                'site_click' => $site_click,
-            ];
+                $todayOffers[] = [
+                    'offer_name' => $offer->name,
+                    'net_click' => $net_click,
+                    'net_lead' => $offerSection->totalLeads,
+                    'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads / $net_click) * 100, 2) . '%' : 'Not Available',
+                    'site_cr' => $site_cr,
+                    'site_click' => $site_click,
+                ];
+            }
         }
 
-        foreach ($yesterdayOfferQuery as $offerSection) {
 
-            $offer = Offer::find($offerSection->id);
-            $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$yesterdayStart, $yesterdayEnd])->count();
-            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads / $site_click) * 100, 2) . '%' : 'Not Available';
-            $net_click = 0;
+        if ($yesterdayOfferQuery->count() > 0) {
+            foreach ($yesterdayOfferQuery as $offerSection) {
 
-            if (isset($apiData[$offer->network_id])) {
-                foreach ($apiData[$offer->network_id]['yesterday'] as $stat) {
-                    if (intval($stat['id']) == $offer->net_offer_id) {
-                        $net_click = $stat['clicks'];
+                $offer = Offer::find($offerSection->id);
+                $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$yesterdayStart, $yesterdayEnd])->count();
+                $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads / $site_click) * 100, 2) . '%' : 'Not Available';
+                $net_click = 0;
+
+                if (isset($apiData[$offer->network_id])) {
+                    foreach ($apiData[$offer->network_id]['yesterday'] as $stat) {
+                        if (intval($stat['id']) == $offer->net_offer_id) {
+                            $net_click = $stat['clicks'];
+                        }
                     }
                 }
-            }
 
-            $yesterdayOffers[] = [
-                'offer_name' => $offer->name,
-                'net_click' => $net_click,
-                'net_lead' => $offerSection->totalLeads,
-                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads / $net_click) * 100, 2) . '%' : 'Not Available',
-                'site_cr' => $site_cr,
-                'site_click' => $site_click,
-            ];
+                $yesterdayOffers[] = [
+                    'offer_name' => $offer->name,
+                    'net_click' => $net_click,
+                    'net_lead' => $offerSection->totalLeads,
+                    'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads / $net_click) * 100, 2) . '%' : 'Not Available',
+                    'site_cr' => $site_cr,
+                    'site_click' => $site_click,
+                ];
+            }
         }
 
-        foreach ($weekOfferQuery as $offerSection) {
+        if ($weekOfferQuery->count() > 0) {
+            foreach ($weekOfferQuery as $offerSection) {
 
-            $offer = Offer::find($offerSection->id);
-            $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$startWeek, $endWeek])->count();
-            $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads / $site_click) * 100, 2) . '%' : 'Not Available';
-            $net_click = 0;
+                $offer = Offer::find($offerSection->id);
+                $site_click = DB::table('clicks')->where('offer_id', $offer->id)->whereBetween('created_at', [$startWeek, $endWeek])->count();
+                $site_cr = ($site_click > 0) ? round(($offerSection->totalLeads / $site_click) * 100, 2) . '%' : 'Not Available';
+                $net_click = 0;
 
-            if (isset($apiData[$offer->network_id])) {
-                foreach ($apiData[$offer->network_id]['week'] as $stat) {
-                    if (intval($stat['id']) == $offer->net_offer_id) {
-                        $net_click = $stat['clicks'];
+                if (isset($apiData[$offer->network_id])) {
+                    foreach ($apiData[$offer->network_id]['week'] as $stat) {
+                        if (intval($stat['id']) == $offer->net_offer_id) {
+                            $net_click = $stat['clicks'];
+                        }
                     }
                 }
-            }
 
-            $weekOffers[] = [
-                'offer_name' => $offer->name,
-                'net_click' => $net_click,
-                'net_lead' => $offerSection->totalLeads,
-                'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads / $net_click) * 100, 2) . '%' : 'Not Available',
-                'site_cr' => $site_cr,
-                'site_click' => $site_click,
-            ];
+                $weekOffers[] = [
+                    'offer_name' => $offer->name,
+                    'net_click' => $net_click,
+                    'net_lead' => $offerSection->totalLeads,
+                    'net_cr' => ($net_click > 0) ? round(($offerSection->totalLeads / $net_click) * 100, 2) . '%' : 'Not Available',
+                    'site_cr' => $site_cr,
+                    'site_click' => $site_click,
+                ];
+            }
         }
 
         return [$content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers];
