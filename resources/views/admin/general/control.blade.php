@@ -229,7 +229,7 @@
                 $.getJSON(baseUrl + '/admin/recent-lead', function(response){
                     $('#site-recent-lead').html(response.html);
                 });
-            }, 3000);
+            }, 15000);
         });
     </script>
 @endsection
