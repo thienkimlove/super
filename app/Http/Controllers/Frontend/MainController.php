@@ -14,6 +14,7 @@ use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Agent;
+use App\MediaOffer;
 
 class MainController extends Controller
 {
@@ -182,4 +183,18 @@ class MainController extends Controller
 
     }
 
+    public function xMedia()
+    {
+       $offers = MediaOffer::latest('updated_at')->paginate(100);
+
+        foreach ($offers as $offer) {
+            $hash_tag_1 = md5(uniqid($offer->offer_id.'s1'));
+            $hash_tag_2 = md5(uniqid($offer->offer_id.'s2'));
+            $hash_tag_3 = md5(uniqid($offer->offer_id.'s3'));
+
+            $offer->hash_link = str_replace('&s1=&s2=&s3=', '&s1='.$hash_tag_1.'&s2='.$hash_tag_2.'&s3='.$hash_tag_3, $offer->offer_tracking_link);
+        }
+
+        return view('frontend.list_xmedia', compact('offers'));
+    }
 }

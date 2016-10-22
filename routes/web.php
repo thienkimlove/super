@@ -34,4 +34,5 @@ Route::get('/', 'Frontend\MainController@index');
 Route::get('camp', 'Frontend\MainController@camp');
 Route::get('postback', 'Frontend\MainController@postback');
 Route::post('postback', 'Frontend\MainController@postback');
+Route::get('xmedia', 'Frontend\MainController@xmedia');
 

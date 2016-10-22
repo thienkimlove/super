@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\AddAdmin;
+use App\Console\Commands\AddMediaOffer;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         AddAdmin::class,
+        AddMediaOffer::class,
     ];
 
     /**
@@ -27,6 +29,13 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->command('add:media')
+            ->appendOutputTo(storage_path('logs/add_media.log'))
+            ->withoutOverlapping()
+            ->everyFiveMinutes();
+
+
     }
 
     /**
