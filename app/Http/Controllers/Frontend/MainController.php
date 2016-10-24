@@ -125,11 +125,19 @@ class MainController extends Controller
                             //check if this ip click is existed in database or not.
                             $currentIp = $request->ip();
 
-                            $count = DB::table('clicks')
-                                ->where('offer_id', $offer_id)
-                                ->where('click_ip', $currentIp)
-                                ->count();
-                            if ($count == 0) {
+                            if ($offer->check_click_in_network) {
+                                $count = DB::table('network_clicks')
+                                    ->where('network_offer_id', $offer->net_offer_id)
+                                    ->where('ip', $currentIp)
+                                    ->count();
+                            } else {
+                                $count = DB::table('clicks')
+                                    ->where('offer_id', $offer_id)
+                                    ->where('click_ip', $currentIp)
+                                    ->count();
+                            }
+
+                            if ($count == 0 || $offer->allow_multi_lead) {
                                 //insert click and redirect
                                 $hash_tag = md5(uniqid($offer_id.$user_id.$currentIp));
                                 try {

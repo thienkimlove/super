@@ -31,24 +31,40 @@ class OffersController extends AdminController
     public function index(Request $request)
     {
         $searchOffer = null;
+        $searchCountry = null;
+        $searchDevice = null;
 
         $offers = Offer::latest('updated_at');
+
+
 
         if ($request->input('q')) {
             $searchOffer = urldecode($request->input('q'));
             $offers = $offers->where('name', 'LIKE', '%'. $searchOffer. '%');
         }
 
+        if ($request->input('country')) {
+            $searchCountry = urldecode($request->input('country'));
+            $offers = $offers->where('geo_locations', 'LIKE', '%'. $searchCountry. '%');
+        }
+
+        if ($request->input('device')) {
+            $searchDevice = urldecode($request->input('device'));
+            $offers = $offers->where('allow_devices', $searchDevice);
+        }
+
         if ($request->input('auto')) {
             $offers = $offers->where('auto', true)->paginate(10);
+            $offers->setPath('/admin/offers?auto=1');
         } else {
             $offers = $offers->where('auto', false)->paginate(10);
         }
 
         $auto = ($request->input('auto') == 1) ? 1 : 0;
 
+        $devices = $this->devices;
 
-        return view('admin.offer.index', compact('offers', 'searchOffer', 'auto'));
+        return view('admin.offer.index', compact('offers', 'searchOffer', 'auto', 'searchCountry', 'devices', 'searchDevice'));
     }
 
 
@@ -73,6 +89,7 @@ class OffersController extends AdminController
                 'network_id' => $request->input('network_id'),
                 'net_offer_id' => $request->input('net_offer_id'),
                 'status' => ($request->input('status') == 'on') ? true : false,
+                'allow_multi_lead' => ($request->input('allow_multi_lead') == 'on') ? true : false,
                 'image' => $request->input('image')
             ]);
 
@@ -109,7 +126,8 @@ class OffersController extends AdminController
             'network_id' => $request->input('network_id'),
             'net_offer_id' => $request->input('net_offer_id'),
             'image' => $request->input('image'),
-            'status' => ($request->input('status') == 'on') ? true : false
+            'status' => ($request->input('status') == 'on') ? true : false,
+            'allow_multi_lead' => ($request->input('allow_multi_lead') == 'on') ? true : false,
         ];
 
         try {

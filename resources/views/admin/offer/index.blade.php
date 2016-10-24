@@ -13,11 +13,22 @@
                 <div class="panel-heading">
                     <div class="input-group custom-search-form">
                         {!! Form::open(['method' => 'GET', 'route' =>  ['offers.index'] ]) !!}
-                        <span class="input-group-btn">
-                            <input type="text" value="{{$searchOffer}}" name="q" class="form-control"
-                                   placeholder="Search offer..">
 
-                            <input type="hidden" name="auto" value="{{$auto}}" />
+                        <span class="input-group-btn">
+                             <input type="text" value="{{$searchOffer}}" name="q" class="form-control"
+                                    placeholder="Search offer..">
+                        </span>
+                        <span class="input-group-btn">
+                             <input type="text" value="{{$searchCountry}}" name="country" class="form-control"
+                                    placeholder="Search country..">
+
+                        </span>
+                        <span class="input-group-btn">
+                           {!! Form::select('device', $devices, null, ['class' => 'form-control']) !!}
+                        </span>
+
+                        <span class="input-group-btn">
+                             <input type="hidden" name="auto" value="{{$auto}}" />
                             <button class="btn btn-default" type="submit">
                                 <i class="fa fa-search"></i>
                             </button>
@@ -53,14 +64,14 @@
                             @foreach($offers as $offer)
                                 <tr>
                                     <td>{{$offer->id}}</td>
-                                    <td>{{$offer->name}}</td>
+                                    <td style="width:10%;">{{$offer->name}}</td>
                                     <td>
                                         @if ($offer->image)
                                             <img src="{{$offer->image}}" height="60" width="60" />
                                         @endif
                                     </td>
                                     <td>{{$offer->click_rate}}</td>
-                                    <td>{{$offer->geo_locations}}</td>
+                                    <td style="width:10%;">{{$offer->geo_locations}}</td>
                                     <td>{{config('devices')[$offer->allow_devices]}}</td>
                                     <td>{{url('camp?offer_id='.$offer->id.'&user_id='.auth('backend')->user()->id)}}</td>
                                     <td>{{($offer->status) ? 'Active' : "Inactive"}}</td>

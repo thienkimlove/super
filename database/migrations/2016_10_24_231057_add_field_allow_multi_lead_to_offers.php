@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddFieldImageToOffer extends Migration
+class AddFieldAllowMultiLeadToOffers extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddFieldImageToOffer extends Migration
     public function up()
     {
         Schema::table('offers', function (Blueprint $table) {
-            $table->string('image')->nullable();
+            $table->boolean('allow_multi_lead')->default(false);
         });
     }
 
@@ -26,7 +26,7 @@ class AddFieldImageToOffer extends Migration
     public function down()
     {
         Schema::table('offers', function (Blueprint $table) {
-            $table->dropColumn('image');
+            $table->dropColumn('allow_multi_lead');
         });
     }
 }

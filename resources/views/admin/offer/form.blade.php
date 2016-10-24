@@ -59,6 +59,16 @@
             </div>
 
             <div class="form-group">
+                {!! Form::label('allow_multi_lead', 'Allow Multi Lead') !!}
+                {!! Form::checkbox('allow_multi_lead', null, null) !!}
+            </div>
+
+            <div class="form-group">
+                {!! Form::label('check_click_in_network', 'Check Click In Network') !!}
+                {!! Form::checkbox('check_click_in_network', null, null) !!}
+            </div>
+
+            <div class="form-group">
                 {!! Form::label('status', 'Active') !!}
                 {!! Form::checkbox('status', null, null) !!}
             </div>
