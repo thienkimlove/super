@@ -43,15 +43,23 @@ class AddMediaOffer extends Command
         foreach ($offers as $offer) {
 
             $devices = null;
-            $ios = false;
+            $isIphone = false;
+            $isIpad = false;
             $android = false;
             if ($offer['devices']) {
                 foreach ($offer['devices'] as $device) {
-                    if (strpos(strtolower($device), 'iphone') !== false || strpos(strtolower($device), 'ipad') !== false) {
-                        $ios = true;
+                    if (strpos(strtolower($device), 'iphone') !== false) {
+                        $isIphone = true;
+                    }
+                    if (strpos(strtolower($device), 'ipad') !== false) {
+                        $isIpad = true;
                     }
                     if (strpos(strtolower($device), 'droid') !== false) {
                         $android = true;
+                    }
+
+                    if ($isIphone && $isIpad) {
+                        $ios = true;
                     }
                 }
             }
@@ -59,10 +67,14 @@ class AddMediaOffer extends Command
 
             if ($ios && $android) {
                 $devices = 2;
+            } else if ($android) {
+                $devices = 4;
             } else if ($ios) {
                 $devices = 5;
-            } else {
-                $devices = 4;
+            } else if ($isIphone) {
+                $devices = 6;
+            } else if ($isIpad) {
+                $devices = 7;
             }
 
             Offer::updateOrCreate(['net_offer_id' => $offer['offer_id']], [

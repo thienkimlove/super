@@ -84,6 +84,14 @@ class MainController extends Controller
             return false;
         }
 
+        if ($offer->allow_devices == 6 && ! ($agent->isPhone() && $agent->isiOS()) ) {
+            return false;
+        }
+
+        if ($offer->allow_devices == 7 && ! ($agent->isTablet() && $agent->isiOS()) ) {
+            return false;
+        }
+
         return true;
     }
 
