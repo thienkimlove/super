@@ -39,10 +39,16 @@ class OffersController extends AdminController
             $offers = $offers->where('name', 'LIKE', '%'. $searchOffer. '%');
         }
 
-        $offers = $offers->paginate(10);
+        if ($request->input('auto')) {
+            $offers = $offers->where('auto', true)->paginate(10);
+        } else {
+            $offers = $offers->where('auto', false)->paginate(10);
+        }
+
 
         return view('admin.offer.index', compact('offers', 'searchOffer'));
     }
+
 
     public function create()
     {

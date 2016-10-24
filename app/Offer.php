@@ -15,7 +15,8 @@ class Offer extends Model
         'network_id',
         'net_offer_id',
         'image',
-        'status'
+        'status',
+        'auto'
     ];
 
     public function clicks()

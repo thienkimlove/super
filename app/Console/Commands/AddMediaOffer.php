@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Offer;
 use Illuminate\Console\Command;
-use App\MediaOffer;
 
 class AddMediaOffer extends Command
 {
@@ -41,14 +41,41 @@ class AddMediaOffer extends Command
         $url = 'http://intrexmedia.com/api.php?key=758be7ff505de4ad';
         $offers = json_decode(file_get_contents($url), true);
         foreach ($offers as $offer) {
-            MediaOffer::updateOrCreate([
-                'offer_id' => $offer['offer_id'],
-            ],[
-                'offer_id' => $offer['offer_id'],
-                'offer_name' => $offer['offer_name'],
-                'offer_preview_link' => $offer['preview_link'],
-                'offer_tracking_link' => $offer['tracking_url'],
+
+            $devices = null;
+            $ios = false;
+            $android = false;
+            foreach ($offer['devices'] as $device) {
+                if (strpos(strtolower($device), 'iphone') !== false || strpos(strtolower($device), 'ipad') !== false) {
+                    $ios = true;
+                }
+                if (strpos(strtolower($device), 'droid') !== false) {
+                    $android = true;
+                }
+            }
+
+
+            if ($ios && $android) {
+                $devices = 2;
+            } else if ($ios) {
+                $devices = 5;
+            } else {
+                $devices = 4;
+            }
+
+            Offer::updateOrCreate(['net_offer_id' => $offer['offer_id']], [
+                'net_offer_id' => $offer['offer_id'],
+                'name' => $offer['offer_name'],
+                'redirect_link' => str_replace('&s1=&s2=&s3=', '&s1=#subId', $offer['tracking_url']),
+                'click_rate' => round(floatval(str_replace('$', '', $offer['rate']))/2, 2),
+                'allow_devices' => $devices,
+                'geo_locations' => implode(',', $offer['geos']),
+                'network_id' => 1,
+                'status' => true,
+                'auto' => true
             ]);
+
         }
+
     }
 }
