@@ -65,7 +65,7 @@ class AddMediaOffer extends Command
 
             Offer::updateOrCreate(['net_offer_id' => $offer['offer_id']], [
                 'net_offer_id' => $offer['offer_id'],
-                'name' => $offer['offer_name'],
+                'name' => str_limit( $offer['offer_name'], 250),
                 'redirect_link' => str_replace('&s1=&s2=&s3=', '&s1=#subId', $offer['tracking_url']),
                 'click_rate' => round(floatval(str_replace('$', '', $offer['rate']))/2, 2),
                 'allow_devices' => $devices,
