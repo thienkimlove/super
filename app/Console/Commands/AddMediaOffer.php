@@ -45,12 +45,14 @@ class AddMediaOffer extends Command
             $devices = null;
             $ios = false;
             $android = false;
-            foreach ($offer['devices'] as $device) {
-                if (strpos(strtolower($device), 'iphone') !== false || strpos(strtolower($device), 'ipad') !== false) {
-                    $ios = true;
-                }
-                if (strpos(strtolower($device), 'droid') !== false) {
-                    $android = true;
+            if ($offer['devices']) {
+                foreach ($offer['devices'] as $device) {
+                    if (strpos(strtolower($device), 'iphone') !== false || strpos(strtolower($device), 'ipad') !== false) {
+                        $ios = true;
+                    }
+                    if (strpos(strtolower($device), 'droid') !== false) {
+                        $android = true;
+                    }
                 }
             }
 
