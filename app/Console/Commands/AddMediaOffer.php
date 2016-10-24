@@ -46,6 +46,7 @@ class AddMediaOffer extends Command
             $isIphone = false;
             $isIpad = false;
             $android = false;
+            $ios = false;
             if ($offer['devices']) {
                 foreach ($offer['devices'] as $device) {
                     if (strpos(strtolower($device), 'iphone') !== false) {
