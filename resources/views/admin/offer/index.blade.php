@@ -17,6 +17,7 @@
                             <input type="text" value="{{$searchOffer}}" name="q" class="form-control"
                                    placeholder="Search offer..">
 
+                            <input type="hidden" name="auto" value="{{$auto}}" />
                             <button class="btn btn-default" type="submit">
                                 <i class="fa fa-search"></i>
                             </button>

@@ -45,8 +45,10 @@ class OffersController extends AdminController
             $offers = $offers->where('auto', false)->paginate(10);
         }
 
+        $auto = ($request->input('auto') == 1) ? 1 : 0;
 
-        return view('admin.offer.index', compact('offers', 'searchOffer'));
+
+        return view('admin.offer.index', compact('offers', 'searchOffer', 'auto'));
     }
 
 
