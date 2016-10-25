@@ -31,9 +31,9 @@ class HomeController extends AdminController
 
 
         $initQuery = DB::table('network_clicks')
-            ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-            ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-            ->leftJoin('users', 'clicks.user_id', '=', 'users.id');
+            ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+            ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+            ->join('users', 'clicks.user_id', '=', 'users.id');
 
         if ($userId) {
             $initQuery = $initQuery->where('users.id', $userId);
@@ -226,9 +226,9 @@ class HomeController extends AdminController
     public function ajaxSiteRecentLead()
     {
         $siteRecentLead = DB::table('network_clicks')
-            ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-            ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-            ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+            ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+            ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+            ->join('users', 'clicks.user_id', '=', 'users.id')
             ->select('offers.name', 'network_clicks.ip', 'network_clicks.created_at', 'users.username')
             ->orderBy('network_clicks.created_at', 'desc')
             ->limit(10)
@@ -319,9 +319,9 @@ class HomeController extends AdminController
                 $clicks = DB::table('network_clicks')
                     ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
 
-                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->join('users', 'clicks.user_id', '=', 'users.id')
                     ->whereIn('users.id', $userIds)
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
 
@@ -342,9 +342,9 @@ class HomeController extends AdminController
 
                 $countTotal = DB::table('network_clicks')
                     ->select(DB::raw("SUM(offers.click_rate) as totalMoney, COUNT(network_clicks.id) as totalClicks"))
-                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->join('users', 'clicks.user_id', '=', 'users.id')
                     ->whereIn('users.id', $userIds)
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
                 if ($network_id) {
@@ -371,9 +371,9 @@ class HomeController extends AdminController
                 $clicks = DB::table('network_clicks')
                     ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
 
-                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->join('users', 'clicks.user_id', '=', 'users.id')
                     ->where('users.id', $userId)
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
                 if ($network_id) {
@@ -389,9 +389,9 @@ class HomeController extends AdminController
 
                 $countTotal = DB::table('network_clicks')
                     ->select(DB::raw("SUM(offers.click_rate) as totalMoney, COUNT(network_clicks.id) as totalClicks"))
-                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->join('users', 'clicks.user_id', '=', 'users.id')
                     ->where('users.id', $userId)
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
 
@@ -411,9 +411,9 @@ class HomeController extends AdminController
             case "offer" :
             $clicks = DB::table('network_clicks')
                 ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
-                ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-                ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-                ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                ->join('users', 'clicks.user_id', '=', 'users.id')
                 ->where('offers.id', $request->input('content_id'))
                 ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
 
@@ -426,9 +426,9 @@ class HomeController extends AdminController
 
             $countTotal = DB::table('network_clicks')
                 ->select(DB::raw("SUM(offers.click_rate) as totalMoney, COUNT(network_clicks.id) as totalClicks"))
-                ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-                ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-                ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                ->join('users', 'clicks.user_id', '=', 'users.id')
                 ->where('offers.id', $request->input('content_id'))
                 ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
             if ($userSearchId) {
@@ -443,9 +443,9 @@ class HomeController extends AdminController
             case "network" :
                 $clicks = DB::table('network_clicks')
                     ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
-                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->join('users', 'clicks.user_id', '=', 'users.id')
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
 
                 if ($userSearchId) {
@@ -466,9 +466,9 @@ class HomeController extends AdminController
 
                 $countTotal = DB::table('network_clicks')
                     ->select(DB::raw("SUM(offers.click_rate) as totalMoney, COUNT(network_clicks.id) as totalClicks"))
-                    ->leftJoin('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
-                    ->leftJoin('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
-                    ->leftJoin('users', 'clicks.user_id', '=', 'users.id')
+                    ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                    ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                    ->join('users', 'clicks.user_id', '=', 'users.id')
                     ->whereBetween('network_clicks.created_at', [$queryStart, $queryEnd]);
 
                 if ($userSearchId) {
