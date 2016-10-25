@@ -53,17 +53,14 @@ class OffersController extends AdminController
             $offers = $offers->where('allow_devices', $searchDevice);
         }
 
-        if ($request->input('auto')) {
+        if ($request->input('auto') && $request->input('auto') == 1) {
             $offers = $offers->where('auto', true)->paginate(10);
             $offers->setPath('/admin/offers?auto=1');
         } else {
             $offers = $offers->where('auto', false)->paginate(10);
         }
-
         $auto = ($request->input('auto') == 1) ? 1 : 0;
-
         $devices = $this->devices;
-
         return view('admin.offer.index', compact('offers', 'searchOffer', 'auto', 'searchCountry', 'devices', 'searchDevice'));
     }
 
