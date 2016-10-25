@@ -291,7 +291,8 @@ class HomeController extends AdminController
     {
 
         $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
-        $globalOffers = ['' => 'Choose Offer'] + Offer::where('auto', false)->pluck('name', 'id')->all();
+        //chi hien thi danh sach cac offer co lead.
+        $globalOffers = ['' => 'Choose Offer'] + Offer::has('network_clicks')->pluck('name', 'id')->all();
         $globalNetworks = ['' => 'Choose Network'] + Network::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
         
@@ -542,7 +543,7 @@ class HomeController extends AdminController
         $title = 'Thống kê theo '.strtoupper($content).' từ ngày '.$start .' đến ngày '.$end;
 
         $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
-        $globalOffers = ['' => 'Choose Offer'] + Offer::where('auto', false)->pluck('name', 'id')->all();
+        $globalOffers = ['' => 'Choose Offer'] + Offer::has('network_clicks')->pluck('name', 'id')->all();
         $globalNetworks = ['' => 'Choose Network'] + Network::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
 
