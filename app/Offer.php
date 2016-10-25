@@ -18,7 +18,7 @@ class Offer extends Model
         'status',
         'auto',
         'allow_multi_lead',
-        'check_click'
+        'check_click_in_network'
     ];
 
     public function clicks()

@@ -90,6 +90,7 @@ class OffersController extends AdminController
                 'net_offer_id' => $request->input('net_offer_id'),
                 'status' => ($request->input('status') == 'on') ? true : false,
                 'allow_multi_lead' => ($request->input('allow_multi_lead') == 'on') ? true : false,
+                'check_click_in_network' => ($request->input('check_click_in_network') == 'on') ? true : false,
                 'image' => $request->input('image')
             ]);
 
@@ -128,6 +129,7 @@ class OffersController extends AdminController
             'image' => $request->input('image'),
             'status' => ($request->input('status') == 'on') ? true : false,
             'allow_multi_lead' => ($request->input('allow_multi_lead') == 'on') ? true : false,
+            'check_click_in_network' => ($request->input('check_click_in_network') == 'on') ? true : false,
         ];
 
         try {

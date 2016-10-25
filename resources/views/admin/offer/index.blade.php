@@ -54,6 +54,8 @@
                                 <th>Status</th>
                                 @if (auth('backend')->user()->permission_id == 1)
                                     <th>True Link</th>
+                                    <th>Allow Multi Lead</th>
+                                    <th>Check Click In Network</th>
                                     <th>Network</th>
                                     <th>Network OfferID</th>
                                     <th>Action</th>
@@ -77,6 +79,8 @@
                                     <td>{{($offer->status) ? 'Active' : "Inactive"}}</td>
                                     @if (auth('backend')->user()->permission_id == 1)
                                         <td>{{$offer->redirect_link}}</td>
+                                        <td>{{($offer->allow_multi_lead) ? 'Yes' : 'No'}}</td>
+                                        <td>{{($offer->check_click_in_network) ? 'Yes' : 'No'}}</td>
                                         <td>{{($offer->network) ? $offer->network->name : 'None'}}</td>
                                         <td>{{$offer->net_offer_id}}</td>
                                         <td>

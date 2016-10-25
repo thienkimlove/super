@@ -83,9 +83,11 @@
                                 <a href="{{url('admin/offers')}}">Danh sách offer</a>
                             </li>
 
+
                             <li>
                                 <a href="{{url('admin/offers?auto=1')}}">Danh sách offer tự động</a>
                             </li>
+
 
                             <li>
                                 <a href="{{url('admin/groups')}}">Danh sách Group</a>
@@ -114,6 +116,10 @@
 
                         <li>
                             <a href="{{url('admin/offers')}}">List</a>
+                        </li>
+
+                        <li>
+                            <a href="{{url('admin/offers?auto=1')}}">Danh sách offer tự động</a>
                         </li>
                         @if (auth('backend')->user()->permission_id == 1)
                         <li>
