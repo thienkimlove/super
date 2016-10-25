@@ -36,30 +36,35 @@ class OffersController extends AdminController
 
         $offers = Offer::latest('updated_at');
 
+        $path = '/admin/offers?init=1';
 
 
         if ($request->input('q')) {
             $searchOffer = urldecode($request->input('q'));
             $offers = $offers->where('name', 'LIKE', '%'. $searchOffer. '%');
+            $path .= '&q='.$request->input('q');
         }
 
         if ($request->input('country')) {
             $searchCountry = urldecode($request->input('country'));
             $offers = $offers->where('geo_locations', 'LIKE', '%'. $searchCountry. '%');
+            $path .= '&country='.$request->input('country');
         }
 
         if ($request->input('device')) {
             $searchDevice = urldecode($request->input('device'));
             $offers = $offers->where('allow_devices', $searchDevice);
+            $path .= '&device='.$request->input('device');
         }
 
         if ($request->input('auto') && $request->input('auto') == 1) {
             $offers = $offers->where('auto', true)->paginate(10);
-            $offers->setPath('/admin/offers?auto=1');
         } else {
             $offers = $offers->where('auto', false)->paginate(10);
         }
         $auto = ($request->input('auto') == 1) ? 1 : 0;
+        $path .= '&auto='.$auto;
+        $offers->setPath($path);
         $devices = $this->devices;
         return view('admin.offer.index', compact('offers', 'searchOffer', 'auto', 'searchCountry', 'devices', 'searchDevice'));
     }

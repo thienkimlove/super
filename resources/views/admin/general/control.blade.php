@@ -69,22 +69,28 @@
                                        <thead>
                                        <tr>
                                            <th>Name</th>
+                                           <th>ID</th>
                                            <th>Clicks</th>
                                            <th>Lead</th>
                                            <th>CR</th>
                                            <th>Real Clicks</th>
                                            <th>Real CR</th>
+                                           <th>Price</th>
+                                           <th>Total</th>
                                        </tr>
                                        </thead>
                                        <tbody>
                                        @foreach ($todayOffers as $offer)
                                            <tr>
                                                <td>{{$offer['offer_name']}}</td>
+                                               <td>{{$offer['offer_id']}}</td>
                                                <td>{{$offer['site_click'] }}</td>
                                                <td>{{$offer['net_lead']}}</td>
                                                <td>{{ $offer['site_cr'] }}</td>
                                                <td>{{$offer['net_click']}}</td>
                                                <td>{{ $offer['net_cr'] }}</td>
+                                               <td>{{ $offer['offer_price'] }}</td>
+                                               <td>{{ $offer['offer_total'] }}</td>
                                            </tr>
                                        @endforeach
                                        </tbody>
@@ -124,22 +130,28 @@
                                         <thead>
                                         <tr>
                                             <th>Name</th>
+                                            <th>ID</th>
                                             <th>Clicks</th>
                                             <th>Lead</th>
                                             <th>CR</th>
                                             <th>Real Clicks</th>
                                             <th>Real CR</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @foreach ($yesterdayOffers as $offer)
                                             <tr>
                                                 <td>{{$offer['offer_name']}}</td>
+                                                <td>{{$offer['offer_id']}}</td>
                                                 <td>{{$offer['site_click'] }}</td>
                                                 <td>{{$offer['net_lead']}}</td>
                                                 <td>{{ $offer['site_cr'] }}</td>
                                                 <td>{{$offer['net_click']}}</td>
                                                 <td>{{ $offer['net_cr'] }}</td>
+                                                <td>{{ $offer['offer_price'] }}</td>
+                                                <td>{{ $offer['offer_total'] }}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>
@@ -179,22 +191,28 @@
                                         <thead>
                                         <tr>
                                             <th>Name</th>
+                                            <th>ID</th>
                                             <th>Clicks</th>
                                             <th>Lead</th>
                                             <th>CR</th>
                                             <th>Real Clicks</th>
                                             <th>Real CR</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @foreach ($weekOffers as $offer)
                                             <tr>
                                                 <td>{{$offer['offer_name']}}</td>
+                                                <td>{{$offer['offer_id']}}</td>
                                                 <td>{{$offer['site_click'] }}</td>
                                                 <td>{{$offer['net_lead']}}</td>
                                                 <td>{{ $offer['site_cr'] }}</td>
                                                 <td>{{$offer['net_click']}}</td>
                                                 <td>{{ $offer['net_cr'] }}</td>
+                                                <td>{{ $offer['offer_price'] }}</td>
+                                                <td>{{ $offer['offer_total'] }}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>

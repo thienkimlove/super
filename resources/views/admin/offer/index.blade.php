@@ -24,7 +24,7 @@
 
                         </span>
                         <span class="input-group-btn">
-                           {!! Form::select('device', $devices, null, ['class' => 'form-control']) !!}
+                           {!! Form::select('device', $devices, ($searchDevice) ? $searchDevice : null, ['class' => 'form-control']) !!}
                         </span>
 
                         <span class="input-group-btn">
