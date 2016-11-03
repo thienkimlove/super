@@ -292,6 +292,11 @@ class HomeController extends AdminController
         $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
         //chi hien thi danh sach cac offer co lead.
         $globalOffers = ['' => 'Choose Offer'] + Offer::has('network_clicks')->pluck('name', 'id')->all();
+        foreach ($globalOffers as $key => $value) {
+            if ($key) {
+                $globalOffers[$key] = $value.' ID='.$key;
+            }
+        }
         $globalNetworks = ['' => 'Choose Network'] + Network::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
         
@@ -326,7 +331,17 @@ class HomeController extends AdminController
                 $userIds = User::where('group_id', $request->input('content_id'))->pluck('id')->all();
 
                 $clicks = DB::table('network_clicks')
-                    ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
+                    ->select(
+                        'clicks.id',
+                        'clicks.offer_id',
+                        'clicks.click_ip',
+                        'clicks.hash_tag',
+                        DB::raw('offers.id as offer_site_id'),
+                        DB::raw('offers.name as offer_name'),
+                        DB::raw('users.username as username'),
+                        DB::raw('offers.allow_devices as offer_allow_devices'),
+                        DB::raw('offers.geo_locations as offer_geo_locations')
+                    )
 
                     ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
                     ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
@@ -380,7 +395,17 @@ class HomeController extends AdminController
                 $userId = User::where('username', $request->input('content_id'))->first()->id;
 
                 $clicks = DB::table('network_clicks')
-                    ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
+                    ->select(
+                        'clicks.id',
+                        'clicks.offer_id',
+                        'clicks.click_ip',
+                        'clicks.hash_tag',
+                        DB::raw('offers.id as offer_site_id'),
+                        DB::raw('offers.name as offer_name'),
+                        DB::raw('users.username as username'),
+                        DB::raw('offers.allow_devices as offer_allow_devices'),
+                        DB::raw('offers.geo_locations as offer_geo_locations')
+                    )
 
                     ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
                     ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
@@ -423,7 +448,17 @@ class HomeController extends AdminController
                 break;
             case "offer" :
             $clicks = DB::table('network_clicks')
-                ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
+                ->select(
+                    'clicks.id',
+                    'clicks.offer_id',
+                    'clicks.click_ip',
+                    'clicks.hash_tag',
+                    DB::raw('offers.id as offer_site_id'),
+                    DB::raw('offers.name as offer_name'),
+                    DB::raw('users.username as username'),
+                    DB::raw('offers.allow_devices as offer_allow_devices'),
+                    DB::raw('offers.geo_locations as offer_geo_locations')
+                )
                 ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
                 ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                 ->join('users', 'clicks.user_id', '=', 'users.id')
@@ -457,7 +492,17 @@ class HomeController extends AdminController
 
             case "network" :
                 $clicks = DB::table('network_clicks')
-                    ->select('clicks.id', 'clicks.offer_id', 'clicks.click_ip', 'clicks.hash_tag', DB::raw('offers.name as offer_name'), DB::raw('users.username as username'), DB::raw('offers.allow_devices as offer_allow_devices'), DB::raw('offers.geo_locations as offer_geo_locations'))
+                    ->select(
+                        'clicks.id',
+                        'clicks.offer_id',
+                        'clicks.click_ip',
+                        'clicks.hash_tag',
+                        DB::raw('offers.id as offer_site_id'),
+                        DB::raw('offers.name as offer_name'),
+                        DB::raw('users.username as username'),
+                        DB::raw('offers.allow_devices as offer_allow_devices'),
+                        DB::raw('offers.geo_locations as offer_geo_locations')
+                    )
                     ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
                     ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                     ->join('users', 'clicks.user_id', '=', 'users.id')
@@ -543,6 +588,11 @@ class HomeController extends AdminController
 
         $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
         $globalOffers = ['' => 'Choose Offer'] + Offer::has('network_clicks')->pluck('name', 'id')->all();
+        foreach ($globalOffers as $key => $value) {
+            if ($key) {
+                $globalOffers[$key] = $value.' ID='.$key;
+            }
+        }
         $globalNetworks = ['' => 'Choose Network'] + Network::pluck('name', 'id')->all();
         $globalUsers = User::pluck('username')->all();
 
