@@ -25,7 +25,9 @@ class NetworksController extends AdminController
         try {
 
             Network::create([
-                'name' => $request->input('name')
+                'name' => $request->input('name'),
+                'type' => $request->input('type'),
+                'api_url' => $request->input('api_url'),
             ]);
 
         } catch (\Exception $e) {
@@ -52,7 +54,9 @@ class NetworksController extends AdminController
 
 
         $data = [
-            'name' => $request->input('name')
+            'name' => $request->input('name'),
+            'type' => $request->input('type'),
+            'api_url' => $request->input('api_url')
         ];
 
         try {

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Network extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'type', 'api_url'];
 
     public function offers()
     {

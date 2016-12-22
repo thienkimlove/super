@@ -22,6 +22,16 @@
                 {!! Form::text('name', null, ['class' => 'form-control']) !!}
             </div>
 
+            <div class="form-group">
+                {!! Form::label('type', 'Network Type') !!}
+                {!! Form::text('type', null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="form-group">
+                {!! Form::label('api_url', 'Network API Url') !!}
+                {!! Form::text('api_url', null, ['class' => 'form-control']) !!}
+            </div>
+
 
             <div class="form-group">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary form-control']) !!}
