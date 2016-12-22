@@ -75,30 +75,38 @@ class HomeController extends AdminController
 
         $apiData = [];
 
-        $api_url_today = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=' .
-            Carbon::now()->day . '&sm=' . Carbon::now()->month . '&sy=' . Carbon::now()->year .
-            '&ed=' . Carbon::now()->day . '&em=' . Carbon::now()->month . '&ey=' . Carbon::now()->year;
+        $networks = Network::all();
 
-        $today_stats = json_decode(@file_get_contents($api_url_today), true);
+        foreach ($networks as $network) {
+            if ($network->type == 'cpway' && $network->api_url) {
+                $api_url_today = $network->api_url . '&action=stats_summary&sd=' .
+                    Carbon::now()->day . '&sm=' . Carbon::now()->month . '&sy=' . Carbon::now()->year .
+                    '&ed=' . Carbon::now()->day . '&em=' . Carbon::now()->month . '&ey=' . Carbon::now()->year;
 
-        $api_url_yesterday = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=' .
-            Carbon::now()->yesterday()->day . '&sm=' . Carbon::now()->yesterday()->month . '&sy=' . Carbon::now()->yesterday()->year .
-            '&ed=' . Carbon::now()->yesterday()->day . '&em=' . Carbon::now()->yesterday()->month . '&ey=' . Carbon::now()->yesterday()->year;
+                $today_stats = json_decode(@file_get_contents($api_url_today), true);
 
-        $yesterday_stats = json_decode(@file_get_contents($api_url_yesterday), true);
+                $api_url_yesterday = $network->api_url . '&action=stats_summary&sd=' .
+                    Carbon::now()->yesterday()->day . '&sm=' . Carbon::now()->yesterday()->month . '&sy=' . Carbon::now()->yesterday()->year .
+                    '&ed=' . Carbon::now()->yesterday()->day . '&em=' . Carbon::now()->yesterday()->month . '&ey=' . Carbon::now()->yesterday()->year;
 
-        $api_url_week = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=' .
-            Carbon::now()->startOfWeek()->day . '&sm=' . Carbon::now()->startOfWeek()->month . '&sy=' . Carbon::now()->startOfWeek()->year .
-            '&ed=' . Carbon::now()->endOfWeek()->day . '&em=' . Carbon::now()->endOfWeek()->month . '&ey=' . Carbon::now()->endOfWeek()->year;
+                $yesterday_stats = json_decode(@file_get_contents($api_url_yesterday), true);
 
-        $week_stats = json_decode(@file_get_contents($api_url_week), true);
+                $api_url_week = $network->api_url . '&action=stats_summary&sd=' .
+                    Carbon::now()->startOfWeek()->day . '&sm=' . Carbon::now()->startOfWeek()->month . '&sy=' . Carbon::now()->startOfWeek()->year .
+                    '&ed=' . Carbon::now()->endOfWeek()->day . '&em=' . Carbon::now()->endOfWeek()->month . '&ey=' . Carbon::now()->endOfWeek()->year;
+
+                $week_stats = json_decode(@file_get_contents($api_url_week), true);
 
 
-        $apiData[1] = [
-            'today' => isset($today_stats['stats_summary']) ? $today_stats['stats_summary'] : [],
-            'yesterday' => isset($yesterday_stats['stats_summary']) ? $yesterday_stats['stats_summary'] : [],
-            'week' => isset($week_stats['stats_summary']) ? $week_stats['stats_summary'] : [],
-        ];
+                $apiData[$network->id] = [
+                    'today' => isset($today_stats['stats_summary']) ? $today_stats['stats_summary'] : [],
+                    'yesterday' => isset($yesterday_stats['stats_summary']) ? $yesterday_stats['stats_summary'] : [],
+                    'week' => isset($week_stats['stats_summary']) ? $week_stats['stats_summary'] : [],
+                ];
+            }
+        }
+
+
 
         $offerQuery = clone $initQuery;
 
