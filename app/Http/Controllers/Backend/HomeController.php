@@ -79,19 +79,19 @@ class HomeController extends AdminController
             Carbon::now()->day . '&sm=' . Carbon::now()->month . '&sy=' . Carbon::now()->year .
             '&ed=' . Carbon::now()->day . '&em=' . Carbon::now()->month . '&ey=' . Carbon::now()->year;
 
-        $today_stats = json_decode(file_get_contents($api_url_today), true);
+        $today_stats = json_decode(@file_get_contents($api_url_today), true);
 
         $api_url_yesterday = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=' .
             Carbon::now()->yesterday()->day . '&sm=' . Carbon::now()->yesterday()->month . '&sy=' . Carbon::now()->yesterday()->year .
             '&ed=' . Carbon::now()->yesterday()->day . '&em=' . Carbon::now()->yesterday()->month . '&ey=' . Carbon::now()->yesterday()->year;
 
-        $yesterday_stats = json_decode(file_get_contents($api_url_yesterday), true);
+        $yesterday_stats = json_decode(@file_get_contents($api_url_yesterday), true);
 
         $api_url_week = 'http://bt.io/apiv2/?key=2b52b92affc0cdecb8f32ee29d901835&action=stats_summary&sd=' .
             Carbon::now()->startOfWeek()->day . '&sm=' . Carbon::now()->startOfWeek()->month . '&sy=' . Carbon::now()->startOfWeek()->year .
             '&ed=' . Carbon::now()->endOfWeek()->day . '&em=' . Carbon::now()->endOfWeek()->month . '&ey=' . Carbon::now()->endOfWeek()->year;
 
-        $week_stats = json_decode(file_get_contents($api_url_week), true);
+        $week_stats = json_decode(@file_get_contents($api_url_week), true);
 
 
         $apiData[1] = [
