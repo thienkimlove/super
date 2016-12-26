@@ -42,7 +42,7 @@ class AddOneTulipOffer extends Command
         if (isset($offers['offers'])) {
             foreach ($offers['offers'] as $offer) {
 
-                $devices = null;
+                $devices = 1;
                 $isIphone = false;
                 $isIpad = false;
                 $android = false;
