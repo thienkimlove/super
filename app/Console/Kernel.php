@@ -35,7 +35,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('add:media')
             ->appendOutputTo(storage_path('logs/add_media.log'))
             ->withoutOverlapping()
-            ->everyFiveMinutes();
+            ->everyThirtyMinutes();
+
+        $schedule->command('add:one')
+            ->appendOutputTo(storage_path('logs/add_one_tulip.log'))
+            ->withoutOverlapping()
+            ->everyThirtyMinutes();
 
 
     }
