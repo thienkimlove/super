@@ -28,6 +28,11 @@
                         </span>
 
                         <span class="input-group-btn">
+                              {!! Form::select('network', $networks, ($searchNetwork) ? $searchNetwork : null, ['class' => 'form-control']) !!}
+
+                        </span>
+
+                        <span class="input-group-btn">
                              <input type="hidden" name="auto" value="{{$auto}}" />
                             <button class="btn btn-default" type="submit">
                                 <i class="fa fa-search"></i>

@@ -33,6 +33,7 @@ class OffersController extends AdminController
         $searchOffer = null;
         $searchCountry = null;
         $searchDevice = null;
+        $searchNetwork = null;
 
         $offers = Offer::latest('updated_at');
 
@@ -57,6 +58,12 @@ class OffersController extends AdminController
             $path .= '&device='.$request->input('device');
         }
 
+        if ($request->input('network')) {
+            $searchNetwork = urldecode($request->input('network'));
+            $offers = $offers->where('network_id', $searchNetwork);
+            $path .= '&network='.$request->input('network');
+        }
+
         if ($request->input('auto') && $request->input('auto') == 1) {
             $offers = $offers->where('auto', true)->paginate(10);
         } else {
@@ -66,7 +73,8 @@ class OffersController extends AdminController
         $path .= '&auto='.$auto;
         $offers->setPath($path);
         $devices = $this->devices;
-        return view('admin.offer.index', compact('offers', 'searchOffer', 'auto', 'searchCountry', 'devices', 'searchDevice'));
+        $networks = ['' => 'Choose network'] + Network::where('auto', 1)->pluck('name', 'id')->all();
+        return view('admin.offer.index', compact('offers', 'searchOffer', 'auto', 'searchCountry', 'devices', 'searchDevice', 'searchNetwork', 'networks'));
     }
 
 

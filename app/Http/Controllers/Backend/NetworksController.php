@@ -28,6 +28,7 @@ class NetworksController extends AdminController
                 'name' => $request->input('name'),
                 'type' => $request->input('type'),
                 'api_url' => $request->input('api_url'),
+                'cron' => $request->input('cron'),
             ]);
 
         } catch (\Exception $e) {
@@ -56,7 +57,8 @@ class NetworksController extends AdminController
         $data = [
             'name' => $request->input('name'),
             'type' => $request->input('type'),
-            'api_url' => $request->input('api_url')
+            'api_url' => $request->input('api_url'),
+            'cron' => $request->input('cron')
         ];
 
         try {

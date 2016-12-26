@@ -32,6 +32,11 @@
                 {!! Form::text('api_url', null, ['class' => 'form-control']) !!}
             </div>
 
+            <div class="form-group">
+                {!! Form::label('cron', 'For Cron') !!}
+                {!! Form::text('cron', null, ['class' => 'form-control']) !!}
+            </div>
+
 
             <div class="form-group">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary form-control']) !!}
