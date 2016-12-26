@@ -109,7 +109,7 @@ class AddOneTulipOffer extends Command
 
         $networks = Network::all();
         foreach ($networks as $network) {
-            if ($network->cron && $network->auto == 1) {
+            if ($network->cron && $network->type == 'cpway') {
                $this->feed($network);
             }
         }
