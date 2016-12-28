@@ -88,7 +88,7 @@ class AddOneTulipOffer extends Command
                     'net_offer_id' => $offer['id'],
                     'name' => str_limit( $offer['name'], 250),
                     'redirect_link' => $offer['tracking_link'].'&s1=#subId',
-                    'click_rate' => round(floatval($offer['payout'])/2, 2),
+                    'click_rate' => round(floatval($offer['payout'])/intval(env('RATE_CRON')), 2),
                     'allow_devices' => $devices,
                     'geo_locations' => implode(',', $countries),
                     'network_id' => $network->id,
