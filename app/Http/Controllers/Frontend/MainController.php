@@ -187,13 +187,15 @@ class MainController extends Controller
 
         if ($network_id && $offer_id && $sub_id) {
 
-            NetworkClick::create([
-                'network_id' => $network_id,
-                'network_offer_id' => $offer_id,
-                'sub_id' => $sub_id,
-                'amount' => $request->input('amount'),
-                'ip' => $request->input('ip')
-            ]);
+            if ($request->input('network_id') != -1) {
+                NetworkClick::create([
+                    'network_id' => $network_id,
+                    'network_offer_id' => $offer_id,
+                    'sub_id' => $sub_id,
+                    'amount' => $request->input('amount'),
+                    'ip' => $request->input('ip')
+                ]);
+            }
 
         }
 
