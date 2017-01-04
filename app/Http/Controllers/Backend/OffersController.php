@@ -73,7 +73,7 @@ class OffersController extends AdminController
         $path .= '&auto='.$auto;
         $offers->setPath($path);
         $devices = $this->devices;
-        $networks = ['' => 'Choose network'] + Network::where('type', 'cpway')->pluck('name', 'id')->all();
+        $networks = ['' => 'Choose network'] + Network::whereNotNull('cron')->OrWhere('cron', '<>', '')->pluck('name', 'id')->all();
         return view('admin.offer.index', compact('offers', 'searchOffer', 'auto', 'searchCountry', 'devices', 'searchDevice', 'searchNetwork', 'networks'));
     }
 
