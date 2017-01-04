@@ -73,8 +73,6 @@
                                            <th>Clicks</th>
                                            <th>Lead</th>
                                            <th>CR</th>
-                                           <th>Real Clicks</th>
-                                           <th>Real CR</th>
                                            <th>Price</th>
                                            <th>Total</th>
                                        </tr>
@@ -87,8 +85,6 @@
                                                <td>{{$offer['site_click'] }}</td>
                                                <td>{{$offer['net_lead']}}</td>
                                                <td>{{ $offer['site_cr'] }}</td>
-                                               <td>{{$offer['net_click']}}</td>
-                                               <td>{{ $offer['net_cr'] }}</td>
                                                <td>{{ $offer['offer_price'] }}</td>
                                                <td>{{ $offer['offer_total'] }}</td>
                                            </tr>
@@ -134,8 +130,6 @@
                                             <th>Clicks</th>
                                             <th>Lead</th>
                                             <th>CR</th>
-                                            <th>Real Clicks</th>
-                                            <th>Real CR</th>
                                             <th>Price</th>
                                             <th>Total</th>
                                         </tr>
@@ -148,8 +142,6 @@
                                                 <td>{{$offer['site_click'] }}</td>
                                                 <td>{{$offer['net_lead']}}</td>
                                                 <td>{{ $offer['site_cr'] }}</td>
-                                                <td>{{$offer['net_click']}}</td>
-                                                <td>{{ $offer['net_cr'] }}</td>
                                                 <td>{{ $offer['offer_price'] }}</td>
                                                 <td>{{ $offer['offer_total'] }}</td>
                                             </tr>
@@ -195,8 +187,6 @@
                                             <th>Clicks</th>
                                             <th>Lead</th>
                                             <th>CR</th>
-                                            <th>Real Clicks</th>
-                                            <th>Real CR</th>
                                             <th>Price</th>
                                             <th>Total</th>
                                         </tr>
@@ -209,8 +199,6 @@
                                                 <td>{{$offer['site_click'] }}</td>
                                                 <td>{{$offer['net_lead']}}</td>
                                                 <td>{{ $offer['site_cr'] }}</td>
-                                                <td>{{$offer['net_click']}}</td>
-                                                <td>{{ $offer['net_cr'] }}</td>
                                                 <td>{{ $offer['offer_price'] }}</td>
                                                 <td>{{ $offer['offer_total'] }}</td>
                                             </tr>
