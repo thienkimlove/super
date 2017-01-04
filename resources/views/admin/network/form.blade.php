@@ -23,17 +23,17 @@
             </div>
 
             <div class="form-group">
-                {!! Form::label('type', 'Network Type') !!}
+                {!! Form::label('type', 'Network Type (Using for Cron)') !!}
                 {!! Form::text('type', null, ['class' => 'form-control']) !!}
             </div>
 
-            <div class="form-group">
+        {{--    <div class="form-group">
                 {!! Form::label('api_url', 'Network API Url') !!}
                 {!! Form::text('api_url', null, ['class' => 'form-control']) !!}
-            </div>
+            </div>--}}
 
             <div class="form-group">
-                {!! Form::label('cron', 'For Cron') !!}
+                {!! Form::label('cron', 'Cron Url') !!}
                 {!! Form::text('cron', null, ['class' => 'form-control']) !!}
             </div>
 
