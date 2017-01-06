@@ -49,7 +49,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('offer:cron')
             ->appendOutputTo(storage_path('logs/offer_cron.log'))
             ->withoutOverlapping()
-            ->everyThirtyMinutes();
+            ->everyTenMinutes();
 
 
     }
