@@ -126,7 +126,7 @@ class OfferCron extends Command
 
                     if ($isIphone && $isIpad) {
                         $ios = true;
-                    }
+                    } 
                 }
             }
 

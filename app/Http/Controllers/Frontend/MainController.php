@@ -29,6 +29,14 @@ class MainController extends Controller
             return true;
         }
 
+        if (strpos($offer_locations, 'GB') !== false) {
+            $offer_locations .= ',UK';
+        }
+
+        if (strpos($offer_locations, 'UK') !== false) {
+            $offer_locations .= ',GB';
+        }
+
         $isoCode = null;
         $ipLocation = $request->ip();
 
