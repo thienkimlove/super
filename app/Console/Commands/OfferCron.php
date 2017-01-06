@@ -98,6 +98,8 @@ class OfferCron extends Command
                 ]);
             }
         }
+
+        $this->line('Total Offers : '.count($offers));
     }
 
     private function cpway($network)
@@ -156,6 +158,7 @@ class OfferCron extends Command
             ]);
 
         }
+        $this->line('Total Offers : '.count($offers));
     }
     /**
      * Execute the console command.
@@ -169,9 +172,13 @@ class OfferCron extends Command
             if ($network->cron) {
                 if ($network->type == 'onetulip') {
                     $this->feed($network);
+                    $this->line('Network :' . $network->name . 'is type onetulip have cron='.$network->cron);
                 } else if ($network->type == 'cpway') {
                     $this->cpway($network);
+                    $this->line('Network :' . $network->name . 'is type cpway have cron='.$network->cron);
                 }
+            } else {
+                $this->line('Network :' . $network->name . ' has no cron');
             }
         }
     }
