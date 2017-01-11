@@ -34,11 +34,17 @@ class OffersController extends AdminController
         $searchCountry = null;
         $searchDevice = null;
         $searchNetwork = null;
+        $searchUid = null;
 
         $offers = Offer::latest('updated_at');
 
         $path = '/admin/offers?init=1';
 
+        if ($request->input('uid')) {
+            $searchUid = urldecode($request->input('uid'));
+            $offers = $offers->where('id', 'LIKE', '%'. $searchUid. '%')->orWhere('net_offer_id', 'LIKE', '%'. $searchUid. '%');
+            $path .= '&uid='.$request->input('uid');
+        }
 
         if ($request->input('q')) {
             $searchOffer = urldecode($request->input('q'));
@@ -74,7 +80,7 @@ class OffersController extends AdminController
         $offers->setPath($path);
         $devices = $this->devices;
         $networks = ['' => 'Choose network'] + Network::whereNotNull('cron')->OrWhere('cron', '<>', '')->pluck('name', 'id')->all();
-        return view('admin.offer.index', compact('offers', 'searchOffer', 'auto', 'searchCountry', 'devices', 'searchDevice', 'searchNetwork', 'networks'));
+        return view('admin.offer.index', compact('offers', 'searchOffer', 'auto', 'searchCountry', 'devices', 'searchDevice', 'searchNetwork', 'searchUid', 'networks'));
     }
 
 

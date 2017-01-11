@@ -23,6 +23,13 @@
                                     placeholder="Search country..">
 
                         </span>
+
+                        <span class="input-group-btn">
+                             <input type="text" value="{{$searchUid}}" name="uid" class="form-control"
+                                    placeholder="Search Id..">
+
+                        </span>
+
                         <span class="input-group-btn">
                            {!! Form::select('device', $devices, ($searchDevice) ? $searchDevice : null, ['class' => 'form-control']) !!}
                         </span>
