@@ -203,7 +203,7 @@
                                     <td>{{$click->hash_tag}}</td>
                                     <td>{{ ($click->offer_allow_devices) ? config('devices')[$click->offer_allow_devices] : '' }}</td>
                                     <td>{{$click->offer_geo_locations}}</td>
-                                    <td>{{$click->created_at->format('d/m/Y')}}</td>
+                                    <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $click->created_at)->format('d/m/Y')}}</td>
                                 </tr>
                             @endforeach
                             </tbody>
