@@ -10,6 +10,4 @@
 
     </div>
 
-
-    @endif
 @endsection
