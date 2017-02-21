@@ -105,6 +105,10 @@
                                 <a href="{{url('admin/networks/create')}}">Thêm network</a>
                             </li>
 
+                            <li>
+                                <a href="{{url('admin/networks/create')}}">Thêm network</a>
+                            </li>
+
                         </ul>
                     </li>
 

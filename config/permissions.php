@@ -9,6 +9,7 @@ return [
             'HomeController@clearlead',
             'HomeController@statistic',
             'HomeController@thongke',
+            'HomeController@cron',
 
             //only admin can access to edit users.
 

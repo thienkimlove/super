@@ -8,7 +8,7 @@
             <div class="list-group">
                 @foreach ($siteRecentLead as $recent)
                     <a class="list-group-item" href="#">
-                        <b>{{$recent->username}} </b> lead offer <b>{{$recent->name}}</b> with IP <b>{{$recent->ip}}</b> - ID=<b>{{$recent->id}} | Time Click: {{$recent->click_at}}</b>
+                        <b>{{$recent->username}} </b> lead offer <b>{{$recent->name}}</b> with IP <b>{{$recent->ip}}</b> - ID=<b>{{$recent->id}} | Time Click: {{$recent->click_at}} || postbackId= {{$recent->postback_id}}</b>
                         <span class="pull-right text-muted small">
                             <em>{{$recent->created_at}}</em>
                          </span>
