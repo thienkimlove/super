@@ -106,7 +106,7 @@
                             </li>
 
                             <li>
-                                <a href="{{url('admin/networks/create')}}">Thêm network</a>
+                                <a href="{{url('admin/cron')}}">Run Cron to Update Offers</a>
                             </li>
 
                         </ul>
