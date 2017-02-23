@@ -208,6 +208,24 @@ class MainController extends Controller
         }
 
     }
+    public function hashpostback(Request $request)
+    {
+        $sub_id = $request->input('subid');
+        $network_id = $request->input('network_id');
+        $findInClick = Click::where('hash_tag', $sub_id)->count();
+
+        if ($findInClick > 0) {
+            $click =  Click::where('hash_tag', $sub_id)->get()->first();
+            $offer = Offer::find($click->offer_id);
+            NetworkClick::create([
+                'network_id' => $network_id,
+                'network_offer_id' => $offer->net_offer_id,
+                'sub_id' => $sub_id,
+                'amount' => 0,
+                'ip' => ''
+            ]);
+        }
+    }
 
     public function xMedia()
     {
