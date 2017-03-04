@@ -241,4 +241,24 @@ class MainController extends Controller
 
         return view('frontend.list_xmedia', compact('offers'));
     }
+
+    public function recent(Request $request)
+    {
+
+        $checkTime =  Carbon::now()->tomorrow()->toDateString();
+
+        if ($request->input('time') == $checkTime) {
+            $siteRecentLead = DB::table('network_clicks')
+                ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
+                ->join('users', 'clicks.user_id', '=', 'users.id')
+                ->select('offers.name', 'offers.id', 'clicks.created_at as click_at', 'network_clicks.ip', 'network_clicks.created_at', 'users.username', 'network_clicks.id as postback_id')
+                ->orderBy('network_clicks.id', 'desc')
+                ->limit(10)
+                ->get();
+
+            return response()->json(['success' => true, 'html' => view('admin.ajax_recent_lead', compact('siteRecentLead'))->render()]);
+        }
+
+    }
 }

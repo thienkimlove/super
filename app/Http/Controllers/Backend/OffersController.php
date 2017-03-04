@@ -36,7 +36,7 @@ class OffersController extends AdminController
         $searchNetwork = null;
         $searchUid = null;
 
-        $offers = Offer::latest('updated_at');
+        $offers = Offer::latest('net_offer_id');
 
         $path = '/admin/offers?init=1';
 
@@ -60,7 +60,12 @@ class OffersController extends AdminController
 
         if ($request->input('device')) {
             $searchDevice = urldecode($request->input('device'));
-            $offers = $offers->where('allow_devices', $searchDevice);
+            if ($searchDevice == 5) {
+                $offers = $offers->whereIn('allow_devices', [5, 6, 7]);
+            } else {
+                $offers = $offers->where('allow_devices', $searchDevice);
+            }
+
             $path .= '&device='.$request->input('device');
         }
 
