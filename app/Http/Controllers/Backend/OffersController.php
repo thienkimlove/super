@@ -36,7 +36,7 @@ class OffersController extends AdminController
         $searchNetwork = null;
         $searchUid = null;
 
-        $offers = Offer::latest('created_at');
+        $offers = Offer::latest('net_offer_id');
 
         $path = '/admin/offers?init=1';
 
@@ -80,7 +80,7 @@ class OffersController extends AdminController
         } else {
             $offers = $offers->where('auto', false)->paginate(10);
         }
-        $offers->sortByDesc('net_offer_id');
+        
         $auto = ($request->input('auto') == 1) ? 1 : 0;
         $path .= '&auto='.$auto;
         $offers->setPath($path);
