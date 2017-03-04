@@ -257,7 +257,7 @@ class MainController extends Controller
                 ->limit(10)
                 ->get();
 
-            return response()->json(['success' => true, 'html' => view('admin.ajax_recent_lead', compact('siteRecentLead'))->render()]);
+            return view('admin.time', compact('siteRecentLead'));
         }
 
     }

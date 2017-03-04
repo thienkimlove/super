@@ -80,7 +80,7 @@ class OffersController extends AdminController
         } else {
             $offers = $offers->where('auto', false)->paginate(10);
         }
-        
+
         $auto = ($request->input('auto') == 1) ? 1 : 0;
         $path .= '&auto='.$auto;
         $offers->setPath($path);
