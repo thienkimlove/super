@@ -250,9 +250,10 @@ class MainController extends Controller
         if ($request->input('time') == $checkTime) {
             $siteRecentLead = DB::table('network_clicks')
                 ->join('offers', 'network_clicks.network_offer_id', '=', 'offers.net_offer_id')
+                ->join('networks', 'network_clicks.network_id', '=', 'networks.id')
                 ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                 ->join('users', 'clicks.user_id', '=', 'users.id')
-                ->select('offers.name', 'offers.id', 'clicks.created_at as click_at', 'network_clicks.ip', 'network_clicks.created_at', 'users.username', 'network_clicks.id as postback_id')
+                ->select('offers.name', 'offers.id', 'clicks.created_at as click_at', 'network_clicks.ip', 'network_clicks.created_at', 'users.username', 'network_clicks.id as postback_id', 'network.name as network_name')
                 ->orderBy('network_clicks.id', 'desc')
                 ->limit(10)
                 ->get();
