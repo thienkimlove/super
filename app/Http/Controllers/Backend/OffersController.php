@@ -117,7 +117,7 @@ class OffersController extends AdminController
                 'status' => ($request->input('status') == 'on') ? true : false,
                 'allow_multi_lead' => ($request->input('allow_multi_lead') == 'on') ? true : false,
                 'check_click_in_network' => ($request->input('check_click_in_network') == 'on') ? true : false,
-                //'image' => $request->input('image')
+                'image' => $request->input('image')
             ]);
 
         } catch (\Exception $e) {
@@ -152,7 +152,7 @@ class OffersController extends AdminController
             'allow_devices' => $request->input('allow_devices'),
             'network_id' => $request->input('network_id'),
             'net_offer_id' => $request->input('net_offer_id'),
-            //'image' => $request->input('image'),
+            'image' => $request->input('image'),
             'status' => ($request->input('status') == 'on') ? true : false,
             'allow_multi_lead' => ($request->input('allow_multi_lead') == 'on') ? true : false,
             'check_click_in_network' => ($request->input('check_click_in_network') == 'on') ? true : false,
