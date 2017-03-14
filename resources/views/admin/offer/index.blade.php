@@ -33,12 +33,13 @@
                         <span class="input-group-btn">
                            {!! Form::select('device', $devices, ($searchDevice) ? $searchDevice : null, ['class' => 'form-control']) !!}
                         </span>
+                        @if (auth('backend')->user()->permission_id == 1)
 
                         <span class="input-group-btn">
                               {!! Form::select('network', $networks, ($searchNetwork) ? $searchNetwork : null, ['class' => 'form-control']) !!}
 
                         </span>
-
+                        @endif
                         <span class="input-group-btn">
                              <input type="hidden" name="auto" value="{{$auto}}" />
                             <button class="btn btn-default" type="submit">
