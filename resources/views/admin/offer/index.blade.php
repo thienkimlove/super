@@ -59,7 +59,7 @@
                             <tr>
                                 <th>#</th>
                                 @if (auth('backend')->user()->permission_id == 1)
-                                    <th>Network</th>
+                                    <th>Network OfferID</th>
                                 @endif
                                 <th>Name</th>
                                 <th>Image</th>
@@ -72,7 +72,7 @@
                                     <th>True Link</th>
                                     <th>Allow Multi Lead</th>
                                     <th>Check Click In Network</th>
-                                    <th>Network OfferID</th>
+                                    <th>Network</th>
                                     <th>Action</th>
                                 @endif
                             </tr>
@@ -82,7 +82,7 @@
                                 <tr>
                                     <td>{{$offer->id}}</td>
                                     @if (auth('backend')->user()->permission_id == 1)
-                                        <td>{{($offer->network) ? $offer->network->name : 'None'}}</td>
+                                        <td>{{$offer->net_offer_id}}</td>
                                     @endif
                                     <td style="width:10%;">{{$offer->name}}</td>
                                     <td>
@@ -99,7 +99,7 @@
                                         <td>{{$offer->redirect_link}}</td>
                                         <td>{{($offer->allow_multi_lead) ? 'Yes' : 'No'}}</td>
                                         <td>{{($offer->check_click_in_network) ? 'Yes' : 'No'}}</td>
-                                        <td>{{$offer->net_offer_id}}</td>
+                                        <td>{{($offer->network) ? $offer->network->name : 'None'}}</td>
                                         <td>
                                             <button id-attr="{{$offer->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;
                                             {!! Form::open(['method' => 'DELETE', 'route' => ['offers.destroy',
