@@ -79,14 +79,13 @@ class OffersController extends AdminController
             $path .= '&network='.$request->input('network');
         }
 
-        if ($request->input('inactive') && $request->input('inactive') == 1) {
-            $offers = $offers->where('status', 0);
-            $path .= '&inactive='.$request->input('inactive');
-        } else {
-            $offers = $offers->where('status', 1);
-        }
-
         if ($request->input('auto') && $request->input('auto') == 1) {
+            if ($request->input('inactive') && $request->input('inactive') == 1) {
+                $offers = $offers->where('status', false);
+                $path .= '&inactive='.$request->input('inactive');
+            } else {
+                $offers = $offers->where('status', true);
+            }
             $offers = $offers->where('auto', true)->paginate(10);
         } else {
             $offers = $offers->where('auto', false)->paginate(10);

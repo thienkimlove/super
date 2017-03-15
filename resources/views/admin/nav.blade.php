@@ -89,7 +89,7 @@
                             </li>
 
                             <li>
-                                <a href="{{url('admin/offers?inactive=1')}}">Danh sách offer đã dừng</a>
+                                <a href="{{url('admin/offers?auto=1&inactive=1')}}">Danh sách offer đã dừng</a>
                             </li>
 
 
