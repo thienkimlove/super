@@ -577,6 +577,8 @@ class HomeController extends AdminController
 
         $offers = json_decode(file_get_contents($feed_url), true);
 
+        $listCurrentNetworkOfferIds = [];
+
         if (isset($offers['offers'])) {
             $total = count($offers['offers']);
             if ($total > 0) {
@@ -635,11 +637,25 @@ class HomeController extends AdminController
                         'status' => true,
                         'auto' => true
                     ]);
+
+                    $listCurrentNetworkOfferIds[] = $offer['id'];
                 }
             }
 
         } else {
             $total = 0;
+        }
+
+        #update cac offer tu dong khong co trong API ve status inactive.
+
+        if ($listCurrentNetworkOfferIds) {
+            $listCurrentNetworkOfferIds = array_unique($listCurrentNetworkOfferIds);
+
+            Offer::where('auto', true)
+                ->where('network_id', $network->id)
+                ->whereNotIn('net_offer_id', $listCurrentNetworkOfferIds)
+                ->update(['status' => false]);
+
         }
 
         return 'Total Offers : '.$total;
@@ -651,6 +667,8 @@ class HomeController extends AdminController
         $feed_url = $network->cron;
         $offers = json_decode(file_get_contents($feed_url), true);
         $total = count($offers);
+
+        $listCurrentNetworkOfferIds = [];
 
         if ($total > 0) {
             foreach ($offers as $offer) {
@@ -703,7 +721,20 @@ class HomeController extends AdminController
                     'auto' => true
                 ]);
 
+                $listCurrentNetworkOfferIds[] = $offer['offer_id'];
             }
+        }
+
+        #update cac offer tu dong khong co trong API ve status inactive.
+
+        if ($listCurrentNetworkOfferIds) {
+            $listCurrentNetworkOfferIds = array_unique($listCurrentNetworkOfferIds);
+
+            Offer::where('auto', true)
+                ->where('network_id', $network->id)
+                ->whereNotIn('net_offer_id', $listCurrentNetworkOfferIds)
+                ->update(['status' => false]);
+
         }
 
         return 'Total Offers : '.$total;
