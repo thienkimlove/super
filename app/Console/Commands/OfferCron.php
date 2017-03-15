@@ -113,11 +113,7 @@ class OfferCron extends Command
                 ->whereNotIn('net_offer_id', $listCurrentNetworkOfferIds)
                 ->update(['status' => false]);
 
-        } else {
-            Offer::where('auto', true)
-                ->where('network_id', $network->id)
-                ->update(['status' => false]);
-        }
+        } 
 
         $this->line('Total Offers : '.count($offers));
     }
@@ -194,10 +190,6 @@ class OfferCron extends Command
                 ->whereNotIn('net_offer_id', $listCurrentNetworkOfferIds)
                 ->update(['status' => false]);
 
-        } else {
-            Offer::where('auto', true)
-                ->where('network_id', $network->id)
-                ->update(['status' => false]);
         }
 
         $this->line('Total Offers : '.count($offers));

@@ -656,12 +656,7 @@ class HomeController extends AdminController
                 ->whereNotIn('net_offer_id', $listCurrentNetworkOfferIds)
                 ->update(['status' => false]);
 
-        } else {
-            Offer::where('auto', true)
-                ->where('network_id', $network->id)
-                ->update(['status' => false]);
         }
-
         return 'Total Offers : '.$total;
     }
 
@@ -739,10 +734,6 @@ class HomeController extends AdminController
                 ->whereNotIn('net_offer_id', $listCurrentNetworkOfferIds)
                 ->update(['status' => false]);
 
-        } else {
-            Offer::where('auto', true)
-                ->where('network_id', $network->id)
-                ->update(['status' => false]);
         }
 
         return 'Total Offers : '.$total;
