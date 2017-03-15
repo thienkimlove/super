@@ -40,6 +40,8 @@ class OfferCron extends Command
 
         $offers = json_decode(file_get_contents($feed_url), true);
 
+        $listCurrentNetworkOfferIds = [];
+
         if (isset($offers['offers'])) {
             foreach ($offers['offers'] as $offer) {
 
@@ -96,7 +98,21 @@ class OfferCron extends Command
                     'status' => true,
                     'auto' => true
                 ]);
+
+                $listCurrentNetworkOfferIds[] = $offer['id'];
             }
+        }
+
+        #update cac offer tu dong khong co trong API ve status inactive.
+
+        if ($listCurrentNetworkOfferIds) {
+            $listCurrentNetworkOfferIds = array_unique($listCurrentNetworkOfferIds);
+
+            Offer::where('auto', true)
+                ->where('network_id', $network->id)
+                ->whereNotIn('net_offer_id', $listCurrentNetworkOfferIds)
+                ->update(['status' => false]);
+
         }
 
         $this->line('Total Offers : '.count($offers));
@@ -107,6 +123,9 @@ class OfferCron extends Command
         //$url = 'http://intrexmedia.com/api.php?key=758be7ff505de4ad';
         $feed_url = $network->cron;
         $offers = json_decode(file_get_contents($feed_url), true);
+
+        $listCurrentNetworkOfferIds = [];
+
         foreach ($offers as $offer) {
 
             $devices = null;
@@ -157,7 +176,22 @@ class OfferCron extends Command
                 'auto' => true
             ]);
 
+            $listCurrentNetworkOfferIds[] = $offer['offer_id'];
+
         }
+
+        #update cac offer tu dong khong co trong API ve status inactive.
+
+        if ($listCurrentNetworkOfferIds) {
+            $listCurrentNetworkOfferIds = array_unique($listCurrentNetworkOfferIds);
+
+            Offer::where('auto', true)
+                ->where('network_id', $network->id)
+                ->whereNotIn('net_offer_id', $listCurrentNetworkOfferIds)
+                ->update(['status' => false]);
+
+        }
+
         $this->line('Total Offers : '.count($offers));
     }
     /**
