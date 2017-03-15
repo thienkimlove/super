@@ -73,6 +73,7 @@
                                     <th>Allow Multi Lead</th>
                                     <th>Check Click In Network</th>
                                     <th>Network</th>
+                                    <th>Created Date</th>
                                     <th>Action</th>
                                 @endif
                             </tr>
@@ -100,6 +101,7 @@
                                         <td>{{($offer->allow_multi_lead) ? 'Yes' : 'No'}}</td>
                                         <td>{{($offer->check_click_in_network) ? 'Yes' : 'No'}}</td>
                                         <td>{{($offer->network) ? $offer->network->name : 'None'}}</td>
+                                        <td>{{$offer->created_at->format('Y-m-d H:i:s')}}</td>
                                         <td>
                                             <button id-attr="{{$offer->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;
                                             {!! Form::open(['method' => 'DELETE', 'route' => ['offers.destroy',

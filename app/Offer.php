@@ -21,6 +21,8 @@ class Offer extends Model
         'check_click_in_network'
     ];
 
+    public $dates = ['created_at', 'updated_at'];
+
     public function clicks()
     {
         return $this->hasMany(Click::class);
