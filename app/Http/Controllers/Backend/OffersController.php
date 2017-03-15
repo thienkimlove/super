@@ -80,10 +80,10 @@ class OffersController extends AdminController
         }
 
         if ($request->input('inactive') && $request->input('inactive') == 1) {
-            $offers = $offers->where('status', false);
+            $offers = $offers->where('status', 0);
             $path .= '&inactive='.$request->input('inactive');
         } else {
-            $offers = $offers->where('status', true);
+            $offers = $offers->where('status', 1);
         }
 
         if ($request->input('auto') && $request->input('auto') == 1) {
