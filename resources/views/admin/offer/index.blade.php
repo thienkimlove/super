@@ -68,12 +68,12 @@
                                 <th>Allow Devices</th>
                                 <th>Link To Lead</th>
                                 <th>Status</th>
+                                <th>Created Date</th>
                                 @if (auth('backend')->user()->permission_id == 1)
                                     <th>True Link</th>
                                     <th>Allow Multi Lead</th>
                                     <th>Check Click In Network</th>
                                     <th>Network</th>
-                                    <th>Created Date</th>
                                     <th>Action</th>
                                 @endif
                             </tr>
@@ -96,12 +96,12 @@
                                     <td>{{config('devices')[$offer->allow_devices]}}</td>
                                     <td>{{url('camp?offer_id='.$offer->id.'&user_id='.auth('backend')->user()->id)}}</td>
                                     <td>{{($offer->status) ? 'Active' : "Inactive"}}</td>
+                                    <td>{{$offer->created_at->format('Y-m-d H:i:s')}}</td>
                                     @if (auth('backend')->user()->permission_id == 1)
                                         <td>{{$offer->redirect_link}}</td>
                                         <td>{{($offer->allow_multi_lead) ? 'Yes' : 'No'}}</td>
                                         <td>{{($offer->check_click_in_network) ? 'Yes' : 'No'}}</td>
                                         <td>{{($offer->network) ? $offer->network->name : 'None'}}</td>
-                                        <td>{{$offer->created_at->format('Y-m-d H:i:s')}}</td>
                                         <td>
                                             <button id-attr="{{$offer->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;
                                             {!! Form::open(['method' => 'DELETE', 'route' => ['offers.destroy',
