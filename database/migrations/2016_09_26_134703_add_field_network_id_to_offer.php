@@ -14,7 +14,7 @@ class AddFieldNetworkIdToOffer extends Migration
     public function up()
     {
         Schema::table('offers', function (Blueprint $table) {
-            $table->integer('network_id')->unsiged();
+            $table->integer('network_id')->unsigned();
         });
     }
 
