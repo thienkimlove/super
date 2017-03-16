@@ -24,8 +24,7 @@ class MainController extends Controller
 
     private function checkIpAndLocation($offer, $request)
     {
-        return true;
-       /* $offer_locations = trim(strtoupper($offer->geo_locations));
+        $offer_locations = trim(strtoupper($offer->geo_locations));
         if (!$offer_locations || ($offer_locations == 'ALL')) {
             return true;
         }
@@ -48,14 +47,16 @@ class MainController extends Controller
         } catch (AddressNotFoundException $e) {
             return  ($ipLocation == '10.0.2.2');
         }  catch (\Exception $e) {
+            \Log::error('check geo ip error='.$e->getMessage());
             return false;
         }
 
         if (strpos($offer_locations, $isoCode) !== false) {
             return true;
         } else {
+            \Log::error('offer_locations='.$offer_locations.' but isoCode='.$isoCode);
             return false;
-        }*/
+        }
     }
 
     private function checkDeviceOffer($offer)
