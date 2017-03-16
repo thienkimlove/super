@@ -15,7 +15,6 @@ use GeoIp2\Exception\AddressNotFoundException;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Agent;
 use App\MediaOffer;
-use Torann\GeoIP\GeoIP;
 
 class MainController extends Controller
 {
