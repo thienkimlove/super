@@ -15,6 +15,7 @@ use GeoIp2\Exception\AddressNotFoundException;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Agent;
 use App\MediaOffer;
+use Torann\GeoIP\GeoIP;
 
 class MainController extends Controller
 {
@@ -42,8 +43,12 @@ class MainController extends Controller
 
 
         try {
-            $reader = new Reader(storage_path('app/geoip.mmdb'));
-            $isoCode = $reader->country($ipLocation)->country->isoCode;
+           // $reader = new Reader(storage_path('app/geoip.mmdb'));
+           // $isoCode = $reader->country($ipLocation)->country->isoCode;
+
+            $getIp = GeoIP::getLocation($ipLocation);
+            $isoCode = $getIp['isoCode'];
+
         } catch (AddressNotFoundException $e) {
             return  ($ipLocation == '10.0.2.2');
         }  catch (\Exception $e) {
