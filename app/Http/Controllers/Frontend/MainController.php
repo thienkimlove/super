@@ -45,7 +45,7 @@ class MainController extends Controller
            // $reader = new Reader(storage_path('app/geoip.mmdb'));
            // $isoCode = $reader->country($ipLocation)->country->isoCode;
 
-            $getIp = GeoIP::getLocation($ipLocation);
+            $getIp = \GeoIP::getLocation($ipLocation);
             $isoCode = $getIp['isoCode'];
 
         } catch (AddressNotFoundException $e) {
