@@ -574,6 +574,7 @@ class HomeController extends AdminController
 
     public function cron()
     {
+        set_time_limit(0);
         $networks = Network::all();
         $message = null;
         foreach ($networks as $network) {
