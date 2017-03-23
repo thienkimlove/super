@@ -2,6 +2,8 @@
 
 namespace App;
 
+use GuzzleHttp\Client;
+
 class Site
 {
     public static function feed($network)
@@ -9,7 +11,7 @@ class Site
         $feed_url = $network->cron;
         // $feed_url = 'http://onetulip.afftrack.com/apiv2/?key=e661cf4c3909b1490ec1ac489349f66c&action=offer_feed';
 
-        $offers = json_decode(file_get_contents($feed_url), true);
+        $offers = self::getUrlContent($feed_url);
 
         $listCurrentNetworkOfferIds = [];
 
@@ -94,11 +96,19 @@ class Site
         return 'Total Offers : '.$total;
     }
 
+    public static function getUrlContent($url)
+    {
+        $client = new Client();
+        $response = $client->createRequest("GET", $url, $url);
+        $response = $client->send($response);
+        return $response->json();
+    }
+
     public static function cpway($network)
     {
         //$url = 'http://intrexmedia.com/api.php?key=758be7ff505de4ad';
         $feed_url = $network->cron;
-        $offers = json_decode(file_get_contents($feed_url), true);
+        $offers = self::getUrlContent($feed_url);
         $total = count($offers);
 
         $listCurrentNetworkOfferIds = [];
