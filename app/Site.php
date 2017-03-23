@@ -98,9 +98,24 @@ class Site
 
     public static function getUrlContent($url)
     {
-        $client = new Client();
-        $response = $client->get($url, ['expect' => true]);
-        return \GuzzleHttp\json_decode($response->getBody(), true);
+        // create curl resource
+        $ch = curl_init();
+
+        // set url
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        //return the transfer as a string
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        
+        curl_setopt($ch, CURLOPT_HTTPHEADER, 'Expect:');
+
+        // $output contains the output string
+        $output = curl_exec($ch);
+
+        // close curl resource to free up system resources
+        curl_close($ch);
+
+        return json_decode($output, true);
     }
 
     public static function cpway($network)
