@@ -100,7 +100,7 @@ class Site
     {
         $client = new Client();
         $response = $client->get($url);
-        return \GuzzleHttp\json_decode($response->getBody());
+        return \GuzzleHttp\json_decode($response->getBody(), true);
     }
 
     public static function cpway($network)
