@@ -99,8 +99,7 @@ class Site
     public static function getUrlContent($url)
     {
         $client = new Client();
-        $response = $client->createRequest("GET", $url, []);
-        $response = $client->send($response);
+        $response = $client->get($url);
         return $response->json();
     }
 
