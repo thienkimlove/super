@@ -106,8 +106,8 @@ class Site
 
         //return the transfer as a string
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        
-        curl_setopt($ch, CURLOPT_HTTPHEADER, 'Expect:');
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Expect:']);
 
         // $output contains the output string
         $output = curl_exec($ch);
