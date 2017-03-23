@@ -99,7 +99,7 @@ class Site
     public static function getUrlContent($url)
     {
         $client = new Client();
-        $response = $client->get($url);
+        $response = $client->get($url, ['expect' => true]);
         return \GuzzleHttp\json_decode($response->getBody(), true);
     }
 
