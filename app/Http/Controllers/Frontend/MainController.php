@@ -206,13 +206,20 @@ class MainController extends Controller
         if ($network_id && $offer_id && $sub_id) {
 
             if ($request->input('network_id') != -1) {
-                NetworkClick::create([
-                    'network_id' => $network_id,
-                    'network_offer_id' => $offer_id,
-                    'sub_id' => $sub_id,
-                    'amount' => $request->input('amount'),
-                    'ip' => $request->input('ip')
-                ]);
+
+                $checkExistedLead = NetworkClick::where('network_id', $network_id)
+                    ->where('network_offer_id', $offer_id)
+                    ->where('sub_id', $sub_id)
+                    ->count();
+                if ($checkExistedLead == 0) {
+                    NetworkClick::create([
+                        'network_id' => $network_id,
+                        'network_offer_id' => $offer_id,
+                        'sub_id' => $sub_id,
+                        'amount' => $request->input('amount'),
+                        'ip' => $request->input('ip')
+                    ]);
+                }
             }
 
         }
@@ -227,13 +234,20 @@ class MainController extends Controller
         if ($findInClick > 0) {
             $click =  Click::where('hash_tag', $sub_id)->get()->first();
             $offer = Offer::find($click->offer_id);
-            NetworkClick::create([
-                'network_id' => $network_id,
-                'network_offer_id' => $offer->net_offer_id,
-                'sub_id' => $sub_id,
-                'amount' => 0,
-                'ip' => ''
-            ]);
+
+            $checkExistedLead = NetworkClick::where('network_id', $network_id)
+                ->where('network_offer_id', $offer->net_offer_id)
+                ->where('sub_id', $sub_id)
+                ->count();
+            if ($checkExistedLead == 0) {
+                NetworkClick::create([
+                    'network_id' => $network_id,
+                    'network_offer_id' => $offer->net_offer_id,
+                    'sub_id' => $sub_id,
+                    'amount' => 0,
+                    'ip' => ''
+                ]);
+            }
         }
     }
 
