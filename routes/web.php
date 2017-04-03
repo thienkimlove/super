@@ -37,5 +37,4 @@ Route::get('postback', 'Frontend\MainController@postback');
 Route::get('hashpostback', 'Frontend\MainController@hashpostback');
 Route::post('postback', 'Frontend\MainController@postback');
 Route::get('xmedia', 'Frontend\MainController@xmedia');
-Route::get('umedia', 'Frontend\MainController@recent');
 
