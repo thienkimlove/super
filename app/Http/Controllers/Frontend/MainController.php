@@ -244,7 +244,7 @@ class MainController extends Controller
                     'network_offer_id' => $offer->net_offer_id,
                     'sub_id' => $sub_id,
                     'amount' => 0,
-                    'ip' => ''
+                    'ip' => $click->click_ip
                 ]);
             }
         }
