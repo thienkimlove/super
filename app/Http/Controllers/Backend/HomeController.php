@@ -187,7 +187,7 @@ class HomeController extends AdminController
             })
             ->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
             ->join('users', 'clicks.user_id', '=', 'users.id')
-            ->select('offers.name', 'offers.id', 'clicks.created_at as click_at', 'network_clicks.ip', 'network_clicks.created_at', 'users.username', 'network_clicks.id as postback_id')
+            ->select('offers.name', 'offers.id', 'clicks.created_at as click_at', 'network_clicks.ip as network_ip', 'network_clicks.created_at', 'users.username', 'network_clicks.id as postback_id')
             ->orderBy('network_clicks.id', 'desc')
             ->limit(10)
             ->get();
