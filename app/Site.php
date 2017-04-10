@@ -103,7 +103,7 @@ class Site
     public static function getUrlContent($url)
     {
         // create curl resource
-        $ch = curl_init();
+       /* $ch = curl_init();
 
         // set url
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -117,9 +117,9 @@ class Site
         $output = curl_exec($ch);
 
         // close curl resource to free up system resources
-        curl_close($ch);
+        curl_close($ch);*/
 
-        return json_decode($output, true);
+        return json_decode(file_get_contents($url), true);
     }
 
     public static function cpway($network)
