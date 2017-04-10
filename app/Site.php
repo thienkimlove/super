@@ -161,38 +161,36 @@ class Site
         return $total;
     }
 
+    public static function download($file_source, $file_target) {
+        $rh = fopen($file_source, 'rb');
+        $wh = fopen($file_target, 'w+b');
+        if (!$rh || !$wh) {
+            return false;
+        }
+
+        while (!feof($rh)) {
+            if (fwrite($wh, fread($rh, 4096)) === FALSE) {
+                return false;
+            }
+            echo ' ';
+            flush();
+        }
+
+        fclose($rh);
+        fclose($wh);
+
+        return true;
+    }
+
     public static function getUrlContent($url)
     {
         $rand = uniqid();
-        // create curl resource
-        $ch = curl_init();
+        
+        $temp_file = storage_path('logs/'.$rand.'.txt');
 
-        // set url
-        curl_setopt($ch, CURLOPT_URL, $url);
-
-        curl_setopt($ch, CURLOPT_TIMEOUT, 300);
-
-        //return the transfer as a string
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Expect:']);
-
-        // $output contains the output string
-        //$output = curl_exec($ch);
-
-        $fp = fopen(storage_path('logs/'.$rand.'.txt'), 'w+');
-        /**
-         * Ask cURL to write the contents to a file
-         */
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-
-        curl_exec ($ch);
-
-        curl_close ($ch);
-
-        fclose($fp);
+        self::download($url, $temp_file);
 
 
-        return json_decode(file_get_contents(storage_path('logs/'.$rand.'.txt')), true);
+        return json_decode(file_get_contents($temp_file), true);
     }
 }
