@@ -602,17 +602,20 @@ class HomeController extends AdminController
     }
 
 
-    public function cron()
+    public function cron(Request $request)
     {
         set_time_limit(0);
-        $networks = Network::all();
+        if ($request->input('network_id')) {
+            $networks = Network::find($request->input('network_id'));
+        } else {
+            $networks = Network::all();
+        }
+
         $message = null;
         foreach ($networks as $network) {
             if ($network->cron) {
                 $message .= 'Network :' . $network->name . ' have cron='.$network->cron.'"\n"';
                 $message .= Site::feed($network).'"\n"';
-            } else {
-                $message .= 'Network :' . $network->name . ' has no cron'.'"\n"';
             }
         }
         return view('admin.cron', compact('message'));
