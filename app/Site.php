@@ -172,7 +172,6 @@ class Site
             if (fwrite($wh, fread($rh, 4096)) === FALSE) {
                 return false;
             }
-            echo ' ';
             flush();
         }
 
@@ -185,7 +184,7 @@ class Site
     public static function getUrlContent($url)
     {
         $rand = uniqid();
-        
+
         $temp_file = storage_path('logs/'.$rand.'.txt');
 
         self::download($url, $temp_file);
