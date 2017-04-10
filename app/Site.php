@@ -163,6 +163,7 @@ class Site
 
     public static function getUrlContent($url)
     {
+        $rand = uniqid();
         // create curl resource
         $ch = curl_init();
 
@@ -175,13 +176,21 @@ class Site
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['Expect:']);
 
         // $output contains the output string
-        $output = curl_exec($ch);
+        //$output = curl_exec($ch);
 
-        // close curl resource to free up system resources
-        curl_close($ch);
+        $fp = fopen(storage_path('logs/'.$rand.'.txt'), 'w+');
+        /**
+         * Ask cURL to write the contents to a file
+         */
+        curl_setopt($ch, CURLOPT_FILE, $fp);
 
-        \Log::info('debug='.$output);
+        curl_exec ($ch);
 
-        return json_decode($output, true);
+        curl_close ($ch);
+
+        fclose($fp);
+
+
+        return json_decode(file_get_contents(storage_path('logs/'.$rand.'.txt')), true);
     }
 }
