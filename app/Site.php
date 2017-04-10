@@ -170,6 +170,8 @@ class Site
         // set url
         curl_setopt($ch, CURLOPT_URL, $url);
 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 300);
+
         //return the transfer as a string
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
