@@ -606,7 +606,7 @@ class HomeController extends AdminController
     {
         set_time_limit(0);
         if ($request->input('network_id')) {
-            $networks = Network::find($request->input('network_id'));
+            $networks = Network::where('id', $request->input('network_id'))->get();
         } else {
             $networks = Network::all();
         }
