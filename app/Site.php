@@ -2,6 +2,7 @@
 
 namespace App;
 
+use File;
 use GuzzleHttp\Client;
 
 class Site
@@ -183,13 +184,6 @@ class Site
 
     public static function getUrlContent($url)
     {
-        $rand = uniqid();
-
-        $temp_file = storage_path('logs/'.$rand.'.txt');
-
-        self::download($url, $temp_file);
-
-
-        return json_decode(file_get_contents($temp_file), true);
+        return json_decode(File::getRemote($url), true);
     }
 }
