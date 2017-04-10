@@ -609,13 +609,8 @@ class HomeController extends AdminController
         $message = null;
         foreach ($networks as $network) {
             if ($network->cron) {
-                if ($network->type == 'onetulip') {
-                    $message .= 'Network :' . $network->name . 'is type onetulip have cron='.$network->cron.'"\n"';
-                    $message .= Site::feed($network).'"\n"';
-                } else if ($network->type == 'cpway') {
-                    $message .= 'Network :' . $network->name . 'is type cpway have cron='.$network->cron.'"\n"';
-                    $message .= Site::cpway($network).'"\n"';
-                }
+                $message .= 'Network :' . $network->name . ' have cron='.$network->cron.'"\n"';
+                $message .= Site::feed($network).'"\n"';
             } else {
                 $message .= 'Network :' . $network->name . ' has no cron'.'"\n"';
             }
