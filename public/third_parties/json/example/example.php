@@ -12,6 +12,8 @@ try {
     throw $e;
 }
 
-$rand = uniqid().'_'.time().'.txt';
+echo json_encode($listener->getJson(), true);
+
+/*$rand = uniqid().'_'.time().'.txt';
 file_put_contents(dirname(__FILE__) . '/../../../../storage/logs/'.$rand, json_encode($listener->getJson(), true));
-echo $rand;
+echo $rand;*/
