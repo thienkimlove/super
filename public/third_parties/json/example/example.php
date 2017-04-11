@@ -13,7 +13,7 @@ try {
     throw $e;
 }
 
-echo json_encode($listener->getJson(), true);
+print_r($listener->getJson());
 
 /*$rand = uniqid().'_'.time().'.txt';
 file_put_contents(dirname(__FILE__) . '/../../../../storage/logs/'.$rand, json_encode($listener->getJson(), true));
