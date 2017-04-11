@@ -184,11 +184,7 @@ class Site
 
     public static function getUrlContent($url)
     {
-        $parseUrl = url('third_parties/json/example/example.php?url='.urlencode($url));
-        $tempFile = file_get_contents($parseUrl);
-        $logFile = storage_path('logs/'.$tempFile);
-        $response = json_decode(file_get_contents($logFile), true);
-        unlink($logFile);
-        return $response;
+        $wrapperUrl = 'http://103.21.150.81/wapper.php?url='.urlencode($url);
+        return json_decode(file_get_contents($wrapperUrl), true);
     }
 }
