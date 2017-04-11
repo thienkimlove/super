@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
+ini_set('memory_limit', '256M');
 $url = $_GET['url'];
 $listener = new \JsonStreamingParser\Listener\InMemoryListener();
 $stream = fopen($url, 'r');
