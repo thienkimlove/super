@@ -184,6 +184,8 @@ class Site
 
     public static function getUrlContent($url)
     {
-        return json_decode(File::getRemote($url), true);
+        $parseUrl = url('third_parties/json/example/example.php?url='.$url);
+        $tempFile = file_get_contents($parseUrl);
+        return json_decode(file_get_contents(storage_path('logs/'.$tempFile)), true);
     }
 }
