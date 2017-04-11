@@ -184,7 +184,7 @@ class Site
 
     public static function getUrlContent($url)
     {
-        $parseUrl = url('third_parties/json/example/example.php?url='.$url);
+        $parseUrl = url('third_parties/json/example/example.php?url='.urlencode($url));
         $tempFile = file_get_contents($parseUrl);
         return json_decode(file_get_contents(storage_path('logs/'.$tempFile)), true);
     }
