@@ -166,7 +166,8 @@ class MainController extends Controller
                                         'hash_tag' => $hash_tag
                                     ]);
 
-                                    $redirect_link  = str_replace('#subid', $hash_tag, strtolower($offer->redirect_link));
+                                    $redirect_link  = str_replace('#subId', $hash_tag, $offer->redirect_link);
+                                    $redirect_link  = str_replace('#subid', $hash_tag, $redirect_link);
                                     return redirect()->away($redirect_link);
 
                                 } catch (\Exception $e) {
