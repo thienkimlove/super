@@ -38,10 +38,9 @@ Route::get('hashpostback', 'Frontend\MainController@hashpostback');
 Route::post('postback', 'Frontend\MainController@postback');
 Route::get('xmedia', 'Frontend\MainController@xmedia');
 
-Route::get('test_json', function(){
-    ini_set('memory_limit', '64M');
-    $url = url('third_parties/json/example/example.php?url='.urlencode('http://intrexmedia.com/api.php?key=2b1989d1db3b18fa'));
-    $jsonString =  file_get_contents($url);
-    print_r(json_decode($jsonString, true));
+Route::get('test_ip', function(){
+   $ipInformation = file_get_contents('http://freegeoip.net/json/1.52.80.71');
+   $address = json_decode($ipInformation, true);
+   echo $address['country_code'];
 });
 

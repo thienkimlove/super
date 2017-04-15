@@ -43,19 +43,21 @@ class MainController extends Controller
         $isoCode = null;
         $ipLocation = $request->ip();
 
-
         try {
-           // $reader = new Reader(storage_path('app/geoip.mmdb'));
-           // $isoCode = $reader->country($ipLocation)->country->isoCode;
-
-            $getIp = \GeoIP::getLocation($ipLocation);
-            $isoCode = $getIp['isoCode'];
-
-        } catch (AddressNotFoundException $e) {
-            return  ($ipLocation == '10.0.2.2');
-        }  catch (\Exception $e) {
+            $ipInformation = file_get_contents('http://freegeoip.net/json/'.$ipLocation);
+            $address = json_decode($ipInformation, true);
+            $isoCode = $address['country_code'];
+        } catch (\Exception $e) {
             \Log::error('check geo ip error='.$e->getMessage());
-            return false;
+            try {
+                $getIp = \GeoIP::getLocation($ipLocation);
+                $isoCode = $getIp['isoCode'];
+            } catch (AddressNotFoundException $e) {
+                return  ($ipLocation == '10.0.2.2');
+            }  catch (\Exception $e) {
+                \Log::error('check geo ip error='.$e->getMessage());
+                return false;
+            }
         }
 
         if (strpos($offer_locations, $isoCode) !== false) {
