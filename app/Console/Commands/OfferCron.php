@@ -44,13 +44,8 @@ class OfferCron extends Command
         $networks = Network::all();
         foreach ($networks as $network) {
             if ($network->cron) {
-                if ($network->type == 'onetulip') {
-                    Site::feed($network);
-                    $this->line('Network :' . $network->name . 'is type onetulip have cron='.$network->cron);
-                } else if ($network->type == 'cpway') {
-                    Site::cpway($network);
-                    $this->line('Network :' . $network->name . 'is type cpway have cron='.$network->cron);
-                }
+                Site::feed($network);
+                $this->line('Network :' . $network->name . ' have cron='.$network->cron);
             } else {
                 $this->line('Network :' . $network->name . ' has no cron');
             }

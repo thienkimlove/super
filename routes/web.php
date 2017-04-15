@@ -38,3 +38,10 @@ Route::get('hashpostback', 'Frontend\MainController@hashpostback');
 Route::post('postback', 'Frontend\MainController@postback');
 Route::get('xmedia', 'Frontend\MainController@xmedia');
 
+Route::get('test_json', function(){
+    ini_set('memory_limit', '64M');
+    $url = url('third_parties/json/example/example.php?url='.urlencode('http://intrexmedia.com/api.php?key=2b1989d1db3b18fa'));
+    $jsonString =  file_get_contents($url);
+    print_r(json_decode($jsonString, true));
+});
+
