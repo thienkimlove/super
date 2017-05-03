@@ -184,6 +184,7 @@ class Site
 
     public static function getUrlContent($url)
     {
+        ini_set('memory_limit', '-1');
         $wrapperUrl = 'http://103.21.150.81/wapper.php?url='.urlencode($url);
         return json_decode(file_get_contents($wrapperUrl), true);
     }
