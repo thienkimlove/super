@@ -207,7 +207,7 @@ class MainController extends Controller
 
         if ($network_id && $offer_id && $sub_id) {
 
-            if ($request->input('network_id') != -1) {
+            if ($request->input('status') != -1) {
 
                 $checkExistedLead = NetworkClick::where('network_id', $network_id)
                     ->where('network_offer_id', $offer_id)
