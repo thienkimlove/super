@@ -41,8 +41,13 @@
                         </span>
                         @endif
                         <span class="input-group-btn">
+                             @if ($searchAuto == 1)
                              <input type="hidden" name="auto" value="{{$searchAuto}}" />
+                             @endif
+
+                             @if ($searchInactive)
                              <input type="hidden" name="inactive" value="{{$searchInactive}}" />
+                             @endif
                             <button class="btn btn-default" type="submit">
                                 <i class="fa fa-search"></i>
                             </button>
