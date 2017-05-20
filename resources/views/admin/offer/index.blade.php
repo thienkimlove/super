@@ -42,6 +42,7 @@
                         @endif
                         <span class="input-group-btn">
                              <input type="hidden" name="auto" value="{{$auto}}" />
+                             <input type="hidden" name="searchStatus" value="{{$searchStatus}}" />
                             <button class="btn btn-default" type="submit">
                                 <i class="fa fa-search"></i>
                             </button>

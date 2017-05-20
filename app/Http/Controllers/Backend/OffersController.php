@@ -35,7 +35,7 @@ class OffersController extends AdminController
         $searchDevice = null;
         $searchNetwork = null;
         $searchUid = null;
-        $status = true;
+        $searchStatus = 1;
 
         if ($request->input('auto') && $request->input('auto') == 1) {
             $offers = Offer::latest('net_offer_id');
@@ -81,21 +81,21 @@ class OffersController extends AdminController
         }
 
         if ($request->input('inactive')) {
-            $status = ($request->input('inactive') == 1) ? false: true;
+            $searchStatus = ($request->input('inactive') == 1) ? 1: 0;
             $path .= '&inactive='.$request->input('inactive');
         }
 
         if ($request->input('auto')) {
-            $auto = ($request->input('auto') == 1) ? true : false;
+            $auto = ($request->input('auto') == 1) ? 1 : 0;
             $offers = $offers->where('auto', $auto);
             $path .= '&auto='.$request->input('auto');
         }
 
-        $offers = $offers->where('status', $status)->paginate(10);
+        $offers = $offers->where('status', $searchStatus)->paginate(10);
         $offers->setPath($path);
         $devices = $this->devices;
         $networks = ['' => 'Choose network'] + Network::whereNotNull('cron')->OrWhere('cron', '<>', '')->pluck('name', 'id')->all();
-        return view('admin.offer.index', compact('offers', 'searchOffer', 'auto', 'searchCountry', 'devices', 'searchDevice', 'searchNetwork', 'searchUid', 'networks'));
+        return view('admin.offer.index', compact('offers', 'searchOffer', 'searchStatus', 'auto', 'searchCountry', 'devices', 'searchDevice', 'searchNetwork', 'searchUid', 'networks'));
     }
 
 
