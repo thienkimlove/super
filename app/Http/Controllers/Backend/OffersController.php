@@ -91,8 +91,10 @@ class OffersController extends AdminController
 
         if ($request->input('auto') &&  $request->input('auto') == 1) {
             $searchAuto = 1;
-            $offers = $offers->where('auto', $searchAuto);
+            $offers = $offers->where('auto', true);
             $path .= '&auto='.$request->input('auto');
+        } else {
+            $offers = $offers->where('auto', false);
         }
 
         $offers = $offers->paginate(10);
