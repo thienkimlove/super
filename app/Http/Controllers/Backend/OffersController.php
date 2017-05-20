@@ -35,6 +35,7 @@ class OffersController extends AdminController
         $searchDevice = null;
         $searchNetwork = null;
         $searchUid = null;
+        $status = true;
 
         if ($request->input('auto') && $request->input('auto') == 1) {
             $offers = Offer::latest('net_offer_id');
@@ -79,20 +80,18 @@ class OffersController extends AdminController
             $path .= '&network='.$request->input('network');
         }
 
-        if ($request->input('auto') && $request->input('auto') == 1) {
-            if ($request->input('inactive') && $request->input('inactive') == 1) {
-                $offers = $offers->where('status', false);
-                $path .= '&inactive='.$request->input('inactive');
-            } else {
-                $offers = $offers->where('status', true);
-            }
-            $offers = $offers->where('auto', true)->paginate(10);
-        } else {
-            $offers = $offers->where('auto', false)->paginate(10);
+        if ($request->input('inactive')) {
+            $status = ($request->input('inactive') == 1) ? false: true;
+            $path .= '&inactive='.$request->input('inactive');
         }
 
-        $auto = ($request->input('auto') == 1) ? 1 : 0;
-        $path .= '&auto='.$auto;
+        if ($request->input('auto')) {
+            $auto = ($request->input('auto') == 1) ? true : false;
+            $offers = $offers->where('auto', $auto);
+            $path .= '&auto='.$request->input('auto');
+        }
+
+        $offers = $offers->where('status', $status)->paginate(10);
         $offers->setPath($path);
         $devices = $this->devices;
         $networks = ['' => 'Choose network'] + Network::whereNotNull('cron')->OrWhere('cron', '<>', '')->pluck('name', 'id')->all();
