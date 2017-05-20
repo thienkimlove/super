@@ -36,6 +36,7 @@ class OffersController extends AdminController
         $searchNetwork = null;
         $searchUid = null;
         $searchStatus = 1;
+        $auto = 0;
 
         if ($request->input('auto') && $request->input('auto') == 1) {
             $offers = Offer::latest('net_offer_id');
