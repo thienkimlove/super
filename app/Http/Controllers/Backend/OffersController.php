@@ -35,8 +35,8 @@ class OffersController extends AdminController
         $searchDevice = null;
         $searchNetwork = null;
         $searchUid = null;
-        $searchStatus = 1;
-        $auto = 0;
+        $searchInactive = null;
+        $searchAuto = null;
 
         if ($request->input('auto') && $request->input('auto') == 1) {
             $offers = Offer::latest('net_offer_id');
@@ -81,22 +81,25 @@ class OffersController extends AdminController
             $path .= '&network='.$request->input('network');
         }
 
-        if ($request->input('inactive')) {
-            $searchStatus = ($request->input('inactive') == 1) ? 1: 0;
+        if ($request->input('inactive') && $request->input('inactive') == 1) {
+            $searchInactive = 1;
+            $offers = $offers->where('status', false);
             $path .= '&inactive='.$request->input('inactive');
+        } else {
+            $offers = $offers->where('status', true);
         }
 
-        if ($request->input('auto')) {
-            $auto = ($request->input('auto') == 1) ? 1 : 0;
-            $offers = $offers->where('auto', $auto);
+        if ($request->input('auto') &&  $request->input('auto') == 1) {
+            $searchAuto = 1;
+            $offers = $offers->where('auto', $searchAuto);
             $path .= '&auto='.$request->input('auto');
         }
 
-        $offers = $offers->where('status', $searchStatus)->paginate(10);
+        $offers = $offers->paginate(10);
         $offers->setPath($path);
         $devices = $this->devices;
         $networks = ['' => 'Choose network'] + Network::whereNotNull('cron')->OrWhere('cron', '<>', '')->pluck('name', 'id')->all();
-        return view('admin.offer.index', compact('offers', 'searchOffer', 'searchStatus', 'auto', 'searchCountry', 'devices', 'searchDevice', 'searchNetwork', 'searchUid', 'networks'));
+        return view('admin.offer.index', compact('offers', 'searchOffer', 'searchInactive', 'searchAuto', 'searchCountry', 'devices', 'searchDevice', 'searchNetwork', 'searchUid', 'networks'));
     }
 
 

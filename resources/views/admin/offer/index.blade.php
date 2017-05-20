@@ -41,8 +41,8 @@
                         </span>
                         @endif
                         <span class="input-group-btn">
-                             <input type="hidden" name="auto" value="{{$auto}}" />
-                             <input type="hidden" name="searchStatus" value="{{$searchStatus}}" />
+                             <input type="hidden" name="auto" value="{{$searchAuto}}" />
+                             <input type="hidden" name="inactive" value="{{$searchInactive}}" />
                             <button class="btn btn-default" type="submit">
                                 <i class="fa fa-search"></i>
                             </button>
