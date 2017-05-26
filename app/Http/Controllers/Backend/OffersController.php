@@ -48,7 +48,7 @@ class OffersController extends AdminController
 
         if ($request->input('uid')) {
             $searchUid = urldecode($request->input('uid'));
-            $offers = $offers->where('id', 'LIKE', '%'. $searchUid. '%')->orWhere('net_offer_id', 'LIKE', '%'. $searchUid. '%');
+            $offers = $offers->where('id', $searchUid)->orWhere('net_offer_id', $searchUid);
             $path .= '&uid='.$request->input('uid');
         }
 
