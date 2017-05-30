@@ -3,11 +3,64 @@
 @section('content')
 
     <div class="row">
-        <div class="col-lg-4">
-            <div class="panel panel-default">
+
+        <div class="col-lg-3 col-md-4">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <i class="fa fa-bar-chart-o fa-fw"></i> Statistic by User Today
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-comments fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{$content['today']}}</div>
+                            <div>Money Today</div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-tasks fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{$content['month']}}</div>
+                            <div>Money This Month</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-shopping-cart fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{$content['total']}}</div>
+                            <div>Total</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- /.panel -->
+            <div class="panel panel-default">
+
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Statistic By User Today
+                </div>
+                <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped">
@@ -27,15 +80,20 @@
                             </tbody>
                         </table>
                     </div>
+                    <!-- /.row -->
                 </div>
+                <!-- /.panel-body -->
             </div>
+            <!-- /.panel -->
         </div>
-        <div class="col-lg-8">
 
+        <div class="col-lg-6">
             <div class="panel panel-default">
+
                 <div class="panel-heading">
-                    <i class="fa fa-bar-chart-o fa-fw"></i> Statistic by Network Today
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Statistic By Network Today
                 </div>
+                <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped">
@@ -55,51 +113,13 @@
                             </tbody>
                         </table>
                     </div>
+                    <!-- /.row -->
                 </div>
-            </div>
-
-            <div class="panel panel-yellow">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <i class="fa fa-shopping-cart fa-5x"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <div class="huge">{{$content['total']}}</div>
-                            <div>Total</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <i class="fa fa-comments fa-5x"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <div class="huge">{{$content['today']}}</div>
-                            <div>Money Today</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-green">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <i class="fa fa-tasks fa-5x"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <div class="huge">{{$content['month']}}</div>
-                            <div>Money This Month</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <!-- /.panel-body -->
+            </div>    <!-- /.panel -->
         </div>
-    </div>
 
+    </div>
 
     @if ($todayOffers)
        <div class="row">
