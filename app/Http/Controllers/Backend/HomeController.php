@@ -74,6 +74,42 @@ class HomeController extends AdminController
             'total' => ($totalMoneyQuery->count() > 0) ? $totalMoneyQuery->first()->total : 0,
         ];
 
+        $userQuery = clone $initQuery;
+        $networkQuery = clone $initQuery;
+
+        $userTotals = [];
+        $networkTotals = [];
+
+        $todayUserMoney = $userQuery
+            ->select(DB::raw("SUM(offers.click_rate) as total, users.id"))
+            ->whereBetween('network_clicks.created_at', [$todayStart, $todayEnd])
+            ->groupBy('users.id')
+            ->get();
+
+        foreach ($todayUserMoney as $userMoney) {
+            $user = User::find($userMoney->id);
+            $userTotals[] = [
+                'username' => $user->username,
+                'total' => $userMoney->total
+            ];
+        }
+
+        $todayNetworkMoney = $networkQuery
+            ->join('networks', 'networks.id', '=', 'network_clicks.network_id')
+            ->select(DB::raw("SUM(offers.click_rate) as total, networks.id"))
+            ->whereBetween('network_clicks.created_at', [$todayStart, $todayEnd])
+            ->groupBy('networks.id')
+            ->get();
+
+        foreach ($todayNetworkMoney as $networkMoney) {
+            $network = Network::find($networkMoney->id);
+            $networkTotals[] = [
+                'name' => $network->name,
+                'total' => $networkMoney->total
+            ];
+        }
+
+
         //get offers.
         //api using to get real clicks.
 
@@ -165,7 +201,7 @@ class HomeController extends AdminController
             }
         }
 
-        return [$content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers];
+        return [$content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers, $userTotals, $networkTotals];
 
     }
 
@@ -174,8 +210,8 @@ class HomeController extends AdminController
     {
         $currentUser = auth('backend')->user();
         $currentUserId = ($currentUser->id == 1) ? 12 : $currentUser->id;
-        list($content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers) = $this->generateDashboard($currentUserId);
-        return view('admin.general.control', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent', 'currentUserId'));
+        list($content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers, $userTotals, $networkTotals) = $this->generateDashboard($currentUserId);
+        return view('admin.general.control', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent', 'currentUserId', 'userTotals', 'networkTotals'));
     }
 
     public function ajaxSiteRecentLead()
@@ -198,8 +234,8 @@ class HomeController extends AdminController
     public function control()
     {
         $currentUserId = null;
-        list($content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers) = $this->generateDashboard();
-        return view('admin.general.control', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent', 'currentUserId'));
+        list($content, $userRecent, $todayOffers, $yesterdayOffers, $weekOffers, $userTotals, $networkTotals) = $this->generateDashboard();
+        return view('admin.general.control', compact('content', 'todayOffers', 'yesterdayOffers', 'weekOffers', 'userRecent', 'currentUserId', 'userTotals', 'networkTotals'));
     }
 
     public function clearlead(Request $request)
