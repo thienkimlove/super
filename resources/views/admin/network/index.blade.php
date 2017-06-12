@@ -35,6 +35,12 @@
                                         $network->id]]) !!}
                                         <button type="submit" class="btn btn-danger btn-mini">Delete</button>
                                         {!! Form::close() !!}
+
+                                        @if ($network->cron)
+
+                                        <button id-attr="{{$network->id}}" class="btn btn-primary btn-sm cron-content" type="button">Cron</button>&nbsp;
+                                         @endif
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -68,6 +74,9 @@
             });
             $('.edit-content').click(function(){
                 window.location.href = window.baseUrl + '/admin/networks/' + $(this).attr('id-attr') + '/edit';
+            });
+            $('.cron-content').click(function(){
+                window.location.href = window.baseUrl + '/admin/cron?network_id=' + $(this).attr('id-attr');
             });
         });
     </script>
