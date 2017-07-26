@@ -25,12 +25,12 @@ class MainController extends Controller
     private function checkIpAndLocation($offer, $request)
     {
         if (env('NO_CHECK_IP')) {
-            return true;
+            return 'US';
         }
 
         $offer_locations = trim(strtoupper($offer->geo_locations));
         if (!$offer_locations || ($offer_locations == 'ALL')) {
-            return true;
+            return 'US';
         }
 
         if (strpos($offer_locations, 'GB') !== false) {

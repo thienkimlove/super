@@ -6,6 +6,7 @@ use App\Console\Commands\AddAdmin;
 use App\Console\Commands\AddMediaOffer;
 use App\Console\Commands\AddOneTulipOffer;
 use App\Console\Commands\OfferCron;
+use App\Console\Commands\ProcessVirtualClicks;
 use App\Console\Commands\RemoveInactiveLead;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -23,6 +24,7 @@ class Kernel extends ConsoleKernel
        // AddOneTulipOffer::class,
         OfferCron::class,
         RemoveInactiveLead::class,
+        ProcessVirtualClicks::class,
     ];
 
     /**
