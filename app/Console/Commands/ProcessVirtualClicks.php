@@ -60,6 +60,7 @@ class ProcessVirtualClicks extends Command
         try {
             $xml = simplexml_load_file($result);
             $additionUrl = $xml->xpath("//meta[@http-equiv='refresh']");
+            \Log::info('follow_this_url='.$additionUrl);
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
         }
@@ -69,7 +70,7 @@ class ProcessVirtualClicks extends Command
         } else {
             return $result;
         }
-            
+
     }
 
 
