@@ -49,6 +49,9 @@ class ProcessVirtualClicks extends Command
             'Connection: Keep-Alive',
             'Keep-Alive: 10'
         ));
+        curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
         $result = curl_exec($curl);
         curl_close($curl);
         return $result;
