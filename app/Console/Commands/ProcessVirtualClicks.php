@@ -57,15 +57,18 @@ class ProcessVirtualClicks extends Command
 
         $additionUrl = null;
 
-        try {
-            $xml = simplexml_load_file($result);
-            $additionUrl = $xml->xpath("//meta[@http-equiv='refresh']");
-            \Log::info('follow_this_url='.$additionUrl);
-        } catch (\Exception $e) {
-            \Log::info($e->getMessage());
+        // Check if we need to go somewhere else
+
+        if (isset($result) && is_string($result)) {
+            preg_match_all('/<[\s]*meta[\s]*http-equiv="?refresh"?' . '[\s]*content="?[0-9]*;[\s]*URL[\s]*=[\s]*([^>"]*)"?' . '[\s]*[\/]?[\s]*>/si', $result, $match);
+
+            if (isset($match) && is_array($match) && count($match) == 2 && count($match[1]) == 1) {
+               $additionUrl = $match[1][0];
+            }
         }
 
         if ($additionUrl) {
+            \Log::info('follow_url='.$additionUrl);
             return $this->virtualCurl($isoCode, $additionUrl, $userAgent);
         } else {
             return $result;
