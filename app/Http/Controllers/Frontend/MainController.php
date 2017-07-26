@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\NetworkClick;
 use App\Offer;
 use App\User;
+use App\VirtualLog;
 use Carbon\Carbon;
 use DB;
 use GeoIp2\Exception\AddressNotFoundException;
@@ -61,7 +62,7 @@ class MainController extends Controller
         }
 
         if (strpos($offer_locations, $isoCode) !== false) {
-            return true;
+            return $isoCode;
         } else {
             \Log::error('offer_id='.$offer->id.'and offer_locations='.$offer_locations.' but ip='.$ipLocation.' and isoCode='.$isoCode);
             return false;
@@ -160,7 +161,7 @@ class MainController extends Controller
                                 //insert click and redirect
                                 $hash_tag = md5(uniqid($offer_id.$user_id.$currentIp));
                                 try {
-                                    Click::create([
+                                   $addedClick = Click::create([
                                         'user_id' => $user_id,
                                         'offer_id' => $offer_id,
                                         'click_ip' => $currentIp,
@@ -170,6 +171,21 @@ class MainController extends Controller
 
                                     $redirect_link  = str_replace('#subId', $hash_tag, $offer->redirect_link);
                                     $redirect_link  = str_replace('#subid', $hash_tag, $redirect_link);
+
+                                    #put in queues for process multi click.
+                                    try {
+                                        for ($i = 0; $i < 30; $i++) {
+                                            VirtualLog::create([
+                                                'offer_id' => $offer_id,
+                                                'click_id' => $addedClick->id,
+                                                'user_country' => $checkLocation
+                                            ]);
+                                        }
+                                    } catch (\Exception $e) {
+                                        \Log::info('Error while adding to virtual_logs :'.$e->getMessage());
+                                    }
+
+
                                     return redirect()->away($redirect_link);
 
                                 } catch (\Exception $e) {
