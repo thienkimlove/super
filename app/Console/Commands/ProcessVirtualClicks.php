@@ -33,7 +33,7 @@ class ProcessVirtualClicks extends Command
         parent::__construct();
     }
 
-    private function virtualCurl($isoCode, $url, $userAgent)
+    private function virtualCurl($isoCode, $url, $userAgent, $currentRedirection = 0)
     {
         $username = 'lum-customer-theway_holdings-zone-nam-country-'.strtolower($isoCode);
         $password = '99oah6sz26i5';
@@ -56,28 +56,27 @@ class ProcessVirtualClicks extends Command
         $result = curl_exec($curl);
         curl_close ($curl);
 
-        $additionUrl = null;
+        if ($currentRedirection < 10) {
+            $additionUrl = null;
+            if (isset($result) && is_string($result)) {
+                if (preg_match("/window.location.replace('(.*)')/i", $result, $value) ||
+                    preg_match("/window.location\s+=\s+[\"'](.*)[\"']/i", $result, $value) ||
+                    preg_match("/location.href\s+=\s+[\"'](.*)[\"']/i", $result, $value)) {
+                    $additionUrl = $value[1];
+                } else {
+                    preg_match_all('/<[\s]*meta[\s]*http-equiv="?refresh"?' . '[\s]*content="?[0-9]*;[\s]*URL[\s]*=[\s]*([^>"]*)"?' . '[\s]*[\/]?[\s]*>/si', $result, $match);
 
-        if (isset($result) && is_string($result)) {
-            if (preg_match("/window.location.replace('(.*)')/i", $result, $value) ||
-                preg_match("/window.location\s+=\s+[\"'](.*)[\"']/i", $result, $value) ||
-                preg_match("/location.href\s+=\s+[\"'](.*)[\"']/i", $result, $value)) {
-                $additionUrl = $value[1];
-            } else {
-                preg_match_all('/<[\s]*meta[\s]*http-equiv="?refresh"?' . '[\s]*content="?[0-9]*;[\s]*URL[\s]*=[\s]*([^>"]*)"?' . '[\s]*[\/]?[\s]*>/si', $result, $match);
-
-                if (isset($match) && is_array($match) && count($match) == 2 && count($match[1]) == 1) {
-                    $additionUrl = $match[1][0];
+                    if (isset($match) && is_array($match) && count($match) == 2 && count($match[1]) == 1) {
+                        $additionUrl = $match[1][0];
+                    }
                 }
             }
+            if ($additionUrl) {
+                \Log::info('follow_url_log_number='.$currentRedirection.' url='.$additionUrl);
+                return $this->virtualCurl($isoCode, $additionUrl, $userAgent, ++$currentRedirection);
+            }
         }
-
-        if ($additionUrl) {
-            \Log::info('follow_url='.$additionUrl);
-            return $this->virtualCurl($isoCode, $additionUrl, $userAgent);
-        } else {
-            return $result;
-        }
+        return $result;
     }
 
 
