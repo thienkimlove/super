@@ -65,7 +65,9 @@ class ProcessVirtualClicks extends Command
                 foreach ($virtualClicks as $virtualClick) {
                     $offer = Offer::find($virtualClick->offer_id);
                     $userAgent = $lines[array_rand($lines)];
-                    $response = $this->virtualCurl($virtualClick->user_country, $offer->redirect_link, $userAgent);
+                    $redirectLink = $offer->redirect_link;
+                    $redirectLink = 'https://www.whatismybrowser.com/detect/what-is-my-user-agent';
+                    $response = $this->virtualCurl($virtualClick->user_country, $redirectLink, $userAgent);
                     $virtualClick->update([
                         'user_agent' => $userAgent,
                         'response' => $response,
