@@ -54,8 +54,24 @@ class ProcessVirtualClicks extends Command
 
         $result = curl_exec($curl);
         curl_close($curl);
-        return $result;
+
+        $additionUrl = null;
+
+        try {
+            $xml = simplexml_load_file($result);
+            $additionUrl = $xml->xpath("//meta[@http-equiv='refresh']");
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+        }
+
+        if ($additionUrl) {
+            return $this->virtualCurl($isoCode, $additionUrl, $userAgent);
+        } else {
+            return $result;
+        }
+            
     }
+
 
     /**
      * Execute the console command.
