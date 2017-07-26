@@ -45,6 +45,10 @@ class ProcessVirtualClicks extends Command
         curl_setopt($curl, CURLOPT_PROXY, "http://$super_proxy:$port");
         curl_setopt($curl, CURLOPT_PROXYUSERPWD, "$username-session-$session:$password");
         curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            'Connection: Keep-Alive',
+            'Keep-Alive: 10'
+        ));
         $result = curl_exec($curl);
         curl_close($curl);
         return $result;
@@ -65,8 +69,15 @@ class ProcessVirtualClicks extends Command
                 foreach ($virtualClicks as $virtualClick) {
                     $offer = Offer::find($virtualClick->offer_id);
                     $userAgent = $lines[array_rand($lines)];
-                    $redirectLink = $offer->redirect_link;
-                    $redirectLink = 'https://www.whatismybrowser.com/detect/what-is-my-user-agent';
+                    $redirectLink = null;
+                    if ($offer->id == 3) {
+                        $redirectLink = 'https://www.whatismybrowser.com/detect/what-is-my-user-agent';
+                    } else if ($offer->id == 4) {
+                        $redirectLink = 'http://whatismyipaddress.com/';
+                    } else {
+                        $redirectLink = $offer->redirect_link;
+                    }
+                    
                     $response = $this->virtualCurl($virtualClick->user_country, $redirectLink, $userAgent);
                     $virtualClick->update([
                         'user_agent' => $userAgent,

@@ -12,6 +12,7 @@ class VirtualLog extends Model
         'offer_id',
         'user_agent',
         'user_country',
-        'response'
+        'response',
+        'sent'
     ];
 }
