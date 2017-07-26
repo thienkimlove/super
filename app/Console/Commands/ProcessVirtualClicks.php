@@ -40,6 +40,7 @@ class ProcessVirtualClicks extends Command
         $port = 22225;
         $session = mt_rand();
         $super_proxy = 'zproxy.luminati.io';
+        $url = str_replace("&amp;", "&", urldecode(trim($url)));
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_PROXY, "http://$super_proxy:$port");
@@ -53,18 +54,32 @@ class ProcessVirtualClicks extends Command
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
         $result = curl_exec($curl);
-        curl_close($curl);
+        $response = curl_getinfo($curl);
+
+        curl_close ($curl);
 
         $additionUrl = null;
 
-        // Check if we need to go somewhere else
-
-        if (isset($result) && is_string($result)) {
-            preg_match_all('/<[\s]*meta[\s]*http-equiv="?refresh"?' . '[\s]*content="?[0-9]*;[\s]*URL[\s]*=[\s]*([^>"]*)"?' . '[\s]*[\/]?[\s]*>/si', $result, $match);
-
-            if (isset($match) && is_array($match) && count($match) == 2 && count($match[1]) == 1) {
-               $additionUrl = $match[1][0];
+        if ($response['http_code'] == 301 || $response['http_code'] == 302) {
+            ini_set("user_agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1");
+            $headers = get_headers($response['url']);
+            foreach ($headers as $value) {
+                if (substr(strtolower($value), 0, 9) == "location:") {
+                    $additionUrl = trim(substr($value, 9, strlen($value)));
+                }
             }
+        } else if (isset($result) && is_string($result)) {
+           if (preg_match("/window.location.replace('(.*)')/i", $result, $value) ||
+               preg_match("/window.location=[\"'](.*)[\"']/i", $result, $value) ||
+               preg_match("/location.href=[\"'](.*)[\"']/i", $result, $value)) {
+               $additionUrl = $value[1];
+           } else {
+               preg_match_all('/<[\s]*meta[\s]*http-equiv="?refresh"?' . '[\s]*content="?[0-9]*;[\s]*URL[\s]*=[\s]*([^>"]*)"?' . '[\s]*[\/]?[\s]*>/si', $result, $match);
+
+               if (isset($match) && is_array($match) && count($match) == 2 && count($match[1]) == 1) {
+                   $additionUrl = $match[1][0];
+               }
+           }
         }
 
         if ($additionUrl) {
@@ -73,7 +88,6 @@ class ProcessVirtualClicks extends Command
         } else {
             return $result;
         }
-
     }
 
 
