@@ -70,8 +70,8 @@ class ProcessVirtualClicks extends Command
             }
         } else if (isset($result) && is_string($result)) {
            if (preg_match("/window.location.replace('(.*)')/i", $result, $value) ||
-               preg_match("/window.location=[\"'](.*)[\"']/i", $result, $value) ||
-               preg_match("/location.href=[\"'](.*)[\"']/i", $result, $value)) {
+               preg_match("/window.location\s+=\s+[\"'](.*)[\"']/i", $result, $value) ||
+               preg_match("/location.href\s+=\s+[\"'](.*)[\"']/i", $result, $value)) {
                $additionUrl = $value[1];
            } else {
                preg_match_all('/<[\s]*meta[\s]*http-equiv="?refresh"?' . '[\s]*content="?[0-9]*;[\s]*URL[\s]*=[\s]*([^>"]*)"?' . '[\s]*[\/]?[\s]*>/si', $result, $match);
