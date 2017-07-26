@@ -48,7 +48,7 @@ class ProcessVirtualClicks extends Command
         curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
             'Connection: Keep-Alive',
-            'Keep-Alive: 10'
+            'Keep-Alive: 300'
         ));
         curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -56,27 +56,14 @@ class ProcessVirtualClicks extends Command
         $result = curl_exec($curl);
         curl_close ($curl);
 
-        if ($currentRedirection < 10) {
-            $additionUrl = null;
-            if (isset($result) && is_string($result)) {
-                if (preg_match("/window.location.replace('(.*)')/i", $result, $value) ||
-                    preg_match("/window.location\s+=\s+[\"'](.*)[\"']/i", $result, $value) ||
-                    preg_match("/location.href\s+=\s+[\"'](.*)[\"']/i", $result, $value)) {
-                    $additionUrl = $value[1];
-                } else {
-                    preg_match_all('/<[\s]*meta[\s]*http-equiv="?refresh"?' . '[\s]*content="?[0-9]*;[\s]*URL[\s]*=[\s]*([^>"]*)"?' . '[\s]*[\/]?[\s]*>/si', $result, $match);
-
-                    if (isset($match) && is_array($match) && count($match) == 2 && count($match[1]) == 1) {
-                        $additionUrl = $match[1][0];
-                    }
-                }
-            }
-            if ($additionUrl) {
-                \Log::info('follow_url_log_number='.$currentRedirection.' url='.$additionUrl);
-                return $this->virtualCurl($isoCode, $additionUrl, $userAgent, ++$currentRedirection);
-            }
+        if ($currentRedirection < 10 && isset($result) && is_string($result) && (preg_match("/window.location.replace('(.*)')/i", $result, $value) ||
+                preg_match("/window.location\s*=\s*[\"'](.*)[\"']/i", $result, $value) ||
+                preg_match("/meta\s*http-equiv\s*=\s*[\"']refresh['\"]\s*content=[\"']\d+;url\s*=\s*(.*)['\"]/i", $result, $value) ||
+                preg_match("/location.href\s*=\s*[\"'](.*)[\"']/i", $result, $value))) {
+            return $this->virtualCurl($isoCode, $value[1], $userAgent, ++$currentRedirection);
+        } else {
+            return $result;
         }
-        return $result;
     }
 
 
