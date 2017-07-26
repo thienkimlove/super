@@ -79,7 +79,7 @@ class ProcessVirtualClicks extends Command
         try {
             $virtualClicks = VirtualLog::where('sent', false)
                 ->orderBy('created_at', 'asc')
-                ->limit(10)
+                ->limit(1000)
                 ->get();
             if ($virtualClicks->count() > 0) {
                 foreach ($virtualClicks as $virtualClick) {
