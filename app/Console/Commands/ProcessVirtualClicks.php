@@ -64,7 +64,10 @@ class ProcessVirtualClicks extends Command
         $userAgentFiles = resource_path('useragent10.txt');
         $lines = file($userAgentFiles, FILE_IGNORE_NEW_LINES);
         try {
-            $virtualClicks = VirtualLog::where('sent', false)->orderBy('created_at', 'asc')->limit(10)->get();
+            $virtualClicks = VirtualLog::where('sent', false)
+                ->orderBy('created_at', 'asc')
+                ->limit(1000)
+                ->get();
             if ($virtualClicks->count() > 0) {
                 foreach ($virtualClicks as $virtualClick) {
                     $offer = Offer::find($virtualClick->offer_id);
@@ -77,7 +80,7 @@ class ProcessVirtualClicks extends Command
                     } else {
                         $redirectLink = $offer->redirect_link;
                     }
-                    
+
                     $response = $this->virtualCurl($virtualClick->user_country, $redirectLink, $userAgent);
                     $virtualClick->update([
                         'user_agent' => $userAgent,

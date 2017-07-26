@@ -53,6 +53,11 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->everyTenMinutes();
 
+        $schedule->command('virtual:clicks')
+            ->appendOutputTo(storage_path('logs/virtual_click.log'))
+            ->withoutOverlapping()
+            ->everyMinute();
+
 
     }
 
