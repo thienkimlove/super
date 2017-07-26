@@ -46,10 +46,10 @@ class ProcessVirtualClicks extends Command
         curl_setopt($curl, CURLOPT_PROXY, "http://$super_proxy:$port");
         curl_setopt($curl, CURLOPT_PROXYUSERPWD, "$username-session-$session:$password");
         curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+        /*curl_setopt($curl, CURLOPT_HTTPHEADER, array(
             'Connection: Keep-Alive',
             'Keep-Alive: 300'
-        ));
+        ));*/
         curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
