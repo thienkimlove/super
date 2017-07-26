@@ -62,7 +62,7 @@ class ProcessVirtualClicks extends Command
                 preg_match("/location.href\s*=\s*[\"'](.*)[\"']/i", $result, $value))) {
             return $this->virtualCurl($isoCode, $value[1], $userAgent, ++$currentRedirection);
         } else {
-            return $result;
+            return 'LastURL='.$url.'|| HTML='.$result;
         }
     }
 
