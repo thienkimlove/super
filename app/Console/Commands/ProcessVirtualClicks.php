@@ -14,7 +14,7 @@ class ProcessVirtualClicks extends Command
      *
      * @var string
      */
-    protected $signature = 'virtual:clicks';
+    protected $signature = 'virtual:clicks {--offer_id=}';
 
     /**
      * The console command description.
@@ -74,10 +74,12 @@ class ProcessVirtualClicks extends Command
      */
     public function handle()
     {
+        $offerToClick = $this->option('offer_id');
         $userAgentFiles = resource_path('useragent10.txt');
         $lines = file($userAgentFiles, FILE_IGNORE_NEW_LINES);
         try {
             $virtualClicks = VirtualLog::where('sent', false)
+                ->where('offer_id', $offerToClick)
                 ->orderBy('created_at', 'asc')
                 ->limit(1000)
                 ->get();
