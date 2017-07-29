@@ -180,7 +180,7 @@ class MainController extends Controller
                                                 'offer_id' => $offer_id,
                                                 'click_id' => $addedClick->id,
                                                 'user_country' => $checkLocation,
-                                                'redirect_link' => str_replace('#subld', '', $offer->redirect_link)
+                                                'redirect_link' => str_replace('#subId', '', $offer->redirect_link)
                                             ]);
                                         }
                                     } catch (\Exception $e) {
@@ -262,7 +262,7 @@ class MainController extends Controller
                                    'offer_id' => $offer->id,
                                    'network_click_id' => $networkClick->id,
                                    'user_country' => $checkLocation,
-                                   'redirect_link' => str_replace('#subld', '', $offer->redirect_link)
+                                   'redirect_link' => str_replace('#subId', '', $offer->redirect_link)
                                ]);
                            }
                        } catch (\Exception $e) {
@@ -318,7 +318,7 @@ class MainController extends Controller
                                 'offer_id' => $offer->id,
                                 'network_click_id' => $networkClick->id,
                                 'user_country' => $checkLocation,
-                                'redirect_link' => str_replace('#subld', '', $offer->redirect_link)
+                                'redirect_link' => str_replace('#subId', '', $offer->redirect_link)
                             ]);
                         }
                     } catch (\Exception $e) {
