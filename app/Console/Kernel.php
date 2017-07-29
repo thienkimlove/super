@@ -3,8 +3,6 @@
 namespace App\Console;
 
 use App\Console\Commands\AddAdmin;
-use App\Console\Commands\AddMediaOffer;
-use App\Console\Commands\AddOneTulipOffer;
 use App\Console\Commands\OfferCron;
 use App\Console\Commands\ProcessVirtualClicks;
 use App\Console\Commands\RemoveInactiveLead;
@@ -52,13 +50,6 @@ class Kernel extends ConsoleKernel
             ->appendOutputTo(storage_path('logs/offer_cron.log'))
             ->withoutOverlapping()
             ->everyTenMinutes();
-
-        $schedule->command('virtual:clicks')
-            ->appendOutputTo(storage_path('logs/virtual_click.log'))
-            ->withoutOverlapping()
-            ->everyMinute();
-
-
     }
 
     /**

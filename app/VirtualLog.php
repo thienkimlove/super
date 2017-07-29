@@ -13,6 +13,7 @@ class VirtualLog extends Model
         'user_agent',
         'user_country',
         'response',
-        'sent'
+        'sent',
+        'redirect_link'
     ];
 }

@@ -69,6 +69,11 @@
             </div>
 
             <div class="form-group">
+                {!! Form::label('virtual_clicks', 'Incent (Increase virtual clicks 100)') !!}
+                {!! Form::checkbox('virtual_clicks', null, null) !!}
+            </div>
+
+            <div class="form-group">
                 {!! Form::label('status', 'Active') !!}
                 {!! Form::checkbox('status', null, null) !!}
             </div>

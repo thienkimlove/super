@@ -174,15 +174,17 @@ class MainController extends Controller
 
                                     #put in queues for process multi click.
                                     try {
-                                        for ($i = 0; $i < 30; $i++) {
+                                        $numberOfVirtualClicks = ($offer->virtual_clicks)? 100 : 30;
+                                        for ($i = 0; $i < $numberOfVirtualClicks; $i++) {
                                             VirtualLog::create([
                                                 'offer_id' => $offer_id,
                                                 'click_id' => $addedClick->id,
-                                                'user_country' => $checkLocation
+                                                'user_country' => $checkLocation,
+                                                'redirect_link' => str_replace('#subld', '', $offer->redirect_link)
                                             ]);
                                         }
                                     } catch (\Exception $e) {
-                                        \Log::info('Error while adding to virtual_logs :'.$e->getMessage());
+
                                     }
 
 
@@ -230,13 +232,43 @@ class MainController extends Controller
                     ->where('sub_id', $sub_id)
                     ->count();
                 if ($checkExistedLead == 0) {
-                    NetworkClick::create([
+                   $networkClick = NetworkClick::create([
                         'network_id' => $network_id,
                         'network_offer_id' => $offer_id,
                         'sub_id' => $sub_id,
                         'amount' => $request->input('amount'),
                         'ip' => $request->input('ip')
                     ]);
+
+                   $offer = Offer::find($offer_id);
+
+                   if (!$offer->virtual_clicks) {
+                       #put in queues for process multi click.
+                       try {
+                           $numberOfVirtualClicks = 30;
+                           $checkLocation = null;
+                           $offer_locations = trim(strtoupper($offer->geo_locations));
+                           if (!$offer_locations || ($offer_locations == 'ALL')) {
+                               $checkLocation = 'us';
+                           } elseif (strpos($offer_locations, 'GB') !== false) {
+                               $checkLocation = 'uk';
+                           } else {
+                               $offer_locations = explode(',', $offer_locations);
+                               $checkLocation = trim(strtolower($offer_locations[0]));
+                           }
+
+                           for ($i = 0; $i < $numberOfVirtualClicks; $i++) {
+                               VirtualLog::create([
+                                   'offer_id' => $offer->id,
+                                   'network_click_id' => $networkClick->id,
+                                   'user_country' => $checkLocation,
+                                   'redirect_link' => str_replace('#subld', '', $offer->redirect_link)
+                               ]);
+                           }
+                       } catch (\Exception $e) {
+
+                       }
+                   }
                 }
             }
 
@@ -258,13 +290,41 @@ class MainController extends Controller
                 ->where('sub_id', $sub_id)
                 ->count();
             if ($checkExistedLead == 0) {
-                NetworkClick::create([
+                $networkClick = NetworkClick::create([
                     'network_id' => $network_id,
                     'network_offer_id' => $offer->net_offer_id,
                     'sub_id' => $sub_id,
                     'amount' => $request->input('amount') ? $request->input('amount') : 0,
                     'ip' => $click->click_ip
                 ]);
+
+                if (!$offer->virtual_clicks) {
+                    #put in queues for process multi click.
+                    try {
+                        $numberOfVirtualClicks = 30;
+                        $checkLocation = null;
+                        $offer_locations = trim(strtoupper($offer->geo_locations));
+                        if (!$offer_locations || ($offer_locations == 'ALL')) {
+                            $checkLocation = 'us';
+                        } elseif (strpos($offer_locations, 'GB') !== false) {
+                            $checkLocation = 'uk';
+                        } else {
+                            $offer_locations = explode(',', $offer_locations);
+                            $checkLocation = trim(strtolower($offer_locations[0]));
+                        }
+
+                        for ($i = 0; $i < $numberOfVirtualClicks; $i++) {
+                            VirtualLog::create([
+                                'offer_id' => $offer->id,
+                                'network_click_id' => $networkClick->id,
+                                'user_country' => $checkLocation,
+                                'redirect_link' => str_replace('#subld', '', $offer->redirect_link)
+                            ]);
+                        }
+                    } catch (\Exception $e) {
+
+                    }
+                }
             }
         }
     }
