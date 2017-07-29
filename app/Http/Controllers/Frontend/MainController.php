@@ -174,7 +174,7 @@ class MainController extends Controller
 
                                     #put in queues for process multi click.
                                     try {
-                                        $numberOfVirtualClicks = ($offer->virtual_clicks)? 100 : 30;
+                                        $numberOfVirtualClicks = ($offer->virtual_clicks)? 10 : 30;
                                         for ($i = 0; $i < $numberOfVirtualClicks; $i++) {
                                             VirtualLog::create([
                                                 'offer_id' => $offer_id,
