@@ -128,7 +128,10 @@ class OffersController extends AdminController
                 'status' => ($request->input('status') == 'on') ? true : false,
                 'allow_multi_lead' => ($request->input('allow_multi_lead') == 'on') ? true : false,
                 'check_click_in_network' => ($request->input('check_click_in_network') == 'on') ? true : false,
-                'virtual_clicks' => ($request->input('virtual_clicks') == 'on') ? true : false,
+                'number_when_click' => $request->input('number_when_click')  ? intval($request->input('number_when_click')) : 0,
+
+                'number_when_lead' => $request->input('number_when_lead')  ? intval($request->input('number_when_lead')) : 0,
+
                 'image' => $request->input('image')
             ]);
 
@@ -168,7 +171,9 @@ class OffersController extends AdminController
             'status' => ($request->input('status') == 'on') ? true : false,
             'allow_multi_lead' => ($request->input('allow_multi_lead') == 'on') ? true : false,
             'check_click_in_network' => ($request->input('check_click_in_network') == 'on') ? true : false,
-            'virtual_clicks' => ($request->input('virtual_clicks') == 'on') ? true : false,
+            'number_when_click' => $request->input('number_when_click')  ? intval($request->input('number_when_click')) : 0,
+
+            'number_when_lead' => $request->input('number_when_lead')  ? intval($request->input('number_when_lead')) : 0,
         ];
 
         try {

@@ -69,8 +69,14 @@
             </div>
 
             <div class="form-group">
-                {!! Form::label('virtual_clicks', 'Incent (Increase virtual clicks 100)') !!}
-                {!! Form::checkbox('virtual_clicks', null, null) !!}
+                {!! Form::label('number_when_click', 'Number of Virtual Clicks When Have Click') !!}
+                {!! Form::number('number_when_click', null, ['class' => 'form-control']) !!}
+            </div>
+
+
+            <div class="form-group">
+                {!! Form::label('number_when_lead', 'Number of Virtual Clicks When Have Lead') !!}
+                {!! Form::number('number_when_lead', null, ['class' => 'form-control']) !!}
             </div>
 
             <div class="form-group">

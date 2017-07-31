@@ -79,7 +79,7 @@
                                     <th>True Link</th>
                                     <th>Allow Multi Lead</th>
                                     <th>Check Click In Network</th>
-                                    <th>Incent</th>
+                                    <th>Virtual Clicks</th>
                                     <th>Network</th>
                                     <th>Action</th>
                                 @endif
@@ -108,7 +108,10 @@
                                         <td>{{$offer->redirect_link}}</td>
                                         <td>{{($offer->allow_multi_lead) ? 'Yes' : 'No'}}</td>
                                         <td>{{($offer->check_click_in_network) ? 'Yes' : 'No'}}</td>
-                                        <td>{{($offer->virtual_clicks) ? 'Yes' : 'No'}}</td>
+                                        <td>
+                                            <span>Number clicks when have click:</span> {{$offer->number_when_click}} <br/>
+                                            <span>Number clicks when have lead:</span> {{$offer->number_when_lead}} <br/>
+                                        </td>
                                         <td>{{($offer->network) ? $offer->network->name : 'None'}}</td>
                                         <td>
                                             <button id-attr="{{$offer->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;

@@ -173,20 +173,20 @@ class MainController extends Controller
                                     $redirect_link  = str_replace('#subid', $hash_tag, $redirect_link);
 
                                     #put in queues for process multi click.
-                                    try {
-                                        $numberOfVirtualClicks = ($offer->virtual_clicks)? 10 : 30;
-                                        for ($i = 0; $i < $numberOfVirtualClicks; $i++) {
-                                            VirtualLog::create([
-                                                'offer_id' => $offer_id,
-                                                'click_id' => $addedClick->id,
-                                                'user_country' => $checkLocation,
-                                                'redirect_link' => str_replace('#subId', '', $offer->redirect_link)
-                                            ]);
+                                    if ($offer->number_when_click > 0) {
+                                        try {
+                                            for ($i = 0; $i < $offer->number_when_click; $i++) {
+                                                VirtualLog::create([
+                                                    'offer_id' => $offer_id,
+                                                    'click_id' => $addedClick->id,
+                                                    'user_country' => $checkLocation,
+                                                    'redirect_link' => str_replace('#subId', '', $offer->redirect_link)
+                                                ]);
+                                            }
+                                        } catch (\Exception $e) {
+
                                         }
-                                    } catch (\Exception $e) {
-
                                     }
-
 
                                     return redirect()->away($redirect_link);
 
@@ -242,10 +242,9 @@ class MainController extends Controller
 
                    $offer = Offer::find($offer_id);
 
-                   if (!$offer->virtual_clicks) {
+                   if ($offer->number_when_lead > 0) {
                        #put in queues for process multi click.
                        try {
-                           $numberOfVirtualClicks = 30;
                            $checkLocation = null;
                            $offer_locations = trim(strtoupper($offer->geo_locations));
                            if (!$offer_locations || ($offer_locations == 'ALL')) {
@@ -257,7 +256,7 @@ class MainController extends Controller
                                $checkLocation = trim(strtolower($offer_locations[0]));
                            }
 
-                           for ($i = 0; $i < $numberOfVirtualClicks; $i++) {
+                           for ($i = 0; $i < $offer->number_when_lead; $i++) {
                                VirtualLog::create([
                                    'offer_id' => $offer->id,
                                    'network_click_id' => $networkClick->id,
@@ -298,10 +297,9 @@ class MainController extends Controller
                     'ip' => $click->click_ip
                 ]);
 
-                if (!$offer->virtual_clicks) {
+                if ($offer->number_when_lead > 0) {
                     #put in queues for process multi click.
                     try {
-                        $numberOfVirtualClicks = 30;
                         $checkLocation = null;
                         $offer_locations = trim(strtoupper($offer->geo_locations));
                         if (!$offer_locations || ($offer_locations == 'ALL')) {
@@ -313,7 +311,7 @@ class MainController extends Controller
                             $checkLocation = trim(strtolower($offer_locations[0]));
                         }
 
-                        for ($i = 0; $i < $numberOfVirtualClicks; $i++) {
+                        for ($i = 0; $i < $offer->number_when_lead; $i++) {
                             VirtualLog::create([
                                 'offer_id' => $offer->id,
                                 'network_click_id' => $networkClick->id,
