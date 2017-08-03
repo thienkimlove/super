@@ -14,6 +14,7 @@ class VirtualLog extends Model
         'user_country',
         'response',
         'sent',
-        'redirect_link'
+        'redirect_link',
+        'allow_devices'
     ];
 }
