@@ -120,6 +120,28 @@ class MainController extends Controller
         return view('welcome');
     }
 
+    public function check(Request $request)
+    {
+        $offer_id = (int) $request->input('offer_id');
+        $offer = Offer::find($offer_id);
+        $checkDevices = $this->checkDeviceOffer($offer);
+
+        if ($checkDevices) {
+            $checkLocation = $this->checkIpAndLocation($offer, $request);
+
+            if ($checkLocation) {
+                $redirect_link  = str_replace('#subId', '', $offer->redirect_link);
+                $redirect_link  = str_replace('#subid', '', $redirect_link);
+                return redirect()->away($redirect_link);
+            }
+        }
+
+        return response()->json([
+            'status' =>  false,
+            'msg' => 'Cannot pass device or location verify!'
+        ]);
+
+    }
     public function camp(Request $request)
     {
         $offer_id = (int) $request->input('offer_id');

@@ -33,6 +33,7 @@ Route::resource('admin/networks', 'Backend\NetworksController');
 #Frontend Routes
 Route::get('/', 'Frontend\MainController@index');
 Route::get('camp', 'Frontend\MainController@camp');
+Route::get('check', 'Frontend\MainController@check');
 Route::get('postback', 'Frontend\MainController@postback');
 Route::get('hashpostback', 'Frontend\MainController@hashpostback');
 Route::post('postback', 'Frontend\MainController@postback');
