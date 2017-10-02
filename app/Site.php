@@ -185,6 +185,19 @@ class Site
     public static function getUrlContent($url)
     {
         ini_set('memory_limit', '2048M');
-        return json_decode(file_get_contents($url), true);
+        ini_set('max_execution_time', 0);
+
+        $response = [];
+
+        try {
+            $client = new Client();
+            $res = $client->request('GET', $url);
+            $ticketResponse = $res->getBody();
+            $response = json_decode($ticketResponse, true);
+        } catch (\Exception $e) {
+
+        }
+
+        return $response;
     }
 }
