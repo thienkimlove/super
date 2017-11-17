@@ -13,10 +13,11 @@
 
             <form action="{{url('admin/offertest')}}" method="POST">
 
-                {{csrf_token()}}
+
                 <div class="form-group">
                     {!! Form::label('url', 'URL') !!}
                     {!! Form::text('url', null, ['class' => 'form-control']) !!}
+                    <input type="hidden" value="{{csrf_token()}}">
                 </div>
 
                 <div class="form-group">
