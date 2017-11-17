@@ -17,7 +17,7 @@
                 <div class="form-group">
                     {!! Form::label('url', 'URL') !!}
                     {!! Form::text('url', null, ['class' => 'form-control']) !!}
-                    <input type="hidden" value="{{csrf_token()}}">
+                    <input name="_token" type="hidden" value="{{csrf_token()}}">
                 </div>
 
                 <div class="form-group">
