@@ -632,4 +632,66 @@ class HomeController extends AdminController
         return view('admin.cron', compact('message'));
     }
 
+
+    //=======================OFFER TEST==================================
+
+    private function virtualCurl($isoCode, $url, $userAgent)
+    {
+        $username = 'lum-customer-theway_holdings-zone-nam-country-' . strtolower($isoCode);
+        $password = '99oah6sz26i5';
+        $port = 22225;
+        $session = mt_rand();
+        $super_proxy = 'zproxy.luminati.io';
+        $url = str_replace("&amp;", "&", urldecode(trim($url)));
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_PROXY, "http://$super_proxy:$port");
+        curl_setopt($curl, CURLOPT_PROXYUSERPWD, "$username-session-$session:$password");
+        curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
+        curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT ,0);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 30); //timeout in seconds
+
+        $result = curl_exec($curl);
+        curl_close($curl);
+
+        if (isset($result) &&
+            is_string($result) &&
+            (preg_match("/window.location.replace('(.*)')/i", $result, $value) ||
+                preg_match("/window.location\s*=\s*[\"'](.*)[\"']/i", $result, $value) ||
+                preg_match("/meta\s*http-equiv\s*=\s*[\"']refresh['\"]\s*content=[\"']\d+;url\s*=\s*(.*)['\"]/i", $result, $value) ||
+                preg_match("/location.href\s*=\s*[\"'](.*)[\"']/i", $result, $value))) {
+            return $this->virtualCurl($isoCode, $value[1], $userAgent);
+        } else {
+            return $url;
+        }
+    }
+
+    public function offertest()
+    {
+        return view('admin.offertest');
+    }
+    public function submit(Request $request)
+    {
+        $url = $request->get('offer_url');
+        $device = $request->get('device');
+        $country = $request->get('country');
+
+        $type = ($device == 'ios') ? 0 : 1;
+
+        $userAgent = \DB::connection('lumen')
+            ->table('agents')
+            ->where('type', $type)
+            ->inRandomOrder()
+            ->limit(1)
+            ->get();
+
+        $trueAgent = $userAgent->first()->agent;
+        $lastUrl = $this->virtualCurl($country, $url, $trueAgent);
+        flash('success', $lastUrl);
+        return redirect()->back()->withInput($request->all());
+
+    }
+
 }

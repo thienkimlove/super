@@ -67,6 +67,20 @@ return [
             'unix_socket' => env('DB_SOCK', '/var/run/mysqld/mysqld.sock')
         ],
 
+        'lumen' => [
+            'driver' => 'mysql',
+            'host' => '103.7.41.141',
+            'port' => '3306',
+            'database' => 'lumen',
+            'username' => 'tieungao',
+            'password' => 'tieungao123',
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', 'localhost'),
