@@ -10,6 +10,8 @@ return [
             'HomeController@statistic',
             'HomeController@thongke',
             'HomeController@cron',
+            'HomeController@offertest',
+            'HomeController@submit',
 
             //only admin can access to edit users.
 
@@ -48,6 +50,8 @@ return [
         'label' => 'Editor',
         'permission' => [
             'HomeController@index',
+            'HomeController@offertest',
+            'HomeController@submit',
         ]
     ],
 
@@ -57,6 +61,8 @@ return [
             'HomeController@index',
 
             'OffersController@index',
+            'HomeController@offertest',
+            'HomeController@submit',
         ]
     ]
 ];
