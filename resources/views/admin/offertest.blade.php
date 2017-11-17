@@ -8,8 +8,17 @@
 
     </div>
     <div class="row">
+
+        @if ($lastUrl)
+            <div class="col-lg-12">
+                <div class="form-group">
+                   <div>{{$lastUrl}}</div>
+                </div>
+            </div>
+        @endif
+
         <div class="col-lg-12">
-            <h2>Add</h2>
+            <h2>OfferTest</h2>
 
             <form action="{{url('admin/offertest')}}" method="POST">
 

@@ -668,9 +668,11 @@ class HomeController extends AdminController
         }
     }
 
-    public function offertest()
+    public function offertest(Request $request)
     {
-        return view('admin.offertest');
+        $lastUrl = $request->get('dest');
+
+        return view('admin.offertest', compact('lastUrl'));
     }
     public function submit(Request $request)
     {
@@ -689,8 +691,8 @@ class HomeController extends AdminController
 
         $trueAgent = $userAgent->first()->agent;
         $lastUrl = $this->virtualCurl($country, $url, $trueAgent);
-        flash('success', $lastUrl);
-        return redirect()->back()->withInput($request->all());
+
+        return redirect(url('admin/offertest?dest='.urlencode($lastUrl)));
 
     }
 
