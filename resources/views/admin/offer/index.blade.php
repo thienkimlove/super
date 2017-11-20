@@ -127,7 +127,7 @@
 
                                             <button test-attr="{{$offer->id}}" class="btn btn-primary btn-sm test-content" type="button">Test Offer</button>&nbsp;
                                              @else
-                                              <span>{{$offer->test_link}}</span>
+                                              <b>{{$offer->test_link}}</b>
                                              @endif
                                         </td>
                                      @endif
@@ -171,7 +171,11 @@
                 window.location.href = window.baseUrl + '/admin/clearlead/?offer_id=' + $(this).attr('lead-attr') ;
             });
             $('.test-content').click(function(){
+                var element = $(this);
                 window.location.href = window.baseUrl + '/admin/offertest/' + $(this).attr('test-attr') ;
+                $.get(baseUrl + '/admin/offertest/' + $(this).attr('test-attr'), function(res){
+                    element.html(res.data);
+                });
             });
         });
     </script>

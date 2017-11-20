@@ -693,8 +693,7 @@ class HomeController extends AdminController
         $offer->test_link = $process->getOutput();
         $offer->save();
         unlink($tempPythonFile);
-        return redirect('admin/offers/'.$offer->id);
-
+        return response()->json(['data' => $offer->test_link]);
     }
 
 }
