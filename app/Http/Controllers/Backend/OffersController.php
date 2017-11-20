@@ -154,6 +154,14 @@ class OffersController extends AdminController
         return view('admin.offer.form', compact('devices', 'offer', 'networks'));
     }
 
+    public function show($id)
+    {
+        $devices = $this->devices;
+        $networks = $this->networks;
+        $offer = Offer::find($id);
+        return view('admin.offer.show', compact('devices', 'offer', 'networks'));
+    }
+
 
     public function update($id, OfferRequest $request)
     {
