@@ -28,6 +28,7 @@ return [
             'OffersController@update',
             'OffersController@create',
             'OffersController@destroy',
+            'OffersController@show',
 
             'GroupsController@index',
             'GroupsController@edit',
@@ -50,7 +51,7 @@ return [
         'label' => 'Editor',
         'permission' => [
             'HomeController@index',
-            'HomeController@offertest',
+            'OffersController@show',
             'HomeController@submit',
         ]
     ],
@@ -61,7 +62,7 @@ return [
             'HomeController@index',
 
             'OffersController@index',
-            'HomeController@offertest',
+            'OffersController@show',
             'HomeController@submit',
         ]
     ]
