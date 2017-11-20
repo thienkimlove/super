@@ -48,10 +48,6 @@
                     <a href="{{url('admin')}}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>
 
-                <li>
-                    <a href="{{url('admin/offertest')}}"><i class="fa fa-dashboard fa-fw"></i> OfferTest</a>
-                </li>
-
 
                 @if (auth('backend')->user()->permission_id == 1)
 

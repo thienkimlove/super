@@ -121,6 +121,13 @@
                                             {!! Form::close() !!}
 
                                             <button lead-attr="{{$offer->id}}" class="btn btn-primary btn-sm lead-content" type="button">Xóa IP đã Lead</button>&nbsp;
+
+                                            @if (!$offer->test_link)
+
+                                            <button test-attr="{{$offer->id}}" class="btn btn-primary btn-sm test-content" type="button">Test Offer</button>&nbsp;
+                                             @else
+                                              <span>{{$offer->test_link}}</span>
+                                             @endif
                                         </td>
                                      @endif
                                 </tr>
@@ -161,6 +168,9 @@
 
             $('.lead-content').click(function(){
                 window.location.href = window.baseUrl + '/admin/clearlead/?offer_id=' + $(this).attr('lead-attr') ;
+            });
+            $('.test-content').click(function(){
+                window.location.href = window.baseUrl + '/admin/offertest/' + $(this).attr('test-attr') ;
             });
         });
     </script>

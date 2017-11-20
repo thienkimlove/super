@@ -11,6 +11,8 @@ use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class HomeController extends AdminController
 {
@@ -633,54 +635,34 @@ class HomeController extends AdminController
     }
 
 
-    //=======================OFFER TEST==================================
-
-    private function virtualCurl($isoCode, $url, $userAgent)
+    public function submit($id)
     {
-        $username = 'lum-customer-theway_holdings-zone-nam-country-' . strtolower($isoCode);
-        $password = '99oah6sz26i5';
-        $port = 22225;
-        $session = mt_rand();
-        $super_proxy = 'zproxy.luminati.io';
-        $url = str_replace("&amp;", "&", urldecode(trim($url)));
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_PROXY, "http://$super_proxy:$port");
-        curl_setopt($curl, CURLOPT_PROXYUSERPWD, "$username-session-$session:$password");
-        curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
-        curl_setopt($curl, CURLOPT_MAXREDIRS, 10);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT ,0);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 30); //timeout in seconds
 
-        $result = curl_exec($curl);
-        curl_close($curl);
+        $offer = Offer::find($id);
 
-        if (isset($result) &&
-            is_string($result) &&
-            (preg_match("/window.location.replace('(.*)')/i", $result, $value) ||
-                preg_match("/window.location\s*=\s*[\"'](.*)[\"']/i", $result, $value) ||
-                preg_match("/meta\s*http-equiv\s*=\s*[\"']refresh['\"]\s*content=[\"']\d+;url\s*=\s*(.*)['\"]/i", $result, $value) ||
-                preg_match("/location.href\s*=\s*[\"'](.*)[\"']/i", $result, $value))) {
-            return $this->virtualCurl($isoCode, $value[1], $userAgent);
-        } else {
-            return $url;
+        $offer_locations = trim(strtoupper($offer->geo_locations));
+        if (!$offer_locations || ($offer_locations == 'ALL')) {
+            $offer_locations = 'US';
         }
-    }
 
-    public function offertest(Request $request)
-    {
-        $lastUrl = $request->get('dest');
+        if (strpos($offer_locations, 'GB') !== false) {
+            $offer_locations .= ',UK';
+        }
 
-        return view('admin.offertest', compact('lastUrl'));
-    }
-    public function submit(Request $request)
-    {
-        $url = $request->get('offer_url');
-        $device = $request->get('device');
-        $country = $request->get('country');
+        if (strpos($offer_locations, 'UK') !== false) {
+            $offer_locations .= ',GB';
+        }
 
-        $type = ($device == 'ios') ? 0 : 1;
+        $country = (strpos($offer_locations, ',') !== false) ? explode(',', $offer_locations)[0] : $offer_locations;
+
+        $country = strtolower($country);
+
+        $url = str_replace('#subId', '', $offer->redirect_link);
+
+
+
+
+        $type = ($offer->allow_devices > 4) ? 0 : 1;
 
         $userAgent = \DB::connection('lumen')
             ->table('agents')
@@ -690,9 +672,28 @@ class HomeController extends AdminController
             ->get();
 
         $trueAgent = $userAgent->first()->agent;
-        $lastUrl = $this->virtualCurl($country, $url, $trueAgent);
 
-        return redirect(url('admin/offertest?dest='.urlencode($lastUrl)));
+        $username = 'lum-customer-theway_holdings-zone-nam-country-' . strtolower($country);
+        $session = mt_rand();
+
+        $background = file_get_contents(resource_path('read.py'));
+        $background = str_replace(['#URL#', '#USERNAME#', '#AGENT#'], [$url, $username.'-session-'.$session, $trueAgent], $background);
+
+        $tempPythonFile = '/tmp/exe_'.$session.'_.py';
+        file_put_contents($tempPythonFile, $background);
+
+        $process = new Process('python '.$tempPythonFile, '/tmp');
+        $process->run();
+
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        $offer->test_link = $process->getOutput();
+        $offer->save();
+        unlink($tempPythonFile);
+        return redirect()->back();
 
     }
 

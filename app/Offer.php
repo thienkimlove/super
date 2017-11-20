@@ -20,7 +20,8 @@ class Offer extends Model
         'allow_multi_lead',
         'check_click_in_network',
         'number_when_click',
-        'number_when_lead'
+        'number_when_lead',
+        'test_link'
     ];
 
     public $dates = ['created_at', 'updated_at'];
