@@ -121,6 +121,7 @@
                                             {!! Form::close() !!}
 
                                             <button lead-attr="{{$offer->id}}" class="btn btn-primary btn-sm lead-content" type="button">Xóa IP đã Lead</button>&nbsp;
+                                            <br />
 
                                             @if (!$offer->test_link)
 
