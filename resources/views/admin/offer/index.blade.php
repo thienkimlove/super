@@ -172,6 +172,7 @@
             });
             $('.test-content').click(function(){
                 var element = $(this);
+                element.text('Loading...');
                 window.location.href = window.baseUrl + '/admin/offertest/' + $(this).attr('test-attr') ;
                 $.get(baseUrl + '/admin/offertest/' + $(this).attr('test-attr'), function(res){
                     element.html(res.data);
