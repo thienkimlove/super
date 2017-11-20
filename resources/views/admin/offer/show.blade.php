@@ -19,7 +19,8 @@
 
             <div class="form-group">
                 {!! Form::label('test_click', 'Offer Test Last Url') !!}
-                <span>{{$offer->test_click}}</span>
+                <br/>
+                <b>{{$offer->test_link}}</b>
             </div>
 
 
