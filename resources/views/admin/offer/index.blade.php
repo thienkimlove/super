@@ -125,7 +125,9 @@
 
                                             @if (!$offer->test_link)
 
-                                            <button test-attr="{{$offer->id}}" class="btn btn-primary btn-sm test-content" type="button">Test Offer</button>&nbsp;
+                                                <div class="test-content">
+                                                    <button test-attr="{{$offer->id}}" class="btn btn-primary btn-sm" type="button">Test Offer</button>&nbsp;
+                                                </div>
                                              @else
                                               <b>{{$offer->test_link}}</b>
                                              @endif
@@ -172,7 +174,7 @@
             });
             $('.test-content').click(function(){
                 var element = $(this);
-                element.text('Loading...');
+                element.html('Loading...');
                 window.location.href = window.baseUrl + '/admin/offertest/' + $(this).attr('test-attr') ;
                 $.get(baseUrl + '/admin/offertest/' + $(this).attr('test-attr'), function(res){
                     element.html(res.data);
