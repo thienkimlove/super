@@ -677,23 +677,38 @@ class HomeController extends AdminController
         $session = mt_rand();
 
         $background = file_get_contents(resource_path('read.py'));
-        $background = str_replace(['#URL#', '#USERNAME#', '#AGENT#'], [$url, $username.'-session-'.$session, $trueAgent], $background);
+        $background = str_replace(['#URL#', '#USERNAME#', '#AGENT#', '#OFFERID#'], [$url, $username.'-session-'.$session, $trueAgent, $offer->id], $background);
 
         $tempPythonFile = '/tmp/exe_'.$session.'_.py';
         file_put_contents($tempPythonFile, $background);
 
-        $process = new Process('python '.$tempPythonFile, '/tmp');
-        $process->run();
+        file_put_contents(storage_path('logs/test_link.log'), '========================'."\n", FILE_APPEND);
+        file_put_contents(storage_path('logs/test_link.log'), 'OfferId='.$offer->id.'|Country='.$country.'|Agent='.$trueAgent."\n", FILE_APPEND);
 
-        // executes after the command finishes
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
+        file_put_contents(storage_path('logs/test_link.log'), '========================'."\n", FILE_APPEND);
+
+        try {
+            $process = new Process('python '.$tempPythonFile, '/tmp', null, null, 120);
+            $process->run();
+
+            // executes after the command finishes
+            if (!$process->isSuccessful()) {
+                unlink($tempPythonFile);
+                throw new ProcessFailedException($process);
+            }
+
+            $offer->test_link = $process->getOutput();
+            $offer->save();
+            unlink($tempPythonFile);
+            $html = $offer->id.'_last.html';
+            $image = $offer->id.'_last.png';
+            copy('/tmp/'.$html, public_path('test/'.$html));
+            copy('/tmp/'.$image, public_path('test/'.$image));
+            return response()->json(['data' => $offer->test_link, 'image' => $image]);
+        } catch (\Exception $e) {
+            return response()->json(['data' => null, 'image' => null, 'error' => $e->getMessage()]);
         }
 
-        $offer->test_link = $process->getOutput();
-        $offer->save();
-        unlink($tempPythonFile);
-        return response()->json(['data' => $offer->test_link]);
     }
 
 }

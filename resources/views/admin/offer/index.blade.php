@@ -123,14 +123,22 @@
                                             <button lead-attr="{{$offer->id}}" class="btn btn-primary btn-sm lead-content" type="button">Xóa IP đã Lead</button>&nbsp;
                                             <br />
 
-                                            @if (!$offer->test_link)
+                                            <button test-attr="{{$offer->id}}" class="test-content"  class="btn btn-primary btn-sm test-content" type="button">Test Offer</button>&nbsp;
 
-                                                <div class="test-content">
-                                                    <button test-attr="{{$offer->id}}" class="btn btn-primary btn-sm" type="button">Test Offer</button>&nbsp;
-                                                </div>
-                                             @else
-                                              <b>{{$offer->test_link}}</b>
-                                             @endif
+                                            <span  class="result-{{$offer->id}}"></span><br>
+
+                                            <img style="display: none" class="image-{{$offer->id}}" src="" height="100" width="100" />
+
+                                            @if ($offer->test_link)
+                                                <b>{{$offer->test_link}}</b>
+                                            @else
+                                                @if (file_exists(public_path('test/'.$offer->id.'_last.png')))
+                                                    <br /><img src="{{ url('test/'.$offer->id.'_last.png') }}" height="100" width="100" />
+                                                @endif
+                                            @endif
+
+
+
                                         </td>
                                      @endif
                                 </tr>
@@ -172,13 +180,26 @@
             $('.lead-content').click(function(){
                 window.location.href = window.baseUrl + '/admin/clearlead/?offer_id=' + $(this).attr('lead-attr') ;
             });
-            $('.test-content').click(function(){
+            $('.test-content').click(function(e){
+                e.preventDefault();
                 var element = $(this);
-                element.html('Loading...');
-                window.location.href = window.baseUrl + '/admin/offertest/' + $(this).attr('test-attr') ;
-                $.get(baseUrl + '/admin/offertest/' + $(this).attr('test-attr'), function(res){
-                    element.html(res.data);
+                var bId = element.attr('test-attr');
+                element.hide();
+                $('.result-' + bId).html('Loading...');
+                $.get(baseUrl + '/admin/offertest/' + bId, function(res){
+                    if (res.error) {
+                        $('.result-' + bId).html(res.error);
+                        element.show();
+                    } else {
+                        if (res.data) {
+                            $('.result-' + bId).html(res.data);
+                        } else {
+                            $('.result-' + bId).html('');
+                            $('.image-' + bId).attr('src', baseUrl + '/test/'+res.image).show();
+                        }
+                    }
                 });
+                return false;
             });
         });
     </script>
