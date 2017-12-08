@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\NetworkClick;
 use App\Offer;
 use App\User;
-use App\VirtualLog;
 use Carbon\Carbon;
 use DB;
 use GeoIp2\Exception\AddressNotFoundException;
@@ -200,12 +199,11 @@ class MainController extends Controller
                                     if ($offer->number_when_click > 0) {
                                         try {
                                             for ($i = 0; $i < $offer->number_when_click; $i++) {
-                                                VirtualLog::create([
-                                                    'offer_id' => $offer_id,
-                                                    'click_id' => $addedClick->id,
-                                                    'user_country' => $checkLocation,
-                                                    'redirect_link' => str_replace('#subId', '', $offer->redirect_link),
-                                                    'allow_devices' => $offer->allow_devices
+
+                                                \DB::connection('virtual')->table('logs')->insert([
+                                                    'link' => url('check?offer_id='.$offer_id),
+                                                    'allow' => $offer->allow_devices,
+                                                    'country' => $checkLocation,
                                                 ]);
                                             }
                                         } catch (\Exception $e) {
@@ -282,13 +280,13 @@ class MainController extends Controller
                            }
 
                            for ($i = 0; $i < $offer->number_when_lead; $i++) {
-                               VirtualLog::create([
-                                   'offer_id' => $offer->id,
-                                   'network_click_id' => $networkClick->id,
-                                   'user_country' => $checkLocation,
-                                   'redirect_link' => str_replace('#subId', '', $offer->redirect_link),
-                                   'allow_devices' => $offer->allow_devices
+
+                               \DB::connection('virtual')->table('logs')->insert([
+                                   'link' => url('check?offer_id='.$offer->id),
+                                   'allow' => $offer->allow_devices,
+                                   'country' => $checkLocation,
                                ]);
+
                            }
                        } catch (\Exception $e) {
 
@@ -338,12 +336,11 @@ class MainController extends Controller
                         }
 
                         for ($i = 0; $i < $offer->number_when_lead; $i++) {
-                            VirtualLog::create([
-                                'offer_id' => $offer->id,
-                                'network_click_id' => $networkClick->id,
-                                'user_country' => $checkLocation,
-                                'redirect_link' => str_replace('#subId', '', $offer->redirect_link),
-                                'allow_devices' => $offer->allow_devices
+
+                            \DB::connection('virtual')->table('logs')->insert([
+                                'link' => url('check?offer_id='.$offer->id),
+                                'allow' => $offer->allow_devices,
+                                'country' => $checkLocation,
                             ]);
                         }
                     } catch (\Exception $e) {
