@@ -7,143 +7,169 @@ use GuzzleHttp\Client;
 
 class Site
 {
+
+    public static function parseOffer($offer, $network)
+    {
+        $isIphone = false;
+        $isIpad = false;
+        $android = false;
+        $ios = false;
+        $countries = [];
+        $netOfferId = null;
+        $redirectLink = null;
+        $payout = 0;
+        $offerName = null;
+        $geoLocations = null;
+        $devices = null;
+        $realDevice = 1;
+
+
+        #style 1
+
+        if (isset($offer['devices'])) {
+            $devices = $offer['devices'];
+        }
+
+        if (isset($offer['Platforms'])) {
+            $devices = explode(',', $offer['Platforms']);
+        }
+
+        foreach ($devices as $device) {
+
+            $deviceType = null;
+
+            if (is_array($device)) {
+                $deviceType = strtolower($device['device_type']);
+            } else {
+                $deviceType = strtolower($device);
+            }
+
+            if (strpos($deviceType, 'iphone') !== false) {
+                $isIphone = true;
+            }
+            if (strpos($deviceType, 'ipad') !== false) {
+                $isIpad = true;
+            }
+            if (strpos($deviceType, 'droid') !== false) {
+                $android = true;
+            }
+
+            if ($isIphone && $isIpad) {
+                $ios = true;
+            }
+        }
+
+        if ($ios && $android) {
+            $realDevice = 2;
+        } else if ($android) {
+            $realDevice = 4;
+        } else if ($ios) {
+            $realDevice = 5;
+        } else if ($isIphone) {
+            $realDevice = 6;
+        } else if ($isIpad) {
+            $realDevice = 7;
+        }
+
+        if (isset($offer['countries'])) {
+            foreach ($offer['countries'] as $country) {
+                $countries[]  = $country['code'];
+            }
+        }
+
+        if (isset($offer['id'])) {
+            $netOfferId = $offer['id'];
+        }
+
+        if (isset($offer['offer_id'])) {
+            $netOfferId = $offer['offer_id'];
+        }
+
+        if (isset($offer['ID'])) {
+            $netOfferId = $offer['ID'];
+        }
+
+
+        if (isset($offer['tracking_link'])) {
+            $redirectLink = $offer['tracking_link'].'&s1=#subId';
+        }
+
+        if (isset($offer['tracking_url'])) {
+            $redirectLink = str_replace('&s1=&s2=&s3=', '&s1=#subId', $offer['tracking_url']);
+        }
+
+        if (isset($offer['Tracking_url'])) {
+            $redirectLink = $offer['Tracking_url'].'&s1=#subId';
+        }
+
+
+        if (isset($offer['payout'])) {
+            $payout = round(floatval($offer['payout'])/intval(env('RATE_CRON')), 2);
+        }
+
+        if (isset($offer['rate'])) {
+            $payout = round(floatval(str_replace('$', '', $offer['rate']))/intval(env('RATE_CRON')), 2);
+        }
+
+        if (isset($offer['Payout'])) {
+            $payout = round(floatval(str_replace('$', '', $offer['Payout']))/intval(env('RATE_CRON')), 2);
+        }
+
+        if (isset($offer['name'])) {
+            $offerName = str_limit( $offer['name'], 250);
+        }
+
+        if (isset($offer['offer_name'])) {
+            $offerName = str_limit( $offer['offer_name'], 250);
+        }
+
+        if (isset($offer['Name'])) {
+            $offerName = str_limit( $offer['Name'], 250);
+        }
+
+        if (isset($offer['geos'])) {
+            $geoLocations = implode(',', $offer['geos']);
+        }
+
+        if ($countries) {
+            $geoLocations = implode(',', $countries);
+        }
+
+        if (isset($offer['Countries'])) {
+            $geoLocations = $offer['Countries'];
+        }
+
+        $checkExisted =  Offer::where('net_offer_id', $netOfferId)->where('network_id', $network->id)->count();
+
+        if ($checkExisted == 0) {
+            Offer::create([
+                'net_offer_id' => $netOfferId,
+                'name' => $offerName,
+                'redirect_link' => $redirectLink,
+                'click_rate' => $payout,
+                'allow_devices' => $realDevice,
+                'geo_locations' => $geoLocations,
+                'network_id' => $network->id,
+                'status' => true,
+                'auto' => true
+            ]);
+        }
+
+        return $netOfferId;
+    }
+
+
     public static function feed($network)
     {
         $feed_url = $network->cron;
         // $feed_url = 'http://onetulip.afftrack.com/apiv2/?key=e661cf4c3909b1490ec1ac489349f66c&action=offer_feed';
         $offers = self::getUrlContent($feed_url);
-
         $listCurrentNetworkOfferIds = [];
-        $total = 0;
 
         if ($offers) {
-            if (isset($offers['offers'])) {
-                $total = count($offers['offers']);
-                if ($total > 0) {
-                    foreach ($offers['offers'] as $offer) {
-
-                        $devices = 1;
-                        $isIphone = false;
-                        $isIpad = false;
-                        $android = false;
-                        $ios = false;
-                        if ($offer['devices']) {
-                            foreach ($offer['devices'] as $device) {
-                                if (strpos(strtolower($device['device_type']), 'iphone') !== false) {
-                                    $isIphone = true;
-                                }
-                                if (strpos(strtolower($device['device_type']), 'ipad') !== false) {
-                                    $isIpad = true;
-                                }
-                                if (strpos(strtolower($device['device_type']), 'droid') !== false) {
-                                    $android = true;
-                                }
-
-                                if ($isIphone && $isIpad) {
-                                    $ios = true;
-                                }
-                            }
-                        }
-
-
-                        if ($ios && $android) {
-                            $devices = 2;
-                        } else if ($android) {
-                            $devices = 4;
-                        } else if ($ios) {
-                            $devices = 5;
-                        } else if ($isIphone) {
-                            $devices = 6;
-                        } else if ($isIpad) {
-                            $devices = 7;
-                        }
-
-                        $countries = [];
-
-                        foreach ($offer['countries'] as $country) {
-                            $countries[]  = $country['code'];
-                        }
-
-                        $checkExisted =  Offer::where('net_offer_id', $offer['id'])->where('network_id', $network->id)->count();
-
-                        if ($checkExisted == 0) {
-                            Offer::create([
-                                'net_offer_id' => $offer['id'],
-                                'name' => str_limit( $offer['name'], 250),
-                                'redirect_link' => $offer['tracking_link'].'&s1=#subId',
-                                'click_rate' => round(floatval($offer['payout'])/intval(env('RATE_CRON')), 2),
-                                'allow_devices' => $devices,
-                                'geo_locations' => implode(',', $countries),
-                                'network_id' => $network->id,
-                                'status' => true,
-                                'auto' => true
-                            ]);
-                        }
-
-                        $listCurrentNetworkOfferIds[] = $offer['id'];
-                    }
-                }
-
-            } else {
-                $total = count($offers);
-                if ($total > 0) {
-                    foreach ($offers as $offer) {
-
-                        $devices = null;
-                        $isIphone = false;
-                        $isIpad = false;
-                        $android = false;
-                        $ios = false;
-                        if ($offer['devices']) {
-                            foreach ($offer['devices'] as $device) {
-                                if (strpos(strtolower($device), 'iphone') !== false) {
-                                    $isIphone = true;
-                                }
-                                if (strpos(strtolower($device), 'ipad') !== false) {
-                                    $isIpad = true;
-                                }
-                                if (strpos(strtolower($device), 'droid') !== false) {
-                                    $android = true;
-                                }
-
-                                if ($isIphone && $isIpad) {
-                                    $ios = true;
-                                }
-                            }
-                        }
-
-
-                        if ($ios && $android) {
-                            $devices = 2;
-                        } else if ($android) {
-                            $devices = 4;
-                        } else if ($ios) {
-                            $devices = 5;
-                        } else if ($isIphone) {
-                            $devices = 6;
-                        } else if ($isIpad) {
-                            $devices = 7;
-                        }
-
-                        $checkExisted = Offer::where('net_offer_id', $offer['offer_id'])->where('network_id', $network->id)->count();
-
-                        if ($checkExisted == 0) {
-                            Offer::create([
-                                'net_offer_id' => $offer['offer_id'],
-                                'name' => str_limit( $offer['offer_name'], 250),
-                                'redirect_link' => str_replace('&s1=&s2=&s3=', '&s1=#subId', $offer['tracking_url']),
-                                'click_rate' => round(floatval(str_replace('$', '', $offer['rate']))/intval(env('RATE_CRON')), 2),
-                                'allow_devices' => $devices,
-                                'geo_locations' => implode(',', $offer['geos']),
-                                'network_id' => $network->id,
-                                'status' => true,
-                                'auto' => true
-                            ]);
-                        }
-
-                        $listCurrentNetworkOfferIds[] = $offer['offer_id'];
-                    }
-                }
+            $rawContent = isset($offers['offers']) ? $offers['offers'] : $rawContent;
+            foreach ($rawContent as $offer) {
+                $listCurrentNetworkOfferIds[] = self::parseOffer($offer, $network);
             }
         }
 
