@@ -159,6 +159,8 @@ class Site
             $geoLocations = $offer['geo'];
         }
 
+        $geoLocations = str_replace('|', ',', $geoLocations);
+
         $checkExisted =  Offer::where('net_offer_id', $netOfferId)->where('network_id', $network->id)->count();
 
         if ($checkExisted == 0) {
