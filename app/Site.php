@@ -166,10 +166,13 @@ class Site
         $offers = self::getUrlContent($feed_url);
         $listCurrentNetworkOfferIds = [];
 
+        $total = 0;
+
         if ($offers) {
             $rawContent = isset($offers['offers']) ? $offers['offers'] : $rawContent;
             foreach ($rawContent as $offer) {
                 $listCurrentNetworkOfferIds[] = self::parseOffer($offer, $network);
+                $total ++;
             }
         }
 
