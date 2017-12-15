@@ -159,6 +159,9 @@ class Site
             $geoLocations = $offer['geo'];
         }
 
+
+        $offerName = iconv(mb_detect_encoding($offerName, mb_detect_order(), true), "UTF-8", $offerName);
+
         $geoLocations = str_replace('|', ',', $geoLocations);
 
         $checkExisted =  Offer::where('net_offer_id', $netOfferId)->where('network_id', $network->id)->count();
