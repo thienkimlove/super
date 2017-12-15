@@ -251,14 +251,16 @@ class MainController extends Controller
 
         if ($network_id && $offer_id && $sub_id) {
 
-            if ($request->input('status') != -1) {
+            $offer = Offer::find($offer_id);
+
+            if ($offer && $request->input('status') != -1) {
 
                 $checkExistedLead = NetworkClick::where('network_id', $network_id)
                     ->where('network_offer_id', $offer_id)
                     ->where('sub_id', $sub_id)
                     ->count();
                 if ($checkExistedLead == 0) {
-                   $networkClick = NetworkClick::create([
+                    NetworkClick::create([
                         'network_id' => $network_id,
                         'network_offer_id' => $offer_id,
                         'sub_id' => $sub_id,
@@ -266,35 +268,33 @@ class MainController extends Controller
                         'ip' => $request->input('ip')
                     ]);
 
-                   $offer = Offer::find($offer_id);
+                    if ($offer->number_when_lead > 0) {
+                        #put in queues for process multi click.
+                        try {
+                            $checkLocation = null;
+                            $offer_locations = trim(strtoupper($offer->geo_locations));
+                            if (!$offer_locations || ($offer_locations == 'ALL')) {
+                                $checkLocation = 'us';
+                            } elseif (strpos($offer_locations, 'GB') !== false) {
+                                $checkLocation = 'uk';
+                            } else {
+                                $offer_locations = explode(',', $offer_locations);
+                                $checkLocation = trim(strtolower($offer_locations[0]));
+                            }
 
-                   if ($offer->number_when_lead > 0) {
-                       #put in queues for process multi click.
-                       try {
-                           $checkLocation = null;
-                           $offer_locations = trim(strtoupper($offer->geo_locations));
-                           if (!$offer_locations || ($offer_locations == 'ALL')) {
-                               $checkLocation = 'us';
-                           } elseif (strpos($offer_locations, 'GB') !== false) {
-                               $checkLocation = 'uk';
-                           } else {
-                               $offer_locations = explode(',', $offer_locations);
-                               $checkLocation = trim(strtolower($offer_locations[0]));
-                           }
+                            for ($i = 0; $i < $offer->number_when_lead; $i++) {
 
-                           for ($i = 0; $i < $offer->number_when_lead; $i++) {
+                                \DB::connection('virtual')->table('logs')->insert([
+                                    'link' => url('check?offer_id='.$offer->id),
+                                    'allow' => $offer->allow_devices,
+                                    'country' => $checkLocation,
+                                ]);
 
-                               \DB::connection('virtual')->table('logs')->insert([
-                                   'link' => url('check?offer_id='.$offer->id),
-                                   'allow' => $offer->allow_devices,
-                                   'country' => $checkLocation,
-                               ]);
+                            }
+                        } catch (\Exception $e) {
 
-                           }
-                       } catch (\Exception $e) {
-
-                       }
-                   }
+                        }
+                    }
                 }
             }
 
@@ -311,43 +311,45 @@ class MainController extends Controller
             $click =  Click::where('hash_tag', $sub_id)->get()->first();
             $offer = Offer::find($click->offer_id);
 
-            $checkExistedLead = NetworkClick::where('network_id', $network_id)
-                ->where('network_offer_id', $offer->net_offer_id)
-                ->where('sub_id', $sub_id)
-                ->count();
-            if ($checkExistedLead == 0) {
-                $networkClick = NetworkClick::create([
-                    'network_id' => $network_id,
-                    'network_offer_id' => $offer->net_offer_id,
-                    'sub_id' => $sub_id,
-                    'amount' => $request->input('amount') ? $request->input('amount') : 0,
-                    'ip' => $click->click_ip
-                ]);
+            if ($offer) {
+                $checkExistedLead = NetworkClick::where('network_id', $network_id)
+                    ->where('network_offer_id', $offer->net_offer_id)
+                    ->where('sub_id', $sub_id)
+                    ->count();
+                if ($checkExistedLead == 0) {
+                    NetworkClick::create([
+                        'network_id' => $network_id,
+                        'network_offer_id' => $offer->net_offer_id,
+                        'sub_id' => $sub_id,
+                        'amount' => $request->input('amount') ? $request->input('amount') : 0,
+                        'ip' => $click->click_ip
+                    ]);
 
-                if ($offer->number_when_lead > 0) {
-                    #put in queues for process multi click.
-                    try {
-                        $checkLocation = null;
-                        $offer_locations = trim(strtoupper($offer->geo_locations));
-                        if (!$offer_locations || ($offer_locations == 'ALL')) {
-                            $checkLocation = 'us';
-                        } elseif (strpos($offer_locations, 'GB') !== false) {
-                            $checkLocation = 'uk';
-                        } else {
-                            $offer_locations = explode(',', $offer_locations);
-                            $checkLocation = trim(strtolower($offer_locations[0]));
+                    if ($offer->number_when_lead > 0) {
+                        #put in queues for process multi click.
+                        try {
+                            $checkLocation = null;
+                            $offer_locations = trim(strtoupper($offer->geo_locations));
+                            if (!$offer_locations || ($offer_locations == 'ALL')) {
+                                $checkLocation = 'us';
+                            } elseif (strpos($offer_locations, 'GB') !== false) {
+                                $checkLocation = 'uk';
+                            } else {
+                                $offer_locations = explode(',', $offer_locations);
+                                $checkLocation = trim(strtolower($offer_locations[0]));
+                            }
+
+                            for ($i = 0; $i < $offer->number_when_lead; $i++) {
+
+                                \DB::connection('virtual')->table('logs')->insert([
+                                    'link' => url('check?offer_id='.$offer->id),
+                                    'allow' => $offer->allow_devices,
+                                    'country' => $checkLocation,
+                                ]);
+                            }
+                        } catch (\Exception $e) {
+
                         }
-
-                        for ($i = 0; $i < $offer->number_when_lead; $i++) {
-
-                            \DB::connection('virtual')->table('logs')->insert([
-                                'link' => url('check?offer_id='.$offer->id),
-                                'allow' => $offer->allow_devices,
-                                'country' => $checkLocation,
-                            ]);
-                        }
-                    } catch (\Exception $e) {
-
                     }
                 }
             }
