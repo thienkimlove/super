@@ -123,18 +123,21 @@ class MainController extends Controller
     {
         $offer_id = (int) $request->input('offer_id');
         $offer = Offer::find($offer_id);
-        $checkDevices = $this->checkDeviceOffer($offer);
 
-        if ($checkDevices) {
-            $checkLocation = $this->checkIpAndLocation($offer, $request);
+        if ($offer) {
+            $checkDevices = $this->checkDeviceOffer($offer);
 
-            if ($checkLocation) {
-                $redirect_link  = str_replace('#subId', '', $offer->redirect_link);
-                $redirect_link  = str_replace('#subid', '', $redirect_link);
-                return redirect()->away($redirect_link);
+            if ($checkDevices) {
+                $checkLocation = $this->checkIpAndLocation($offer, $request);
+
+                if ($checkLocation) {
+                    $redirect_link  = str_replace('#subId', '', $offer->redirect_link);
+                    $redirect_link  = str_replace('#subid', '', $redirect_link);
+                    return redirect()->away($redirect_link);
+                }
+            } else {
+                \Log::info('Failed with check_device_for_virtual_click offer_id='.$offer_id.' have allow_devices='.$offer->allow_devices. 'but agent='.$_SERVER['HTTP_USER_AGENT']);
             }
-        } else {
-            \Log::info('Failed with check_device_for_virtual_click offer_id='.$offer_id.' have allow_devices='.$offer->allow_devices. 'but agent='.$_SERVER['HTTP_USER_AGENT']);
         }
 
         return response()->json([
