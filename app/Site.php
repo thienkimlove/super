@@ -34,6 +34,10 @@ class Site
             $devices = explode(',', $offer['Platforms']);
         }
 
+        if (isset($offer['platform'])) {
+            $devices = explode(',', $offer['platform']);
+        }
+
         foreach ($devices as $device) {
 
             $deviceType = null;
@@ -89,6 +93,10 @@ class Site
             $netOfferId = $offer['ID'];
         }
 
+        if (isset($offer['offerid'])) {
+            $netOfferId = $offer['offerid'];
+        }
+
 
         if (isset($offer['tracking_link'])) {
             $redirectLink = $offer['tracking_link'].'&s1=#subId';
@@ -100,6 +108,10 @@ class Site
 
         if (isset($offer['Tracking_url'])) {
             $redirectLink = $offer['Tracking_url'].'&s1=#subId';
+        }
+
+        if (isset($offer['offer_url'])) {
+            $redirectLink = $offer['offer_url'].'&s1=#subId';
         }
 
 
@@ -127,6 +139,10 @@ class Site
             $offerName = str_limit( $offer['Name'], 250);
         }
 
+        if (isset($offer['app_name'])) {
+            $offerName = str_limit( $offer['app_name'], 250);
+        }
+
         if (isset($offer['geos'])) {
             $geoLocations = implode(',', $offer['geos']);
         }
@@ -137,6 +153,10 @@ class Site
 
         if (isset($offer['Countries'])) {
             $geoLocations = $offer['Countries'];
+        }
+
+        if (isset($offer['geo'])) {
+            $geoLocations = $offer['geo'];
         }
 
         $checkExisted =  Offer::where('net_offer_id', $netOfferId)->where('network_id', $network->id)->count();
