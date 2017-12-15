@@ -31,10 +31,10 @@
 
                                     <td>
                                         <button id-attr="{{$network->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;
-                                        {!! Form::open(['method' => 'DELETE', 'route' => ['networks.destroy',
+                                     {{--   {!! Form::open(['method' => 'DELETE', 'route' => ['networks.destroy',
                                         $network->id]]) !!}
                                         <button type="submit" class="btn btn-danger btn-mini">Delete</button>
-                                        {!! Form::close() !!}
+                                        {!! Form::close() !!}--}}
 
                                         @if ($network->cron)
 
