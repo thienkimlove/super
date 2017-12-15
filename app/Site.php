@@ -164,21 +164,18 @@ class Site
 
         $geoLocations = str_replace('|', ',', $geoLocations);
 
-        $checkExisted =  Offer::where('net_offer_id', $netOfferId)->where('network_id', $network->id)->count();
-
-        if ($checkExisted == 0) {
-            Offer::create([
-                'net_offer_id' => $netOfferId,
-                'name' => $offerName,
-                'redirect_link' => $redirectLink,
-                'click_rate' => $payout,
-                'allow_devices' => $realDevice,
-                'geo_locations' => $geoLocations,
-                'network_id' => $network->id,
-                'status' => true,
-                'auto' => true
-            ]);
-        }
+        Offer::updateOrCreate([
+            'net_offer_id' => $netOfferId,
+            'network_id' => $network->id,
+        ],[
+            'name' => $offerName,
+            'redirect_link' => $redirectLink,
+            'click_rate' => $payout,
+            'allow_devices' => $realDevice,
+            'geo_locations' => $geoLocations,
+            'status' => true,
+            'auto' => true
+        ]);
 
         return $netOfferId;
     }
