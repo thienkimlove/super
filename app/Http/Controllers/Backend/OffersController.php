@@ -39,7 +39,7 @@ class OffersController extends AdminController
         $searchAuto = null;
 
         if ($request->input('auto') && $request->input('auto') == 1) {
-            $offers = Offer::latest('net_offer_id');
+            $offers = Offer::orderBy('net_offer_id', 'desc');
         } else {
             $offers = Offer::latest('created_at');
         }
