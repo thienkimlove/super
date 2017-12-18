@@ -103,7 +103,7 @@ class Site
 
 
         if (isset($offer['tracking_link'])) {
-            $redirectLink = $offer['tracking_link'].'&s1=#subId';
+            $redirectLink = $offer['tracking_link'].'&aff_sub=#subId';
         }
 
         if (isset($offer['tracking_url'])) {
@@ -111,11 +111,11 @@ class Site
         }
 
         if (isset($offer['Tracking_url'])) {
-            $redirectLink = $offer['Tracking_url'].'&s1=#subId';
+            $redirectLink = $offer['Tracking_url'].'&aff_sub=#subId';
         }
 
         if (isset($offer['offer_url'])) {
-            $redirectLink = $offer['offer_url'].'&s1=#subId';
+            $redirectLink = $offer['offer_url'].'&aff_sub6=#subId';
         }
 
 
