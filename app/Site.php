@@ -48,6 +48,10 @@ class Site
                 $deviceType = strtolower($device);
             }
 
+            if (strpos($deviceType, 'ios') !== false) {
+                $ios = true;
+            }
+
             if (strpos($deviceType, 'iphone') !== false) {
                 $isIphone = true;
             }
