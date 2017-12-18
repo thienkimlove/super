@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time
 import re
+import os
 
 def readystate_complete(d):
     # AFAICT Selenium offers no better way to wait for the document to be loaded,
@@ -98,7 +99,9 @@ def load(url):
            else:
                with open("/tmp/#OFFERID#_last.html", "w") as text_file:
                   text_file.write(source.encode('utf8'))
+               os.chmod("/tmp/#OFFERID#_last.html", 0777)
                driver.save_screenshot("/tmp/#OFFERID#_last.png")
+               os.chmod("/tmp/#OFFERID#_last.png", 0777)
                itune = itune_check(source)
                if itune is not None:
                   print(itune)
