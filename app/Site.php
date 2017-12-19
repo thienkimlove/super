@@ -115,7 +115,7 @@ class Site
         }
 
         if (isset($offer['offer_url'])) {
-            $redirectLink = $offer['offer_url'].'&aff_sub6=#subId';
+            $redirectLink = $offer['offer_url'].'&aff_sub=#subId';
         }
 
 
