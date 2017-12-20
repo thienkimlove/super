@@ -187,6 +187,11 @@ class Site
 
     public static function feed($network)
     {
+
+        //clear no lead offers.
+        Offer::where('network_id', $network->id)->whereDoesntHave('leads')->delete();
+
+
         $feed_url = $network->cron;
         // $feed_url = 'http://onetulip.afftrack.com/apiv2/?key=e661cf4c3909b1490ec1ac489349f66c&action=offer_feed';
         $offers = self::getUrlContent($feed_url);
