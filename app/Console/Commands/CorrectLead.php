@@ -40,13 +40,17 @@ class CorrectLead extends Command
     {
         $oldLeads = NetworkClick::join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
             ->join('offers', 'clicks.offer_id', '=', 'offers.id')
-            ->selectRaw('clicks.id as click_id, offers.id as offer_id, network_clicks.sub_id as lead_sub_id, network_clicks.amount as lead_amount')
+            ->selectRaw('network_clicks.id as lead_id, network_clicks.network_id as lead_network_id, clicks.id as click_id, offers.id as offer_id, network_clicks.sub_id as lead_sub_id, network_clicks.amount as lead_amount')
             ->whereNull('network_clicks.offer_id')
             ->limit(10)
             ->get();
 
         foreach ($oldLeads as $oldLead) {
-            dd($oldLead);
+            NetworkClick::where('id', $oldLead->lead_id)->update([
+                'offer_id' => $oldLead->offer_id,
+                'click_id' => $oldLead->click_id,
+                'json_data' => json_encode(['subid' => $oldLead->lead_sub_id, 'amount' => $oldLead->lead_amount*2, 'network_id' => $oldLead->lead_network_id])
+            ]);
         }
 
 
