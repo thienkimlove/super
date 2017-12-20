@@ -155,7 +155,7 @@ class MainController extends Controller
 
             $offer = Offer::find($offer_id);
 
-            if ($offer && $offer->status) {
+            if ($offer &&  $offer->status && $offer->redirect_link && $offer->redirect_link != '0') {
 
                 $user = User::find($user_id);
 
@@ -232,7 +232,7 @@ class MainController extends Controller
                     return response()->json(['message' => 'User is inactive or none existed!']);
                 }
             } else {
-              return response()->json(['message' => 'Offer is not active or none existed!']);
+              return response()->json(['message' => 'Offer is not active or none existed or redirect_link is not correct!']);
             }
         } else {
             return response()->json(['message' => 'Not enough parameters!']);
