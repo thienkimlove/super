@@ -19,6 +19,7 @@
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>PostBack Link</th>
+                                <th>Total No-Lead Offers</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -28,6 +29,7 @@
                                     <td>{{$network->id}}</td>
                                     <td>{{$network->name}}</td>
                                     <td>{{url('postback?network_id='. $network->id)}}</td>
+                                    <td>{{ $noLeadOffers[$network->id] }}</td>
 
                                     <td>
                                         <button id-attr="{{$network->id}}" class="btn btn-primary btn-sm edit-content" type="button">Edit</button>&nbsp;

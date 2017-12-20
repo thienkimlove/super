@@ -2,6 +2,7 @@
 
 use App\Http\Requests\NetworkRequest;
 use App\Network;
+use App\Offer;
 
 class NetworksController extends AdminController
 {
@@ -11,8 +12,15 @@ class NetworksController extends AdminController
 
         $networks = Network::latest('updated_at')->paginate(10);
 
+        $noLeadOffers = [];
 
-        return view('admin.network.index', compact('networks'));
+        foreach ($networks as $network) {
+            $count = Offer::where('network_id', $network->id)->whereDoesntHave('leads')->count();
+            $noLeadOffers[$network->id] = $count;
+        }
+
+
+        return view('admin.network.index', compact('networks', 'noLeadOffers'));
     }
 
     public function create()

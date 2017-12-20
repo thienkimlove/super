@@ -36,13 +36,9 @@ class Offer extends Model
         return $this->belongsTo(Network::class);
     }
 
-    public function network_clicks()
+    public function leads()
     {
-        return $this->hasMany(NetworkClick::class, 'network_offer_id', 'net_offer_id');
+        return $this->hasMany(NetworkClick::class);
     }
 
-    public function getCountBackAttribute()
-    {
-        return NetworkClick::where('net_offer_id', $this->net_offer_id)->count();
-    }
 }
