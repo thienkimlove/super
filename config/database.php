@@ -68,6 +68,96 @@ return [
             'unix_socket' => '/var/run/mysqld/mysqld.sock'
         ],
 
+        'richnet' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'port' => '3306',
+            'database' => 'richnet',
+            'username' => 'root',
+            'password' => 'tieungao',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'unix_socket' => '/var/run/mysqld/mysqld.sock'
+        ],
+
+        'azoffers' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'port' => '3306',
+            'database' => 'azoffers',
+            'username' => 'root',
+            'password' => 'tieungao',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'unix_socket' => '/var/run/mysqld/mysqld.sock'
+        ],
+
+        'appsdude' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'port' => '3306',
+            'database' => 'appsdude',
+            'username' => 'root',
+            'password' => 'tieungao',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'unix_socket' => '/var/run/mysqld/mysqld.sock'
+        ],
+
+        'justapp' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'port' => '3306',
+            'database' => 'justapp',
+            'username' => 'root',
+            'password' => 'tieungao',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'unix_socket' => '/var/run/mysqld/mysqld.sock'
+        ],
+
+        'mobifaster' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'port' => '3306',
+            'database' => 'mobifaster',
+            'username' => 'root',
+            'password' => 'tieungao',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'unix_socket' => '/var/run/mysqld/mysqld.sock'
+        ],
+
+        'super' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'port' => '3306',
+            'database' => 'super',
+            'username' => 'root',
+            'password' => 'tieungao',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'unix_socket' => '/var/run/mysqld/mysqld.sock'
+        ],
+
 
 
 
