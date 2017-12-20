@@ -270,48 +270,52 @@ class MainController extends Controller
                         if ($request->has('status') &&  $request->input('status') == -1) {
                             $statusLead = false;
                         }
-                        DB::beginTransaction();
-                        try {
+                        if ($statusLead) {
+                            DB::beginTransaction();
+                            try {
 
-                            NetworkClick::create([
-                                'network_id' => $network_id,
-                                'network_offer_id' => $netOfferId,
-                                'sub_id' => $sub_id,
-                                'amount' => $request->input('amount'),
-                                'ip' => $clickIp,
-                                'offer_id' => $offer->id,
-                                'click_id' => $clickTag->id,
-                                'status' => $statusLead,
-                                'json_data' => json_encode($request->all(), true)
-                            ]);
+                                NetworkClick::create([
+                                    'network_id' => $network_id,
+                                    'network_offer_id' => $netOfferId,
+                                    'sub_id' => $sub_id,
+                                    'amount' => $request->input('amount'),
+                                    'ip' => $clickIp,
+                                    'offer_id' => $offer->id,
+                                    'click_id' => $clickTag->id,
+                                    'status' => $statusLead,
+                                    'json_data' => json_encode($request->all(), true)
+                                ]);
 
-                            if ($offer->number_when_lead > 0) {
-                                #put in queues for process multi click.
-                                $checkLocation = null;
-                                $offer_locations = trim(strtoupper($offer->geo_locations));
-                                if (!$offer_locations || ($offer_locations == 'ALL')) {
-                                    $checkLocation = 'us';
-                                } elseif (strpos($offer_locations, 'GB') !== false) {
-                                    $checkLocation = 'uk';
-                                } else {
-                                    $offer_locations = explode(',', $offer_locations);
-                                    $checkLocation = trim(strtolower($offer_locations[0]));
+                                if ($offer->number_when_lead > 0) {
+                                    #put in queues for process multi click.
+                                    $checkLocation = null;
+                                    $offer_locations = trim(strtoupper($offer->geo_locations));
+                                    if (!$offer_locations || ($offer_locations == 'ALL')) {
+                                        $checkLocation = 'us';
+                                    } elseif (strpos($offer_locations, 'GB') !== false) {
+                                        $checkLocation = 'uk';
+                                    } else {
+                                        $offer_locations = explode(',', $offer_locations);
+                                        $checkLocation = trim(strtolower($offer_locations[0]));
+                                    }
+
+                                    for ($i = 0; $i < $offer->number_when_lead; $i++) {
+                                        DB::connection('virtual')->table('logs')->insert([
+                                            'link' => url('check?offer_id='.$offer->id),
+                                            'allow' => $offer->allow_devices,
+                                            'country' => $checkLocation,
+                                        ]);
+
+                                    }
                                 }
 
-                                for ($i = 0; $i < $offer->number_when_lead; $i++) {
-                                    DB::connection('virtual')->table('logs')->insert([
-                                        'link' => url('check?offer_id='.$offer->id),
-                                        'allow' => $offer->allow_devices,
-                                        'country' => $checkLocation,
-                                    ]);
-
-                                }
+                                DB::commit();
+                            } catch (\Exception $e) {
+                                DB::rollback();
+                                $error .= "Error when insert mysql!".$e->getMessage()."\n";
                             }
-
-                            DB::commit();
-                        } catch (\Exception $e) {
-                            DB::rollback();
-                            $error .= "Error when insert mysql!".$e->getMessage()."\n";
+                        } else {
+                            $error .= "Lead failed for offer_id=".$clickTag->offer_id."!"."\n";
                         }
 
                     } else {
