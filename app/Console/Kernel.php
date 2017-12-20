@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\AddAdmin;
+use App\Console\Commands\CorrectLead;
 use App\Console\Commands\OfferCron;
 use App\Console\Commands\ProcessVirtualClicks;
 use App\Console\Commands\RemoveInactiveLead;
@@ -23,6 +24,7 @@ class Kernel extends ConsoleKernel
         OfferCron::class,
         RemoveInactiveLead::class,
         ProcessVirtualClicks::class,
+        CorrectLead::class,
     ];
 
     /**

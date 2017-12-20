@@ -12,6 +12,10 @@ class NetworkClick extends Model
         'sub_id',
         'amount',
         'ip',
+        'offer_id',
+        'click_id',
+        'status',
+        'json_data',
     ];
 
     public function network()

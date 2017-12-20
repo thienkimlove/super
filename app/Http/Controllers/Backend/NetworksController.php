@@ -11,6 +11,7 @@ class NetworksController extends AdminController
 
         $networks = Network::latest('updated_at')->paginate(10);
 
+
         return view('admin.network.index', compact('networks'));
     }
 
