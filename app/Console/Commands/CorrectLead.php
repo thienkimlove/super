@@ -40,7 +40,7 @@ class CorrectLead extends Command
     {
 
         foreach (config('site.list') as $site) {
-            
+
             $oldLeads = DB::connection($site)->table('network_clicks')->join('clicks', 'network_clicks.sub_id', '=', 'clicks.hash_tag')
                 ->join('offers', 'clicks.offer_id', '=', 'offers.id')
                 ->selectRaw('network_clicks.id as lead_id, network_clicks.network_id as lead_network_id, clicks.id as click_id, offers.id as offer_id, network_clicks.sub_id as lead_sub_id, network_clicks.amount as lead_amount')

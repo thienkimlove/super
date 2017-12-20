@@ -136,7 +136,7 @@ class MainController extends Controller
                     return redirect()->away($redirect_link);
                 }
             } else {
-                \Log::info('Failed with check_device_for_virtual_click offer_id='.$offer_id.' have allow_devices='.$offer->allow_devices. 'but agent='.$_SERVER['HTTP_USER_AGENT']);
+                //\Log::info('Failed with check_device_for_virtual_click offer_id='.$offer_id.' have allow_devices='.$offer->allow_devices. 'but agent='.$_SERVER['HTTP_USER_AGENT']);
             }
         }
 
@@ -187,7 +187,7 @@ class MainController extends Controller
                                 //insert click and redirect
                                 $hash_tag = md5(uniqid($offer_id.$user_id.$currentIp));
                                 try {
-                                   $addedClick = Click::create([
+                                  Click::create([
                                         'user_id' => $user_id,
                                         'offer_id' => $offer_id,
                                         'click_ip' => $currentIp,
@@ -239,121 +239,99 @@ class MainController extends Controller
         }
     }
 
-    public function postback(Request $request)
+    public function inside(Request $request)
     {
-
-        //http://bt.io/click?aid=65350&linkid=B159235&s1=&s2=&s3=&s4=&s5= CPAway
-        //GET /postback?network_id=1&offer_id=198477&subid=9c5e22e270773205658d098b4e19b7d5&amount=0.44800000&status=1&ip=176.47.3.203&country=SA&tid=c74c18c82231ddd250d254fa0c35549c
-
+        $error = null;
         $network_id = $request->input('network_id');
-        $offer_id = $request->input('offer_id');
         $sub_id = $request->input('subid');
 
-        if ($network_id && $offer_id && $sub_id) {
+        if ($network_id && $sub_id) {
+            $checkExistedLead = NetworkClick::where('network_id', $network_id)
+                ->where('sub_id', $sub_id)
+                ->count();
 
-            $offer = Offer::find($offer_id);
+            if ($checkExistedLead == 0) {
 
-            if ($offer && $request->input('status') != -1) {
+                $clickCount = Click::where('hash_tag', $sub_id)->count();
 
-                $checkExistedLead = NetworkClick::where('network_id', $network_id)
-                    ->where('network_offer_id', $offer_id)
-                    ->where('sub_id', $sub_id)
-                    ->count();
-                if ($checkExistedLead == 0) {
-                    NetworkClick::create([
-                        'network_id' => $network_id,
-                        'network_offer_id' => $offer_id,
-                        'sub_id' => $sub_id,
-                        'amount' => $request->input('amount'),
-                        'ip' => $request->input('ip')
-                    ]);
+                if ($clickCount > 0) {
+                    $clickTag = Click::where('hash_tag', $sub_id)->first();
+                    $offer = Offer::find($clickTag->offer_id);
+                    $clickIp = $clickTag->click_ip;
 
-                    if ($offer->number_when_lead > 0) {
-                        #put in queues for process multi click.
-                        try {
-                            $checkLocation = null;
-                            $offer_locations = trim(strtoupper($offer->geo_locations));
-                            if (!$offer_locations || ($offer_locations == 'ALL')) {
-                                $checkLocation = 'us';
-                            } elseif (strpos($offer_locations, 'GB') !== false) {
-                                $checkLocation = 'uk';
-                            } else {
-                                $offer_locations = explode(',', $offer_locations);
-                                $checkLocation = trim(strtolower($offer_locations[0]));
-                            }
+                    if ($offer) {
 
-                            for ($i = 0; $i < $offer->number_when_lead; $i++) {
+                        $netOfferId = $offer->net_offer_id;
 
-                                \DB::connection('virtual')->table('logs')->insert([
-                                    'link' => url('check?offer_id='.$offer->id),
-                                    'allow' => $offer->allow_devices,
-                                    'country' => $checkLocation,
-                                ]);
+                        $statusLead = true;
 
-                            }
-                        } catch (\Exception $e) {
-
+                        if ($request->has('status') &&  $request->input('status') == -1) {
+                            $statusLead = false;
                         }
-                    }
-                }
-            }
+                        DB::beginTransaction();
+                        try {
 
+                            NetworkClick::create([
+                                'network_id' => $network_id,
+                                'network_offer_id' => $netOfferId,
+                                'sub_id' => $sub_id,
+                                'amount' => $request->input('amount'),
+                                'ip' => $clickIp,
+                                'offer_id' => $offer->id,
+                                'click_id' => $clickTag->id,
+                                'status' => $statusLead,
+                                'json_data' => json_encode($request->all(), true)
+                            ]);
+
+                            if ($offer->number_when_lead > 0) {
+                                #put in queues for process multi click.
+                                $checkLocation = null;
+                                $offer_locations = trim(strtoupper($offer->geo_locations));
+                                if (!$offer_locations || ($offer_locations == 'ALL')) {
+                                    $checkLocation = 'us';
+                                } elseif (strpos($offer_locations, 'GB') !== false) {
+                                    $checkLocation = 'uk';
+                                } else {
+                                    $offer_locations = explode(',', $offer_locations);
+                                    $checkLocation = trim(strtolower($offer_locations[0]));
+                                }
+
+                                for ($i = 0; $i < $offer->number_when_lead; $i++) {
+                                    DB::connection('virtual')->table('logs')->insert([
+                                        'link' => url('check?offer_id='.$offer->id),
+                                        'allow' => $offer->allow_devices,
+                                        'country' => $checkLocation,
+                                    ]);
+
+                                }
+                            }
+
+                            DB::commit();
+                        } catch (\Exception $e) {
+                            DB::rollback();
+                            $error .= "Error when insert mysql!".$e->getMessage()."\n";
+                        }
+
+                    } else {
+                        $error .= "Can not find offer for offer_id=".$clickTag->offer_id."!"."\n";
+                    }
+
+
+                } else {
+                    $error .= "Can not find click for sub_id=".$sub_id."!"."\n";
+                }
+
+            } else {
+                $error .= "Lead for subid=".$sub_id." and network_id=".$network_id." existed!"."\n";
+            }
+        } else {
+            $error .= "Not existed params network_id or subid!"."\n";
         }
 
-    }
-    public function hashpostback(Request $request)
-    {
-        $sub_id = $request->input('subid');
-        $network_id = $request->input('network_id');
-        $findInClick = Click::where('hash_tag', $sub_id)->count();
-
-        if ($findInClick > 0) {
-            $click =  Click::where('hash_tag', $sub_id)->get()->first();
-            $offer = Offer::find($click->offer_id);
-
-            if ($offer) {
-                $checkExistedLead = NetworkClick::where('network_id', $network_id)
-                    ->where('network_offer_id', $offer->net_offer_id)
-                    ->where('sub_id', $sub_id)
-                    ->count();
-                if ($checkExistedLead == 0) {
-                    NetworkClick::create([
-                        'network_id' => $network_id,
-                        'network_offer_id' => $offer->net_offer_id,
-                        'sub_id' => $sub_id,
-                        'amount' => $request->input('amount') ? $request->input('amount') : 0,
-                        'ip' => $click->click_ip
-                    ]);
-
-                    if ($offer->number_when_lead > 0) {
-                        #put in queues for process multi click.
-                        try {
-                            $checkLocation = null;
-                            $offer_locations = trim(strtoupper($offer->geo_locations));
-                            if (!$offer_locations || ($offer_locations == 'ALL')) {
-                                $checkLocation = 'us';
-                            } elseif (strpos($offer_locations, 'GB') !== false) {
-                                $checkLocation = 'uk';
-                            } else {
-                                $offer_locations = explode(',', $offer_locations);
-                                $checkLocation = trim(strtolower($offer_locations[0]));
-                            }
-
-                            for ($i = 0; $i < $offer->number_when_lead; $i++) {
-
-                                \DB::connection('virtual')->table('logs')->insert([
-                                    'link' => url('check?offer_id='.$offer->id),
-                                    'allow' => $offer->allow_devices,
-                                    'country' => $checkLocation,
-                                ]);
-                            }
-                        } catch (\Exception $e) {
-
-                        }
-                    }
-                }
-            }
+        if ($error) {
+            \Log::error($error);
         }
+
     }
 
     public function xMedia()

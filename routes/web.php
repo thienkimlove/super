@@ -35,9 +35,9 @@ Route::resource('admin/networks', 'Backend\NetworksController');
 Route::get('/', 'Frontend\MainController@index');
 Route::get('camp', 'Frontend\MainController@camp');
 Route::get('check', 'Frontend\MainController@check');
-Route::get('postback', 'Frontend\MainController@postback');
-Route::get('hashpostback', 'Frontend\MainController@hashpostback');
-Route::post('postback', 'Frontend\MainController@postback');
+Route::get('postback', 'Frontend\MainController@inside');
+Route::get('hashpostback', 'Frontend\MainController@inside');
+Route::post('postback', 'Frontend\MainController@inside');
 Route::get('xmedia', 'Frontend\MainController@xmedia');
 
 Route::get('test_ip', function(){
