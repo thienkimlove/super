@@ -124,7 +124,7 @@ class MainController extends Controller
         $offer_id = (int) $request->input('offer_id');
         $offer = Offer::find($offer_id);
 
-        if ($offer) {
+        if ($offer && $offer->redirect_link) {
             $checkDevices = $this->checkDeviceOffer($offer);
 
             if ($checkDevices) {
@@ -138,11 +138,13 @@ class MainController extends Controller
             } else {
                 //\Log::info('Failed with check_device_for_virtual_click offer_id='.$offer_id.' have allow_devices='.$offer->allow_devices. 'but agent='.$_SERVER['HTTP_USER_AGENT']);
             }
+        } else {
+            \Log::error('Offer with id='.$offer_id.' not existed or redirect_link null!'."\n");
         }
 
         return response()->json([
             'status' =>  false,
-            'msg' => 'Cannot pass device or location verify!'
+            'msg' => 'Cannot pass device or location verify!',
         ]);
 
     }
