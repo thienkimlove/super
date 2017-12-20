@@ -139,7 +139,7 @@ class MainController extends Controller
                 //\Log::info('Failed with check_device_for_virtual_click offer_id='.$offer_id.' have allow_devices='.$offer->allow_devices. 'but agent='.$_SERVER['HTTP_USER_AGENT']);
             }
         } else {
-            \Log::error('Offer with id='.$offer_id.' not existed or redirect_link null!'."\n");
+            \Log::error('Site= '.url('/').' Offer with id='.$offer_id.' not existed or redirect_link null!'."\n");
         }
 
         return response()->json([
