@@ -63,7 +63,7 @@ class MainController extends Controller
         if (strpos($offer_locations, $isoCode) !== false) {
             return $isoCode;
         } else {
-            \Log::error('offer_id='.$offer->id.'and offer_locations='.$offer_locations.' but ip='.$ipLocation.' and isoCode='.$isoCode);
+            //\Log::error('offer_id='.$offer->id.'and offer_locations='.$offer_locations.' but ip='.$ipLocation.' and isoCode='.$isoCode);
             return false;
         }
     }
