@@ -274,7 +274,7 @@ class HomeController extends AdminController
 
         $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
         //chi hien thi danh sach cac offer co lead.
-        $globalOffers = ['' => 'Choose Offer'] + Offer::has('network_clicks')->pluck('name', 'id')->all();
+        $globalOffers = ['' => 'Choose Offer'] + Offer::has('leads')->pluck('name', 'id')->all();
         foreach ($globalOffers as $key => $value) {
             if ($key) {
                 $globalOffers[$key] = $value.' ID='.$key;
@@ -573,7 +573,7 @@ class HomeController extends AdminController
         $title = 'Thống kê theo '.strtoupper($content).' từ ngày '.$start .' đến ngày '.$end;
 
         $globalGroups = ['' => 'Choose Group'] + Group::pluck('name', 'id')->all();
-        $globalOffers = ['' => 'Choose Offer'] + Offer::has('network_clicks')->pluck('name', 'id')->all();
+        $globalOffers = ['' => 'Choose Offer'] + Offer::has('leads')->pluck('name', 'id')->all();
         foreach ($globalOffers as $key => $value) {
             if ($key) {
                 $globalOffers[$key] = $value.' ID='.$key;
