@@ -42,7 +42,7 @@ class CorrectLead extends Command
             ->join('offers', 'clicks.offer_id', '=', 'offers.id')
             ->selectRaw('network_clicks.id as lead_id, network_clicks.network_id as lead_network_id, clicks.id as click_id, offers.id as offer_id, network_clicks.sub_id as lead_sub_id, network_clicks.amount as lead_amount')
             ->whereNull('network_clicks.offer_id')
-            ->limit(10)
+            //->limit(10)
             ->get();
 
         foreach ($oldLeads as $oldLead) {
