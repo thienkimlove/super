@@ -52,6 +52,25 @@ return [
             'prefix' => '',
         ],
 
+
+        'richxyz' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'port' => '3306',
+            'database' => 'richxyz',
+            'username' => 'root',
+            'password' => 'tieungao',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'unix_socket' => '/var/run/mysqld/mysqld.sock'
+        ],
+
+
+
+
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', 'localhost'),
