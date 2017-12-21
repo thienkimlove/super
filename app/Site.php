@@ -200,7 +200,7 @@ class Site
         $total = 0;
 
         if ($offers) {
-            $rawContent = isset($offers['offers']) ? $offers['offers'] : $rawContent;
+            $rawContent = isset($offers['offers']) ? $offers['offers'] : $offers;
             foreach ($rawContent as $offer) {
                 $listCurrentNetworkOfferIds[] = self::parseOffer($offer, $network);
                 $total ++;
