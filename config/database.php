@@ -55,7 +55,7 @@ return [
 
         'richxyz' => [
             'driver' => 'mysql',
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'richxyz',
             'username' => 'root',
@@ -70,7 +70,7 @@ return [
 
         'richnet' => [
             'driver' => 'mysql',
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'richnet',
             'username' => 'root',
@@ -85,7 +85,7 @@ return [
 
         'azoffers' => [
             'driver' => 'mysql',
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'azoffers',
             'username' => 'root',
@@ -100,7 +100,7 @@ return [
 
         'appsdude' => [
             'driver' => 'mysql',
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'appsdude',
             'username' => 'root',
@@ -115,7 +115,7 @@ return [
 
         'justapp' => [
             'driver' => 'mysql',
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'justapp',
             'username' => 'root',
@@ -130,7 +130,7 @@ return [
 
         'mobifaster' => [
             'driver' => 'mysql',
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'mobifaster',
             'username' => 'root',
@@ -145,7 +145,7 @@ return [
 
         'super' => [
             'driver' => 'mysql',
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'super',
             'username' => 'root',
@@ -163,7 +163,7 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', 'localhost'),
+            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
