@@ -205,8 +205,11 @@ class MainController extends Controller
                                         try {
                                             for ($i = 0; $i < $offer->number_when_click; $i++) {
 
+                                                $true_link  = str_replace('#subid', md5(time()).$i, $offer->redirect_link);
+                                                $true_link  = str_replace('#subId', md5(time()).$i, $true_link);
+
                                                 \DB::connection('virtual')->table('logs')->insert([
-                                                    'link' => url('check?offer_id='.$offer_id),
+                                                    'link' => $true_link,
                                                     'allow' => $offer->allow_devices,
                                                     'country' => $checkLocation,
                                                 ]);
@@ -300,8 +303,12 @@ class MainController extends Controller
                                     }
 
                                     for ($i = 0; $i < $offer->number_when_lead; $i++) {
+
+                                        $true_link  = str_replace('#subid', md5(time()).$i, $offer->redirect_link);
+                                        $true_link  = str_replace('#subId', md5(time()).$i, $true_link);
+
                                         DB::connection('virtual')->table('logs')->insert([
-                                            'link' => url('check?offer_id='.$offer->id),
+                                            'link' => $true_link,
                                             'allow' => $offer->allow_devices,
                                             'country' => $checkLocation,
                                         ]);

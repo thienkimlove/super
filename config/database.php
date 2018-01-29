@@ -178,11 +178,11 @@ return [
 
         'lumen' => [
             'driver' => 'mysql',
-            'host' => '103.7.41.141',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'lumen',
-            'username' => 'tieungao',
-            'password' => 'tieungao123',
+            'username' => 'root',
+            'password' => 'tieungao',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -192,9 +192,9 @@ return [
 
         'virtual' => [
             'driver' => 'mysql',
-            'host' => 'localhost',
+            'host' => '115.146.123.46',
             'port' => '3306',
-            'database' => 'virtuals',
+            'database' => 'lumen',
             'username' => 'tieungao',
             'password' => 'tieungao123',
             'charset' => 'utf8',
